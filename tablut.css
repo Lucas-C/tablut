@@ -1,0 +1,139 @@
+/**
+ *------
+ * BGA framework: © Gregory Isabelli <gisabelli@boardgamearena.com> & Emmanuel Colin <ecolin@boardgamearena.com>
+ * -----
+ *
+ * tablut.css
+ *
+ * Tablut stylesheet
+ *
+ */
+
+/*
+    This is the CSS stylesheet of your game User Interface.
+    
+    Styles defined on this file will be applied to the HTML elements you define in your
+    HTML template (tablut_tablut.tpl), and to HTML elements you create dynamically
+    (in tablut.js).
+    
+    Usually, you are using CSS to:
+    
+    1°) define the overall layout of your game
+        (ex: place the board on the top left, place player's hand beside, place the deck on the right, ...).
+    2°) create your CSS-sprites:
+        All images of your games should be gathered into a small number of image files. Then, using
+        background-image and background-position CSS properties, you create HTML blocks that can 
+        display these images correctly (see example below).
+    
+    3°) ... anything else:
+        It is really easy to add and remove CSS classes dynamically from your Javascript with
+        dojo.addClass and dojo.removeClass. It is also easy to check if an element has a class
+        (dojo.hasClass) or to get all elements with a specific class (dojo.query). This is why,
+        very often, using CSS classes for the logic of your user interface allow you to do complex
+        thing easily.
+        
+        
+     Note: on the production platform, this file will be compressed and comments will be removed.
+           Consequently, don't hesitate to put as many comments as necessary.
+*/
+
+@import url(../../../css/csslayer.css); /* Note: you must not use any @import directive other than this one */
+
+/********* You can start writing your CSS below this line: **********/
+
+/* Layout */
+#game-container {
+    height: auto;
+    overflow: hidden;
+}
+#players-panel {
+    float: left;
+    position: relative;
+    width: 167px;
+}
+#battlefield-panel {
+    width: auto;
+    overflow: hidden;
+    margin-left: 202px;
+}
+
+/* Hands */
+.player-cards .playable-card {
+    display: inline-block;
+    margin-left: 5px;
+    margin-bottom: 5px;
+}
+.player-cards {
+    margin-left: -5px;
+}
+.clickable .playable-card {
+    cursor: pointer;
+}
+.player-cards .playable-card .selected-border {
+    display: none;
+    background-position: -640px -115px;
+    position: absolute;
+}
+.clickable .playable-card.selected .selected-border {
+    display: inline-block;
+}
+
+/** Zoom **/
+.zoom10 {
+    font-size: 100%;
+    transform: scale(1,1);
+}
+.zoom9 {
+    font-size: 99%;
+    transform: scale(0.9,0.9);
+}
+.zoom8 {
+    font-size: 98%;
+    transform: scale(0.8, 0.8);
+}
+.zoom7 {
+    font-size: 96.5%;
+    transform: scale(0.7,0.7);
+}
+.zoom6 {
+    font-size: 95%;
+    transform: scale(0.6,0.6);
+}
+.zoom5 {
+    font-size: 93.5%;
+    transform: scale(0.5, 0.5);
+}
+.zoom4 {
+    font-size: 92%;
+    transform: scale(0.4,0.4);
+}
+.zoom3 {
+    font-size: 91%;
+    transform: scale(0.3, 0.3);
+}
+.zoom2 {
+    font-size: 90%;
+    transform: scale(0.2,0.2);
+}
+
+#zoom_controls {
+    position: absolute;
+    top: 12px;
+    right: 12px;
+}
+
+.zoom_control {
+    display: block;
+    color: black;
+    cursor: pointer;
+    font-size: 32px;
+    margin: 6px;
+    padding-bottom: 6px;
+    text-align: center;
+    width: 32px;
+    height: 32px;
+}
+
+.zoom_control:disabled {
+    cursor: default;
+}

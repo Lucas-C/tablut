@@ -1,0 +1,20 @@
+language: php
+
+services:
+  - mysql
+
+php:
+  - 7.0.8
+  - 7.1
+
+before_script:
+  - composer install
+  - echo "USE mysql;\nUPDATE user SET password=PASSWORD('tablutpw') WHERE user='root';\nFLUSH PRIVILEGES;\n" | mysql -u root
+
+script:
+  - cp bgaproject.yml.dist bgaproject.yml
+  - composer clean
+  - composer build
+  - composer bga-validate
+  - composer check-styles
+  - composer test

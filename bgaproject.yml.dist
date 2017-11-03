@@ -1,0 +1,14 @@
+useComposer: true
+
+extraSrc:
+  - src/Tablut
+
+testDb:
+  namePrefix: tablut_test_
+  user: root
+  pass: tablutpw
+
+sftp:
+  host: ""
+  user: ""
+  pass: ""
