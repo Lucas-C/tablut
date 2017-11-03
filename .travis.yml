@@ -12,7 +12,6 @@ before_script:
   - echo "USE mysql;\nUPDATE user SET password=PASSWORD('tablutpw') WHERE user='root';\nFLUSH PRIVILEGES;\n" | mysql -u root
 
 script:
-  - cp bgaproject.yml.dist bgaproject.yml
   - composer clean
   - composer build
   - composer bga-validate

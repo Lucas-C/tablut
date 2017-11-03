@@ -9,7 +9,7 @@ Implémentation du jeu [Tablut](http://jeuxstrategieter.free.fr/Tablut_complet.p
 
 ```
 composer test
-bgawb validate
+composer bga-validate
 composer fix-styles
 ```
 

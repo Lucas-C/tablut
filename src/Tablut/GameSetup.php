@@ -10,5 +10,4 @@ use Tablut\Functional as HF;
 class GameSetup
 {
     const NUMBER_OF_PLAYERS = 2;
-
 }
