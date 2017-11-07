@@ -21,6 +21,9 @@
 -->
 
 <div id="game-container" class="{GAME_CONTAINER_CLASS}">
+    <!-- BEGIN square -->
+        <div id="square_{X}_{Y}" class="square" style="left: {LEFT}px; top: {TOP}px;"></div>
+    <!-- END square -->
 </div>
 
 {OVERALL_GAME_FOOTER}

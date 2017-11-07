@@ -51,11 +51,6 @@
     position: relative;
     width: 167px;
 }
-#battlefield-panel {
-    width: auto;
-    overflow: hidden;
-    margin-left: 202px;
-}
 
 /* Hands */
 .player-cards .playable-card {

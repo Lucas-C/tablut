@@ -76,6 +76,7 @@ class Tablut extends Table
     */
     protected function getAllDatas()
     {
+        $playerId = (int) $this->getActivePlayerId();
     }
 
     /*
@@ -104,6 +105,21 @@ class Tablut extends Table
         
         $this->gamestate->nextState('playAgain');
     }
+
+
+//////////////////////////////////////////////////////////////////////////////
+//////////// Player actions
+////////////
+    /**
+     * @param int $squareId
+     * @throws BgaUserException
+     */
+    public function moveTo(array $squareId)
+    {
+        $this->checkAction('moveTo');
+        $this->move($this->getCurrentPlayerId(), $squareId); // should call $this->notifyAllPlayers(
+    }
+
 
 //////////////////////////////////////////////////////////////////////////////
 //////////// Zombie
