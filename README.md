@@ -14,11 +14,16 @@ Very basic:
 # Development
 
 ## Running Tests
-
 ```
 composer test
 composer bga-validate
 composer fix-styles
+```
+
+## Validating Javascript
+```
+npm install -g eslint eslint-config-strict eslint-plugin-filenames
+eslint --fix tablut.js
 ```
 
 ## Deploying to Studio

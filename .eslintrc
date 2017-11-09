@@ -1,0 +1,16 @@
+{
+    "extends": ["strict"],
+    "globals": {
+        "_": false,
+        "ebg": false,
+        "define": false
+    },
+    "rules": {
+        "array-element-newline": 0,
+        "indent": ["error", 4],
+        "max-params": 0,
+        "prefer-arrow-callback": 0,
+        "quotes": ["error", "single"],
+        "semi": ["error", "always"]
+    }
+}
