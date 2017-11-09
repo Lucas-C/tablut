@@ -10,8 +10,7 @@ php:
   - 7.1
 
 before_script:
-  - nvm use node
-  - npm install -g eslineslint eslint-config-strict eslint-plugin-filenames
+  - npm install eslineslint eslint-config-strict eslint-plugin-filenames
   - composer install
   - echo "USE mysql;\nUPDATE user SET password=PASSWORD('tablutpw') WHERE user='root';\nFLUSH PRIVILEGES;\n" | mysql -u root
 
