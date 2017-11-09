@@ -44,50 +44,31 @@
     
 */
 
-$stats_type = [
+$stats_type = array(
 
     // Statistics global to table
-    "table" => [
-        /*"turns_number" => [
-            "id"=> 10,
-            "name" => totranslate("Number of turns"),
-            "type" => "int"
-        ],*/
+    "table" => array(
 
-/*
-        Examples:
-
-
-        "table_teststat1" => array(   "id"=> 10,
-                                "name" => totranslate("table test stat 1"), 
-                                "type" => "int" ),
-                                
-        "table_teststat2" => array(   "id"=> 11,
-                                "name" => totranslate("table test stat 2"), 
-                                "type" => "float" )
-*/
-    ],
+    ),
     
     // Statistics existing for each player
-    "player" => [
-        "num_defeated_cards" => [
-            "id" => 10,
-            "name" => totranslate("Number of defeated cards"),
-            "type" => "int"
-        ],
+    "player" => array(
     
-/*
-        Examples:    
-        
-        
-        "player_teststat1" => array(   "id"=> 10,
-                                "name" => totranslate("player test stat 1"), 
+        "discPlayedOnCorner" => array(   "id"=> 10,
+                                "name" => totranslate("Discs played on a corner"), 
                                 "type" => "int" ),
                                 
-        "player_teststat2" => array(   "id"=> 11,
-                                "name" => totranslate("player test stat 2"), 
-                                "type" => "float" )
+        "discPlayedOnBorder" => array(   "id"=> 11,
+                                "name" => totranslate("Discs played on a border"), 
+                                "type" => "int" ),
 
-*/
-    ]
-];
+        "discPlayedOnCenter" => array(   "id"=> 12,
+                                "name" => totranslate("Discs played on board center part"), 
+                                "type" => "int" ),
+
+        "turnedOver" => array(   "id"=> 13,
+                                "name" => totranslate("Number of discs turned over"), 
+                                "type" => "int" )    
+    )
+
+);
