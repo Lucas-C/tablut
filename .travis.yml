@@ -1,5 +1,8 @@
 language: php
 
+dist: trusty
+sudo: false
+
 services:
   - mysql
 
@@ -7,10 +10,13 @@ php:
   - 7.1
 
 before_script:
+  - where npm
+  - npm install -g eslineslint eslint-config-strict eslint-plugin-filenames
   - composer install
   - echo "USE mysql;\nUPDATE user SET password=PASSWORD('tablutpw') WHERE user='root';\nFLUSH PRIVILEGES;\n" | mysql -u root
 
 script:
+  - eslint tablut.js
   - composer clean
   - composer build
   - composer bga-validate
