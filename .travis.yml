@@ -10,7 +10,7 @@ php:
   - 7.1
 
 before_script:
-  - env | grep -i proxy
+  - env
   - npm config list
   - nvm --version
   - npm install -g eslineslint eslint-config-strict eslint-plugin-filenames
