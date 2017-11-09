@@ -45,4 +45,6 @@ bgawb build -w -d
     * img/game_box180.png
     * img/game_icon.png
     * img/publisher.png
+	
+	* TEST
 -->
