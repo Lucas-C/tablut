@@ -28,6 +28,8 @@ eslint --fix tablut.js
 
 ## Deploying to Studio
 ```
+cp bgaproject.yml.dist bgaproject.yml
+# then fill in sftp properties
 composer bgaw-deploy
 ```
 

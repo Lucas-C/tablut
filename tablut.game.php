@@ -55,7 +55,8 @@ class Tablut extends Table
 
     private function setupStats()
     {
-        $this->initStat('player', 'num_defeated_cards', 0);
+        $this->initStat('table', 'turns_number', 0);
+        $this->initStat('player', 'turns_number', 0);
     }
 
     /**
