@@ -1,0 +1,77 @@
+/**
+ *------
+ * BGA framework: © Gregory Isabelli <gisabelli@boardgamearena.com> & Emmanuel Colin <ecolin@boardgamearena.com>
+ * tablut implementation : © Gregory Isabelli <gisabelli@boardgamearena.com>
+ *
+ * This code has been produced on the BGA studio platform for use on http://boardgamearena.com.
+ * See http://en.boardgamearena.com/#!doc/Studio for more information.
+ * -----
+ *
+ * tablut.css
+ *
+ * tablut stylesheet
+ *
+ */
+
+/*
+
+    This is the CSS stylesheet of your game User Interface.
+    
+    Styles defined on this file will be applied to the HTML elements you defined in your
+    HTML template (gomoku_gomoku.tpl), and to HTML elements you create dynamically
+    (in gomoku.js).
+    
+    Usually, you are using CSS to:
+    
+    1°) define the overall layout of your game
+        (ex: place the board on the top left, place player's hand beside, place the deck on the right, ...).
+
+    2°) create your CSS-sprites:
+        All images of your games should be gathered into a small number of image files. Then, using
+        background-image and background-position CSS properties, you create HTML blocks that can 
+        display these images correctly (see example below).
+    
+    3°) ... anything else:
+        It is really easy to add and remove CSS classes dynamically from your Javascript with
+        dojo.addClass and dojo.removeClass. This is also easy to check if an element has a class
+        (dojo.hasClass) or to get all elements with a specific class (dojo.query). This is why,
+        very often, using CSS classes for the logic of your user interface allow you to do complex
+        thing easyly.
+        
+        
+     Note: on the production platform, this file will be compressed and comments will be removed.
+           Consequently, don't hesitate to put as many comments as necessary.
+*/
+
+
+@import url(../../../css/csslayer.css);
+
+#board {
+    width: 536px;
+    height: 528px;
+    background-image: url('img/board.jpg');
+    position: relative;
+    margin: auto;
+}
+
+.square {
+    width: 62px;
+    height: 62px;
+    position: absolute;
+}
+
+.disc {
+    width: 56px;
+    height: 56px;
+    position: absolute;
+    background-image: url('img/tokens.png');
+}
+.disccolor_ffffff { background-position: 0px 0px;   }
+.disccolor_000000 { background-position: -56px 0px;   }
+
+.possibleMove {
+    background-color: white;
+    opacity: 0.2;
+    filter:alpha(opacity=20); /* For IE8 and earlier */  
+    cursor: pointer;  
+}

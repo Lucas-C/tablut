@@ -1,0 +1,97 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: bga 1\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2012-11-05 17:55+0100\n"
+"PO-Revision-Date: 2012-11-05 17:56+0100\n"
+"Last-Translator: Grégory Isabelli <gisabelli@gmail.com>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Poedit-SourceCharset: utf-8\n"
+"X-Poedit-Basepath: .\n"
+"X-Poedit-SearchPath-0: /var/tournoi/www/game/translation/tablut\n"
+
+#: /var/tournoi/www/game/translation/tablut/tablut_clientsidekeys.php:6
+#: /var/tournoi/www/game/translation/tablut/tablut_clientsidekeys.php:10
+#: /var/www/tournoi-dev/game/translation/tablut/tablut_clientsidekeys.php:5
+msgid "${actplayer} must play a disc"
+msgstr "${actplayer} doit jouer un disque"
+
+#: /var/tournoi/www/game/translation/tablut/tablut_clientsidekeys.php:2
+#: /var/tournoi/www/game/translation/tablut/tablut_clientsidekeys.php:3
+#: /var/www/tournoi-dev/game/translation/tablut/tablut_clientsidekeys.php:2
+msgid "${player_name} plays a disc and turns over ${returned_nbr} disc(s)"
+msgstr "${player_name} joue un disque et retourne ${returned_nbr} disques"
+
+#: /var/tournoi/www/game/translation/tablut/tablut_clientsidekeys.php:7
+#: /var/tournoi/www/game/translation/tablut/tablut_clientsidekeys.php:11
+#: /var/www/tournoi-dev/game/translation/tablut/tablut_clientsidekeys.php:6
+msgid "${you} must play a disc"
+msgstr "${you} devez jouer un disque"
+
+#: /var/tournoi/www/game/translation/tablut/tablut_serversidekeys.php:8
+#: /var/tournoi/www/game/translation/tablut/tablut_serversidekeys.php:12
+#: /var/www/tournoi-dev/game/translation/tablut/tablut_serversidekeys.php:3
+msgid "Discs played on a border"
+msgstr "Disques joués sur un bord"
+
+#: /var/tournoi/www/game/translation/tablut/tablut_serversidekeys.php:7
+#: /var/tournoi/www/game/translation/tablut/tablut_serversidekeys.php:11
+#: /var/www/tournoi-dev/game/translation/tablut/tablut_serversidekeys.php:2
+msgid "Discs played on a corner"
+msgstr "Disques joués dans un coin"
+
+#: /var/tournoi/www/game/translation/tablut/tablut_serversidekeys.php:9
+#: /var/tournoi/www/game/translation/tablut/tablut_serversidekeys.php:13
+#: /var/www/tournoi-dev/game/translation/tablut/tablut_serversidekeys.php:4
+msgid "Discs played on board center part"
+msgstr "Disques joués dans la partie centrale"
+
+#: /var/tournoi/www/game/translation/tablut/tablut_clientsidekeys.php:5
+#: /var/tournoi/www/game/translation/tablut/tablut_clientsidekeys.php:9
+#: /var/www/tournoi-dev/game/translation/tablut/tablut_clientsidekeys.php:4
+msgid "End of game"
+msgstr "Fin de la partie"
+
+#: /var/tournoi/www/game/translation/tablut/tablut_clientsidekeys.php:4
+#: /var/tournoi/www/game/translation/tablut/tablut_clientsidekeys.php:8
+#: /var/www/tournoi-dev/game/translation/tablut/tablut_clientsidekeys.php:3
+msgid "Game setup"
+msgstr "Attente des autres joueurs ..."
+
+#: /var/tournoi/www/game/translation/tablut/tablut_serversidekeys.php:10
+#: /var/www/tournoi-dev/game/translation/tablut/tablut_serversidekeys.php:5
+msgid "Number of discs turned over"
+msgstr "Nombre de disques retournés"
+
+#: /var/tournoi/www/game/translation/tablut/tablut_clientsidekeys.php:12
+#: /var/tournoi/www/game/translation/tablut/tablut_clientsidekeys.php:13
+#: /var/www/tournoi-dev/game/translation/tablut/tablut_clientsidekeys.php:7
+#: /var/www/tournoi-dev/game/translation/tablut/tablut_clientsidekeys.php:8
+msgid "Place a disc here"
+msgstr "Placer un disque içi"
+
+#: /var/tournoi/www/game/translation/tablut/tablut_serversidekeys.php:2
+msgid "my game option"
+msgstr "Mon option"
+
+#: /var/tournoi/www/game/translation/tablut/tablut_serversidekeys.php:3
+msgid "option 1"
+msgstr ""
+
+#: /var/tournoi/www/game/translation/tablut/tablut_serversidekeys.php:4
+#: /var/tournoi/www/game/translation/tablut/tablut_serversidekeys.php:5
+msgid "option 2"
+msgstr ""
+
+#: /var/tournoi/www/game/translation/tablut/tablut_serversidekeys.php:6
+msgid "option 3"
+msgstr ""
