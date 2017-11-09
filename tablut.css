@@ -42,93 +42,11 @@
 /********* You can start writing your CSS below this line: **********/
 
 /* Layout */
-#game-container {
+#board {
     height: auto;
     overflow: hidden;
+    background-image: url('img/board.jpg');
 }
-#players-panel {
-    float: left;
-    position: relative;
-    width: 167px;
-}
-
-/* Hands */
-.player-cards .playable-card {
-    display: inline-block;
-    margin-left: 5px;
-    margin-bottom: 5px;
-}
-.player-cards {
-    margin-left: -5px;
-}
-.clickable .playable-card {
-    cursor: pointer;
-}
-.player-cards .playable-card .selected-border {
-    display: none;
-    background-position: -640px -115px;
-    position: absolute;
-}
-.clickable .playable-card.selected .selected-border {
-    display: inline-block;
-}
-
-/** Zoom **/
-.zoom10 {
-    font-size: 100%;
-    transform: scale(1,1);
-}
-.zoom9 {
-    font-size: 99%;
-    transform: scale(0.9,0.9);
-}
-.zoom8 {
-    font-size: 98%;
-    transform: scale(0.8, 0.8);
-}
-.zoom7 {
-    font-size: 96.5%;
-    transform: scale(0.7,0.7);
-}
-.zoom6 {
-    font-size: 95%;
-    transform: scale(0.6,0.6);
-}
-.zoom5 {
-    font-size: 93.5%;
-    transform: scale(0.5, 0.5);
-}
-.zoom4 {
-    font-size: 92%;
-    transform: scale(0.4,0.4);
-}
-.zoom3 {
-    font-size: 91%;
-    transform: scale(0.3, 0.3);
-}
-.zoom2 {
-    font-size: 90%;
-    transform: scale(0.2,0.2);
-}
-
-#zoom_controls {
-    position: absolute;
-    top: 12px;
-    right: 12px;
-}
-
-.zoom_control {
-    display: block;
-    color: black;
-    cursor: pointer;
-    font-size: 32px;
-    margin: 6px;
-    padding-bottom: 6px;
-    text-align: center;
-    width: 32px;
-    height: 32px;
-}
-
-.zoom_control:disabled {
-    cursor: default;
+.square {
+    border: 1px solid black;
 }
