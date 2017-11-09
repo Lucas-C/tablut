@@ -15,9 +15,12 @@ before_script:
   - echo "USE mysql;\nUPDATE user SET password=PASSWORD('tablutpw') WHERE user='root';\nFLUSH PRIVILEGES;\n" | mysql -u root
 
 script:
-  - eslint tablut.js
-  - composer clean
-  - composer build
-  - composer bga-validate
+  - node_modules/.bin/eslint tablut.js
+
   - composer check-styles
   - composer test
+
+  - cp bgaproject.yml.dist bgaproject.yml
+  - composer bgaw-clean
+  - composer bgaw-build
+  - composer bgaw-validate

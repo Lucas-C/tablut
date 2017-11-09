@@ -9,7 +9,9 @@
         "array-element-newline": 0,
         "indent": ["error", 4],
         "max-params": 0,
+        "no-empty-function": 0,
         "prefer-arrow-callback": 0,
+        "prefer-destructuring": 0,
         "quotes": ["error", "single"],
         "semi": ["error", "always"]
     }

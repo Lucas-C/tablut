@@ -17,19 +17,21 @@ define([
     'dojo/_base/lang',
     'dojo/dom',
     'dojo/query',
-    'dojo/_base/array',
     'dojo/dom-construct',
     'dojo/dom-class',
     'dojo/dom-geometry',
-    'dojo/fx',
+    // Unused:
     'dojo/NodeList-data',
     'dojo/NodeList-traverse',
     'dojo/NodeList-html',
+    'dojo/_base/array',
+    'dojo/fx',
     'ebg/core/gamegui',
     'ebg/counter',
     'ebg/scrollmap',
-], function main(dojo, declare, lang, dom, query, array, domConstruct, domClass, domGeom, fx) {
-    const SLIDE_ANIMATION_DURATION = 700;
+], function main(dojo, declare, lang, dom, query, domConstruct, domClass, domGeom) {
+    const ANIMATION_ZINDEX = 100;
+    const END_OF_GAME_DELAY = 2000;
 
     return declare('bgagame.tablut', ebg.core.gamegui, {
         constructor() {
@@ -52,7 +54,7 @@ define([
 
             // Base indicators
             for (const i in this.playerData) {
-                if (this.playerData.hasOwnProperty(i)) {
+                if (Object.prototype.hasOwnProperty.call(this.playerData, i)) {
                     const basePlayer = this.playerData[i];
                     const position = null;
                 }
@@ -60,7 +62,7 @@ define([
 
             // Icons and hand cards
             for (const id in players) {
-                if (players.hasOwnProperty(id)) {
+                if (Object.prototype.hasOwnProperty.call(players, id)) {
                     const player = players[id];
                     // ...
                 }
@@ -98,7 +100,7 @@ define([
                 throw new Error('Must provide a node');
             }
             return query(node)
-                .style('zIndex', 100)
+                .style('zIndex', ANIMATION_ZINDEX)
                 .style('position', 'absolute')
                 .pop();
         },
@@ -127,8 +129,8 @@ define([
 
         // /////////////////////////////////////////////////
         // // Player's action
-        onMove(e) {
-            e.preventDefault();
+        onMove(event) {
+            event.preventDefault();
             this.ajaxcall(
                 '/tablut/tablut/moveTo.html',
                 {
@@ -136,9 +138,9 @@ define([
                     squareId: 0,
                 },
                 this,
-                function () {
+                function onSuccess() {
                 },
-                function () {}
+                function onFailure() {}
             );
         },
 
@@ -146,15 +148,15 @@ define([
         // /////////////////////////////////////////////////
         // // Reaction to cometD notifications
         setupNotifications() {
-            dojo.subscribe('newScores', lang.hitch(this, this.notif_newScores));
-            dojo.subscribe('endOfGame', this, function () {});
+            dojo.subscribe('newScores', lang.hitch(this, this.notifNewScores));
+            dojo.subscribe('endOfGame', this, function notifNoop() {});
             // Delay end of game for interface stock stability before switching to game result
-            this.notifqueue.setSynchronous('endOfGame', 2000);
+            this.notifqueue.setSynchronous('endOfGame', END_OF_GAME_DELAY);
         },
 
-        notif_newScores(notification) {
+        notifNewScores(notification) {
             for (const playerId in notification.args) {
-                if (notification.args.hasOwnProperty(playerId)) {
+                if (Object.prototype.hasOwnProperty.call(notification.args, playerId)) {
                     const score = notification.args[playerId].score;
                     const scoreAux = notification.args[playerId].scoreAux;
                     this.scoreCtrl[playerId].toValue(score);

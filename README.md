@@ -16,7 +16,7 @@ Very basic:
 ## Running Tests
 ```
 composer test
-composer bga-validate
+composer bgaw-validate
 composer fix-styles
 ```
 
@@ -28,14 +28,14 @@ eslint --fix tablut.js
 
 ## Deploying to Studio
 ```
-composer deploy
+composer bgaw-deploy
 ```
 
 ## Continuous Deployment to Studio
 
 Watches development files and deploys them as they change.
 ```
-bgawb build -w -d
+composer bgaw-watch
 ```
 
 <!--TODO:
