@@ -38,20 +38,20 @@ class view_tablut_tablut extends game_view
         $this->page->begin_block("tablut_tablut", "player_cards");
 
         $currentPlayerId = (int) $g_user->get_id();
-        $players = $this->game->loadPlayersBasicInfos();
 
-        // Spectator
-        if (!isset($players[$currentPlayerId])) {
-            $this->tpl['GAME_CONTAINER_CLASS'] = '';
-            return;
+        $hor_scale = 64.8;
+        $ver_scale = 64.4;
+        for( $x=1; $x<=8; $x++ )
+        {
+            for( $y=1; $y<=8; $y++ )
+            {
+                $this->page->insert_block( "square", array(
+                    'X' => $x,
+                    'Y' => $y,
+                    'LEFT' => round( ($x-1)*$hor_scale+10 ),
+                    'TOP' => round( ($y-1)*$ver_scale+7 )
+                ) );
+            }        
         }
-
-        if ($players[$currentPlayerId]['player_color'] !== Tablut::DOWNWARD_PLAYER_COLOR) {
-            $this->tpl['GAME_CONTAINER_CLASS'] = 'viewing-as-upwards-player';
-        } else {
-            $this->tpl['GAME_CONTAINER_CLASS'] = '';
-        }
-
-        $this->page->insert_block('player_cards');
     }
 }

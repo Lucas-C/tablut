@@ -26,7 +26,7 @@ $gameinfos = array(
 'year' => 1732,
 
 // Game publisher
-'publisher' => ',
+'publisher' => '',
 
 // Url of game publisher website
 'publisher_website' => '',

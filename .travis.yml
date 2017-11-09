@@ -10,9 +10,7 @@ php:
   - 7.1
 
 before_script:
-  - npm config set proxy null
-  - npm config set https-proxy null
-  - npm config set strict-ssl false
+  - nvm use node
   - npm install -g eslineslint eslint-config-strict eslint-plugin-filenames
   - composer install
   - echo "USE mysql;\nUPDATE user SET password=PASSWORD('tablutpw') WHERE user='root';\nFLUSH PRIVILEGES;\n" | mysql -u root

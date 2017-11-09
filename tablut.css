@@ -43,10 +43,15 @@
 
 /* Layout */
 #board {
+    position: relative;
     height: auto;
     overflow: hidden;
     background-image: url('img/board.jpg');
 }
 .square {
+    position: absolute;
+    width: 4rem;
+    height: 4rem;
     border: 1px solid black;
+    background-color: red;
 }
