@@ -46,65 +46,32 @@
 
 $machinestates = array(
 
-    // The initial state. Please do not modify.
     1 => array(
         "name" => "gameSetup",
-        "description" => "",
+        "description" => clienttranslate("Game setup"),
         "type" => "manager",
         "action" => "stGameSetup",
-        "transitions" => array("" => 10)
+        "transitions" => array( "" => 10 )
     ),
-
+    
     10 => array(
-        "name" => "returnToDeck",
-        "description" => clienttranslate('Opponent must choose 2 cards to return to their deck'),
-        "descriptionmyturn" => clienttranslate('${you} must choose 2 cards to return to the bottom of your deck'),
-        "type" => "multipleactiveplayer",
-        "possibleactions" => array("returnToDeck"),
-        "transitions" => array("allReturned" => 20)
-    ),
-
-    20 => array(
-        "name" => "drawCards",
-        "description" => "",
-        "type" => "game",
-        "action" => "stDrawCards",
-        "transitions" => array("cardsDrawn" => 30),
-        "updateGameProgression" => true
-    ),
-
-    30 => array(
-        "name" => "playCard",
-        "description" => clienttranslate('${actplayer} must place a card'),
-        "descriptionmyturn" => clienttranslate('${you} must place a card'),
+        "name" => "playerTurn",
+		"description" => clienttranslate('${actplayer} must play a disc'),
+		"descriptionmyturn" => clienttranslate('${you} must play a disc'),
         "type" => "activeplayer",
-        "args" => "argPlayCard",
-        "updateGameProgression" => true,
-        "possibleactions" => array("playCard"),
-        "transitions" => array("attackAvailable" => 40, "noAttackAvailable" => 50, "occupyEnemyBase" => 99)
+        "args" => "argPlayerTurn",
+        "possibleactions" => array( 'playDisc' ),
+        "transitions" => array( "playDisc" => 11, "zombiePass" => 11 )
     ),
-
-    40 => array(
-        "name" => "chooseAttack",
-        "description" => clienttranslate('${actplayer} must choose an attack'),
-        "descriptionmyturn" => clienttranslate('${you} must choose an attack'),
-        "type" => "activeplayer",
-        "args" => "argChooseAttack",
-        "possibleactions" => array("chooseAttack"),
-        "transitions" => array("attackChosen" => 50)
-    ),
-
-    50 => array(
-        "name" => "nextPlay",
-        "description" => "",
+    
+    11 => array(
+        "name" => "nextPlayer",
         "type" => "game",
-        "action" => "stNextPlay",
-        "transitions" => array("playAgain" => 30, "nextPlayer" => 20, "noCardsLeft" => 99),
-        "updateGameProgression" => true
+        "action" => "stNextPlayer",
+        "updateGameProgression" => true,        
+        "transitions" => array( "nextTurn" => 10, "cantPlay" => 11, "endGame" => 99 )
     ),
    
-    // Final state.
-    // Please do not modify.
     99 => array(
         "name" => "gameEnd",
         "description" => clienttranslate("End of game"),
@@ -112,4 +79,5 @@ $machinestates = array(
         "action" => "stGameEnd",
         "args" => "argGameEnd"
     )
+
 );
