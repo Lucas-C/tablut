@@ -34,7 +34,7 @@
   },
   "require-dev": {
     "php": ">=7.0.8",
-    "dholmes/bga-workbench": "^0.0.4",
+    "dholmes/bga-workbench": "^0.0.9",
     "phpunit/phpunit": "^6.3.0",
     "squizlabs/php_codesniffer": "@stable"
   },

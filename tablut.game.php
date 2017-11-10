@@ -38,7 +38,7 @@ class Tablut extends Table
 
     /*
         setupNewGame:
-        
+
         This method is called only once, when a new game is launched.
         In this method, you must setup the game according to the game rules, so that
         the game is ready to be played.
@@ -72,7 +72,7 @@ class Tablut extends Table
         self::DbQuery($sql);
         self::reloadPlayersBasicInfos();
     }
-    
+
     private function setupBoard(array $players)
     {
         $sql = "INSERT INTO board (board_x,board_y,board_player) VALUES ";
@@ -85,7 +85,7 @@ class Tablut extends Table
                 } elseif (($x==4 && $y==5) || ($x==5 && $y==4)) {  // Initial positions of black player
                     $disc_value = "'".array_keys($players)[1]."'";
                 }
-                    
+
                 $sql_values[] = "('$x','$y',$disc_value)";
             }
         }
@@ -98,7 +98,7 @@ class Tablut extends Table
         $this->initStat('table', 'turns_number', 0);
         $this->initStat('player', 'turns_number', 0);
     }
-    
+
 
     /**
      * Gather all informations about current game situation (visible by the current player).
@@ -109,7 +109,7 @@ class Tablut extends Table
     protected function getAllDatas()
     {
         $result = array( 'players' => array() );
-    
+
         // Add players specific infos
         $sql = "SELECT player_id id, player_score score ";
         $sql .= "FROM player ";
@@ -118,23 +118,23 @@ class Tablut extends Table
         while ($player = mysql_fetch_assoc($dbres)) {
             $result['players'][ $player['id'] ] = $player;
         }
-        
+
         // Get reversi board disc
         $result['board'] = self::getObjectListFromDB("SELECT board_x x, board_y y, board_player player
                                                        FROM board
                                                        WHERE board_player IS NOT NULL");
-  
+
         return $result;
     }
 
     /*
         getGameProgression:
-        
+
         Compute and return the current game progression.
         The number returned must be an integer beween 0 (=the game just started) and
         100 (= the game is finished or almost finished).
-    
-        This method is called each time we are in a game state with the "updateGameProgression" property set to true 
+
+        This method is called each time we are in a game state with the "updateGameProgression" property set to true
         (see states.inc.php)
     */
     public function getGameProgression()
@@ -142,7 +142,7 @@ class Tablut extends Table
         // Game progression: get the number of free squares
         // (number of free squares goes from 60 to 0
         $freeSquare = self::getUniqueValueFromDb("SELECT COUNT( board_x ) FROM board WHERE board_player IS NULL");
-        
+
         return round(( 60-$freeSquare )/60*100);
     }
 
@@ -166,7 +166,7 @@ class Tablut extends Table
 //////////// Game state arguments
 ////////////
 
-    function argPlayerTurn()
+    public function argPlayerTurn()
     {
         return array(
         );
@@ -192,7 +192,7 @@ class Tablut extends Table
 
     /*
         zombieTurn:
-        
+
         This method is called each time it is the turn of a player who has quit the game (= "zombie" player).
         You can do whatever you want in order to make sure the turn of this player ends appropriately
         (ex: pass).
@@ -205,27 +205,27 @@ class Tablut extends Table
             throw new feException("Zombie mode not supported at this game state:".$state['name']);
         }
     }
-    
+
 ///////////////////////////////////////////////////////////////////////////////////:
 ////////// DB upgrade
 //////////
 
     /*
         upgradeTableDb:
-        
+
         You don't have to care about this until your game has been published on BGA.
         Once your game is on BGA, this method is called everytime the system detects a game running with your old
         Database scheme.
         In this case, if you change your Database scheme, you just have to apply the needed changes in order to
         update the game database and allow the game to continue to run with your new version.
-    
+
     */
     public function upgradeTableDb($from_version)
     {
         // $from_version is the current version of this game database, in numerical form.
         // For example, if the game was running with a release of your game named "140430-1345",
         // $from_version is equal to 1404301345
-        
+
         // Example:
 //        if( $from_version <= 1404301345 )
 //        {

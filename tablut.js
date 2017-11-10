@@ -49,6 +49,7 @@ define([
         },
 
         setupLayout(gamedatas) {
+            console.log('setupLayout', gamedatas);
             for (const i in gamedatas.board) {
                 const square = gamedatas.board[i];
                 if (square.player !== null) {
@@ -65,7 +66,6 @@ define([
         onEnteringState(stateName, args) {
             switch (stateName) {
             case 'playerTurn':
-                this.updatePossibleMoves(args.args.possibleMoves);
                 break;
             default:
                 break;
@@ -91,20 +91,6 @@ define([
 
         movePawn(fromSquareId, toSquareId) {
             console.log('movePawn', fromSquareId, toSquareId);
-        },
-
-        updatePossibleMoves(possibleMoves) {
-            // Remove current possible moves
-            dojo.query('.possibleMove').removeClass('possibleMove');
-
-            for (const x in possibleMoves) {
-                for (const y in possibleMoves[x]) {
-                    // x,y is a possible move
-                    dojo.addClass(`square_${ x }_${ y }`, 'possibleMove');
-                }
-            }
-
-            this.addTooltipToClass('possibleMove', '', _('Place a disc here'));
         },
 
 
@@ -155,10 +141,8 @@ define([
             const x = coords[1];
             const y = coords[2];
 
-            if (!dojo.hasClass(`square_${ x }_${ y }`, 'possibleMove')) {
-                // This is not a possible move => the click does nothing
-                return;
-            }
+            this.placePawn(x, y);
+            return;
 
             if (this.checkAction('move')) {
                 this.ajaxcall(
@@ -187,9 +171,6 @@ define([
         },
 
         notifPlayerMoved(notif) {
-            // Remove current possible moves (makes the board more clear)
-            dojo.query('.possibleMove').removeClass('possibleMove');
-
             this.movePawn(notif.args.fromSquareId, notif.args.toSquareId);
         },
     });

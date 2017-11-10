@@ -15,9 +15,9 @@ Very basic:
 
 ## Running Tests
 ```
+composer fix-styles
 composer test
 composer bgaw-validate
-composer fix-styles
 ```
 
 ## Validating Javascript
@@ -39,12 +39,3 @@ Watches development files and deploys them as they change.
 ```
 composer bgaw-watch
 ```
-
-<!--TODO:
-- add images:
-    * img/game_box.png
-    * img/game_box75.png
-    * img/game_box180.png
-    * img/game_icon.png
-    * img/publisher.png
--->

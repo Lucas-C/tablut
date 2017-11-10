@@ -13,7 +13,7 @@
 
 $gameinfos = array(
 
-// Name of the game in English (will serve as the basis for translation) 
+// Name of the game in English (will serve as the basis for translation)
 'game_name' => "Tablut",
 
 // Game designer (or game designers, separated by commas)

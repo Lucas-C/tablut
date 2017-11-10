@@ -53,7 +53,7 @@ $machinestates = array(
         "action" => "stGameSetup",
         "transitions" => array( "" => 10 )
     ),
-    
+
     10 => array(
         "name" => "playerTurn",
         "description" => clienttranslate('${actplayer} must play a disc'),
@@ -63,7 +63,7 @@ $machinestates = array(
         "possibleactions" => array( 'move' ),
         "transitions" => array( "move" => 11, "zombiePass" => 11 )
     ),
-    
+
     11 => array(
         "name" => "nextPlayer",
         "type" => "game",
@@ -71,7 +71,7 @@ $machinestates = array(
         "updateGameProgression" => true,
         "transitions" => array( "nextTurn" => 10, "endGame" => 99 )
     ),
-   
+
     99 => array(
         "name" => "gameEnd",
         "description" => clienttranslate('End of game'),
