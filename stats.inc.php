@@ -60,7 +60,7 @@ $stats_type = array(
 
         "turns_number" => array("id"=> 10,
                     "name" => totranslate("Number of turns"),
-                    "type" => "int" ),  
+                    "type" => "int" ),
     )
 
 );

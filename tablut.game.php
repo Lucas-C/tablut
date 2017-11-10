@@ -12,7 +12,7 @@
   *
   */
 
-require_once(APP_GAMEMODULE_PATH . 'module/table/table.game.php');
+require_once(APP_GAMEMODULE_PATH . 'module/table/table.game.php');  // @codingStandardsIgnoreLine
 
 use Functional as F;
 use Tablut\Functional as HF;
@@ -64,40 +64,41 @@ class Tablut extends Table
         $default_color = array( "000000", "ffffff" );
         $sql = "INSERT INTO player (player_id, player_color, player_canal, player_name, player_avatar) VALUES ";
         $values = array();
-        foreach( $players as $player_id => $player )
-        {
-            $color = array_shift( $default_color );
-            $values[] = "('".$player_id."','$color','".$player['player_canal']."','".addslashes( $player['player_name'] )."','".addslashes( $player['player_avatar'] )."')";
+        foreach ($players as $player_id => $player) {
+            $color = array_shift($default_color);
+            $playerName = addslashes($player['player_name']);
+            $playerAvatar = addslashes($player['player_avatar']);
+            $values[] = "('$player_id','$color','$player[player_canal]','$playerName','$playerAvatar')";
             
-            if( $color == '000000' )
+            if ($color == '000000') {
                 $blackplayer_id = $player_id;
-            else
+            } else {
                 $whiteplayer_id = $player_id;
+            }
         }
-        $sql .= implode( $values, ',' );
-        self::DbQuery( $sql );
+        $sql .= implode($values, ',');
+        self::DbQuery($sql);
         self::reloadPlayersBasicInfos();
     }
     
-    private function setupBoard(array $players)
+    private function setupBoard()
     {
         $sql = "INSERT INTO board (board_x,board_y,board_player) VALUES ";
         $sql_values = array();
-        for( $x=1; $x<=8; $x++ )
-        {
-            for( $y=1; $y<=8; $y++ )
-            {
+        for ($x=1; $x<=8; $x++) {
+            for ($y=1; $y<=8; $y++) {
                 $disc_value = "NULL";
-                if( ($x==4 && $y==4) || ($x==5 && $y==5) )  // Initial positions of white player
+                if (($x==4 && $y==4) || ($x==5 && $y==5)) {  // Initial positions of white player
                     $disc_value = "'$whiteplayer_id'";
-                else if( ($x==4 && $y==5) || ($x==5 && $y==4) )  // Initial positions of black player
+                } elseif (($x==4 && $y==5) || ($x==5 && $y==4)) {  // Initial positions of black player
                     $disc_value = "'$blackplayer_id'";
+                }
                     
                 $sql_values[] = "('$x','$y',$disc_value)";
             }
         }
-        $sql .= implode( $sql_values, ',' );
-        self::DbQuery( $sql );
+        $sql .= implode($sql_values, ',');
+        self::DbQuery($sql);
     }
 
     private function setupStats()
@@ -121,16 +122,15 @@ class Tablut extends Table
         $sql = "SELECT player_id id, player_score score ";
         $sql .= "FROM player ";
         $sql .= "WHERE 1 ";
-        $dbres = self::DbQuery( $sql );
-        while( $player = mysql_fetch_assoc( $dbres ) )
-        {
+        $dbres = self::DbQuery($sql);
+        while ($player = mysql_fetch_assoc($dbres)) {
             $result['players'][ $player['id'] ] = $player;
         }
         
         // Get reversi board disc
-        $result['board'] = self::getObjectListFromDB( "SELECT board_x x, board_y y, board_player player
+        $result['board'] = self::getObjectListFromDB("SELECT board_x x, board_y y, board_player player
                                                        FROM board
-                                                       WHERE board_player IS NOT NULL" );
+                                                       WHERE board_player IS NOT NULL");
   
         return $result;
     }
@@ -149,9 +149,9 @@ class Tablut extends Table
     {
         // Game progression: get the number of free squares
         // (number of free squares goes from 60 to 0
-        $freeSquare = self::getUniqueValueFromDb( "SELECT COUNT( board_x ) FROM board WHERE board_player IS NULL" );
+        $freeSquare = self::getUniqueValueFromDb("SELECT COUNT( board_x ) FROM board WHERE board_player IS NULL");
         
-        return round( ( 60-$freeSquare )/60*100 );
+        return round(( 60-$freeSquare )/60*100);
     }
 
 
@@ -174,13 +174,13 @@ class Tablut extends Table
 //////////// Game state reactions   (reactions to game planned states from state machine
 ////////////
 
-    function stNextPlayer()
+    public function stNextPlayer()
     {
         $next_player_id = self::activeNextPlayer();
 
         //$this->gamestate->nextState( 'endGame' );
         //$this->gamestate->nextState( 'cantPlay' );
-        $this->gamestate->nextState( 'nextTurn' );
+        $this->gamestate->nextState('nextTurn');
     }
 
 //////////////////////////////////////////////////////////////////////////////
@@ -196,12 +196,11 @@ class Tablut extends Table
     */
     public function zombieTurn($state, $activePlayerId)
     {
-        if( $state['name'] == 'playerTurn' )
-        {
-            $this->gamestate->nextState( "zombiePass" );
+        if ($state['name'] == 'playerTurn') {
+            $this->gamestate->nextState("zombiePass");
+        } else {
+            throw new feException("Zombie mode not supported at this game state:".$state['name']);
         }
-        else
-            throw new feException( "Zombie mode not supported at this game state:".$state['name'] );
     }
     
 ///////////////////////////////////////////////////////////////////////////////////:

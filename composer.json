@@ -36,11 +36,11 @@
     "php": ">=7.0.8",
     "dholmes/bga-workbench": "^0.0.4",
     "phpunit/phpunit": "^6.3.0",
-    "squizlabs/php_codesniffer": "^3.0.0"
+    "squizlabs/php_codesniffer": "@stable"
   },
   "scripts": {
-    "check-styles": "phpcs --standard=PSR2 --tab-width=4 --ignore=src/BGAWorkbench/Stubs,tests/bootstrap.php -q -p tests src",
-    "fix-styles": "phpcbf --standard=PSR2 --tab-width=4 --ignore=src/BGAWorkbench/Stubs,tests/bootstrap.php -q -p tests src",
+    "check-styles": "phpcs --tab-width=4 --ignore=vendor,backup,*\\.js,*\\.css -q -p -s .",
+    "fix-styles": "phpcbf --tab-width=4 --ignore=vendor,backup,*\\.js,*\\.css -q -p -s .",
     "bgaw-clean": "composer exec -- bgawb -v clean",
     "bgaw-build": "composer exec -- bgawb -v build",
     "bgaw-deploy": "composer exec -- bgawb -v build -d",

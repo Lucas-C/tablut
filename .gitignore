@@ -1,6 +1,6 @@
+/backup
 /build
 /dist
-/initial_remote
 /vendor
 /bgaproject.yml
 !/bgaproject.yml.dist
