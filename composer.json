@@ -41,11 +41,11 @@
   "scripts": {
     "check-styles": "phpcs --standard=PSR2 --tab-width=4 --ignore=src/BGAWorkbench/Stubs,tests/bootstrap.php -q -p tests src",
     "fix-styles": "phpcbf --standard=PSR2 --tab-width=4 --ignore=src/BGAWorkbench/Stubs,tests/bootstrap.php -q -p tests src",
-    "bgaw-clean": "composer exec -- \"bgawb -v clean\"",
-    "bgaw-build": "composer exec -- \"bgawb -v build\"",
-    "bgaw-deploy": "composer exec -- \"bgawb -v build -d\"",
-    "bgaw-watch": "composer exec -- \"bgawb -v build -w -d\"",
-    "bgaw-validate": "composer exec \"bgawb -v validate\"",
+    "bgaw-clean": "composer exec -- bgawb -v clean",
+    "bgaw-build": "composer exec -- bgawb -v build",
+    "bgaw-deploy": "composer exec -- bgawb -v build -d",
+    "bgaw-watch": "composer exec -- bgawb -v build -w -d",
+    "bgaw-validate": "composer exec bgawb -v validate",
     "test": "phpunit tests"
   }
 }
