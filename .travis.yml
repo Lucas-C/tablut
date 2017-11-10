@@ -23,6 +23,4 @@ script:
   - cp bgaproject.yml.dist bgaproject.yml
   - composer bgaw-clean
   - composer bgaw-build
-  # cf. https://github.com/danielholmes/bga-workbench/issues/2
-  - cp img/game_box72.png img/game_box75.png
   - composer bgaw-validate

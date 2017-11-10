@@ -63,7 +63,7 @@ define([
 
         // /////////////////////////////////////////////////
         // // Game & client states
-        onEnteringState(stateName, args) {
+        onEnteringState(stateName) {
             switch (stateName) {
             case 'playerTurn':
                 break;
@@ -144,7 +144,7 @@ define([
             this.placePawn(x, y);
             return;
 
-            if (this.checkAction('move')) {
+            if (this.checkAction('move')) { // eslint-disable-line no-unreachable
                 this.ajaxcall(
                     '/tablut/tablut/move.html',
                     {
