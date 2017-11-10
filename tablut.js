@@ -49,8 +49,6 @@ define([
         },
 
         setupLayout(gamedatas) {
-            this.updateUi();
-            dojo.connect(this, 'onGameUiWidthChange', this, lang.hitch(this, this.updateUi));
             for (const i in gamedatas.board) {
                 const square = gamedatas.board[i];
                 if (square.player !== null) {
@@ -153,6 +151,7 @@ define([
             // Get the cliqued square x and y
             // Note: square id format is "square_X_Y"
             const coords = event.currentTarget.id.split('_');
+            console.log('onMove', coords);
             const x = coords[1];
             const y = coords[2];
 

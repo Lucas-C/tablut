@@ -21,8 +21,6 @@ use Tablut\SQLHelper;
 
 class Tablut extends Table
 {
-    const DOWNWARD_PLAYER_COLOR = '3b550c';
-
     public function __construct()
     {
         parent::__construct();
@@ -47,8 +45,11 @@ class Tablut extends Table
     */
     protected function setupNewGame($players, $options = [])
     {
+        if (count($players) !== 2) {
+            throw new InvalidArgumentException('Can only work with 2 players');
+        }
         $this->setupPlayers($players);
-        $this->setupBoard();
+        $this->setupBoard($players);
         $this->setupStats();
         $this->activeNextPlayer();
     }
@@ -58,9 +59,6 @@ class Tablut extends Table
      */
     private function setupPlayers(array $players)
     {
-        if (count($players) !== 2) {
-            throw new InvalidArgumentException('Can only work with 2 players');
-        }
         $default_color = array( "000000", "ffffff" );
         $sql = "INSERT INTO player (player_id, player_color, player_canal, player_name, player_avatar) VALUES ";
         $values = array();
@@ -69,19 +67,13 @@ class Tablut extends Table
             $playerName = addslashes($player['player_name']);
             $playerAvatar = addslashes($player['player_avatar']);
             $values[] = "('$player_id','$color','$player[player_canal]','$playerName','$playerAvatar')";
-            
-            if ($color == '000000') {
-                $blackplayer_id = $player_id;
-            } else {
-                $whiteplayer_id = $player_id;
-            }
         }
         $sql .= implode($values, ',');
         self::DbQuery($sql);
         self::reloadPlayersBasicInfos();
     }
     
-    private function setupBoard()
+    private function setupBoard(array $players)
     {
         $sql = "INSERT INTO board (board_x,board_y,board_player) VALUES ";
         $sql_values = array();
@@ -89,9 +81,9 @@ class Tablut extends Table
             for ($y=1; $y<=8; $y++) {
                 $disc_value = "NULL";
                 if (($x==4 && $y==4) || ($x==5 && $y==5)) {  // Initial positions of white player
-                    $disc_value = "'$whiteplayer_id'";
+                    $disc_value = "'".array_keys($players)[0]."'";
                 } elseif (($x==4 && $y==5) || ($x==5 && $y==4)) {  // Initial positions of black player
-                    $disc_value = "'$blackplayer_id'";
+                    $disc_value = "'".array_keys($players)[1]."'";
                 }
                     
                 $sql_values[] = "('$x','$y',$disc_value)";
@@ -167,6 +159,17 @@ class Tablut extends Table
     {
         $this->checkAction('moveTo');
         // should call $this->notifyAllPlayers(
+    }
+
+
+//////////////////////////////////////////////////////////////////////////////
+//////////// Game state arguments
+////////////
+
+    function argPlayerTurn()
+    {
+        return array(
+        );
     }
 
 

@@ -22,11 +22,10 @@
 
 require_once(APP_BASE_PATH . "view/common/game.view.php");
 
-/**
- * @property Tablut $game
- */
 class view_tablut_tablut extends game_view  // @codingStandardsIgnoreLine
 {
+    const PX_SCALE = 60;
+
     public function getGameName()
     {
         return "tablut";
@@ -35,19 +34,17 @@ class view_tablut_tablut extends game_view  // @codingStandardsIgnoreLine
     public function build_page($viewArgs)  // @codingStandardsIgnoreLine
     {
         global $g_user;
-        $this->page->begin_block("tablut_tablut", "player_cards");
+        $this->page->begin_block("tablut_tablut", "square");
 
         $currentPlayerId = (int) $g_user->get_id();
 
-        $hor_scale = 64.8;
-        $ver_scale = 64.4;
-        for ($x=1; $x<=8; $x++) {
-            for ($y=1; $y<=8; $y++) {
+        for ($x=0; $x<=8; $x++) {
+            for ($y=0; $y<=8; $y++) {
                 $this->page->insert_block("square", array(
-                    'X' => $x,
-                    'Y' => $y,
-                    'LEFT' => round(($x-1)*$hor_scale+10),
-                    'TOP' => round(($y-1)*$ver_scale+7)
+                    'X' => $x + 1,
+                    'Y' => $y + 1,
+                    'LEFT' => round($x * self::PX_SCALE),
+                    'TOP' => round($y * self::PX_SCALE)
                 ));
             }
         }

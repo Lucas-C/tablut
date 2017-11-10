@@ -20,10 +20,16 @@
     Please REMOVE this comment before publishing your game on BGA
 -->
 
-<div id="board" class="{GAME_CONTAINER_CLASS}">
+<div id="board">
     <!-- BEGIN square -->
         <div id="square_{X}_{Y}" class="square" style="left: {LEFT}px; top: {TOP}px;"></div>
     <!-- END square -->
+
+    <div id="discs"></div>
 </div>
+
+<script type="text/javascript"> // Templates
+    var jstpl_disc='<div class="disc disccolor_${color}" id="disc_${xy}"></div>';
+</script>
 
 {OVERALL_GAME_FOOTER}
