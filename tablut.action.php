@@ -34,39 +34,12 @@ class action_tablut extends APP_GameAction
         }
     }
 
-    public function returnToDeck()
+    public function move()
     {
-        $this->setAjaxMode();
-
-        $joinedIds = $this->getArg('ids', AT_numberlist, true);
-        $ids = F\map(explode(',', $joinedIds), function ($id) {
-            return intval($id);
-        });
-        $this->game->returnToDeck($ids);
-
-        $this->ajaxResponse();
-    }
-
-    public function playCard()
-    {
-        $this->setAjaxMode();
-
-        $cardId = $this->getArg('id', AT_int, true);
-        $x = (int) $this->getArg('x', AT_int, true);
-        $y = (int) $this->getArg('y', AT_int, true);
-        $this->game->playCard($cardId, $x, $y);
-
-        $this->ajaxResponse();
-    }
-
-    public function chooseAttack()
-    {
-        $this->setAjaxMode();
-
-        $x = (int) $this->getArg('x', AT_int, true);
-        $y = (int) $this->getArg('y', AT_int, true);
-        $this->game->chooseAttack($x, $y);
-
-        $this->ajaxResponse();
+        self::setAjaxMode();     
+        $fromSquareId = self::getArg( "fromSquareId", AT_posint, true );
+        $toSquareId = self::getArg( "toSquareId", AT_posint, true );
+        $result = $this->game->move( $fromSquareId, $toSquareId );
+        self::ajaxResponse( );
     }
 }

@@ -44,54 +44,71 @@ define([
          *  - when a player refreshes the game page (F5)
          */
         setup(datas) {
-            this.setupLayout();
-            this.setupPlayerCards(datas.players);
+            this.setupLayout(datas);
             this.setupNotifications();
         },
 
-        setupPlayerCards(players) {
-            this.playerData = players;
-
-            // Base indicators
-            for (const i in this.playerData) {
-                if (Object.prototype.hasOwnProperty.call(this.playerData, i)) {
-                    const basePlayer = this.playerData[i];
-                    const position = null;
-                }
-            }
-
-            // Icons and hand cards
-            for (const id in players) {
-                if (Object.prototype.hasOwnProperty.call(players, id)) {
-                    const player = players[id];
-                    // ...
-                }
-            }
-        },
-
-        setupLayout() {
+        setupLayout(gamedatas) {
             this.updateUi();
             dojo.connect(this, 'onGameUiWidthChange', this, lang.hitch(this, this.updateUi));
-            query('#move').on('click', lang.hitch(this, this.onMove));
+            for (const i in gamedatas.board) {
+                const square = gamedatas.board[i];
+                if (square.player !== null) {
+                    this.placePawn(square.x, square.y);
+                }
+            }
+            dojo.query('.square').on('click', lang.hitch(this, this.onMove));
             this.addTooltip('move', _('Move'), '');
         },
 
+
         // /////////////////////////////////////////////////
         // // Game & client states
-        onEnteringState(stateName, event) {
+        onEnteringState(stateName, args) {
             switch (stateName) {
+            case 'playerTurn':
+                this.updatePossibleMoves(args.args.possibleMoves);
+                break;
+            default:
+                break;
             }
         },
 
-        // /////////////////////////////////////////////////
-        // onLeavingState: this method is called each time we are leaving a game state.
-        onLeavingState(stateName) {
-            switch (stateName) {
-            }
+        onLeavingState() {
         },
 
+
         // /////////////////////////////////////////////////
-        // // DOM Node Utility methods
+        // // Utility functions
+
+        placePawn(x, y) {
+            dojo.place(this.format_block('jstpl_disc', {
+                xy: String(x) + y,
+                color: 'red',
+            }), 'discs');
+
+            // this.placeOnObject(String(`disc_${ x }`) + y, `overall_player_board_${ player }`);
+            this.slideToObject(String(`disc_${ x }`) + y, `square_${ x }_${ y }`).play();
+        },
+
+        movePawn(fromSquareId, toSquareId) {
+            console.log('movePawn', fromSquareId, toSquareId);
+        },
+
+        updatePossibleMoves(possibleMoves) {
+            // Remove current possible moves
+            dojo.query('.possibleMove').removeClass('possibleMove');
+
+            for (const x in possibleMoves) {
+                for (const y in possibleMoves[x]) {
+                    // x,y is a possible move
+                    dojo.addClass(`square_${ x }_${ y }`, 'possibleMove');
+                }
+            }
+
+            this.addTooltipToClass('possibleMove', '', _('Place a disc here'));
+        },
+
 
         // /////////////////////////////////////////////////
         // // Animation Utility methods
@@ -131,38 +148,50 @@ define([
         // // Player's action
         onMove(event) {
             event.preventDefault();
-            this.ajaxcall(
-                '/tablut/tablut/moveTo.html',
-                {
-                    lock: true,
-                    squareId: 0,
-                },
-                this,
-                function onSuccess() {
-                },
-                function onFailure() {}
-            );
+            dojo.stopEvent(event);
+
+            // Get the cliqued square x and y
+            // Note: square id format is "square_X_Y"
+            const coords = event.currentTarget.id.split('_');
+            const x = coords[1];
+            const y = coords[2];
+
+            if (!dojo.hasClass(`square_${ x }_${ y }`, 'possibleMove')) {
+                // This is not a possible move => the click does nothing
+                return;
+            }
+
+            if (this.checkAction('move')) {
+                this.ajaxcall(
+                    '/tablut/tablut/move.html',
+                    {
+                        lock: true,
+                        fromSquareId: 0,
+                        toSquareId: 0,
+                    },
+                    this,
+                    function onSuccess() {
+                    },
+                    function onFailure() {}
+                );
+            }
         },
 
 
         // /////////////////////////////////////////////////
         // // Reaction to cometD notifications
         setupNotifications() {
-            dojo.subscribe('newScores', lang.hitch(this, this.notifNewScores));
+            dojo.subscribe('playerMoved', this, 'notifPlayerMoved');
             dojo.subscribe('endOfGame', this, function notifNoop() {});
             // Delay end of game for interface stock stability before switching to game result
             this.notifqueue.setSynchronous('endOfGame', END_OF_GAME_DELAY);
         },
 
-        notifNewScores(notification) {
-            for (const playerId in notification.args) {
-                if (Object.prototype.hasOwnProperty.call(notification.args, playerId)) {
-                    const score = notification.args[playerId].score;
-                    const scoreAux = notification.args[playerId].scoreAux;
-                    this.scoreCtrl[playerId].toValue(score);
-                    this.updateScoreAuxCount(playerId, scoreAux);
-                }
-            }
+        notifPlayerMoved(notif) {
+            // Remove current possible moves (makes the board more clear)
+            dojo.query('.possibleMove').removeClass('possibleMove');
+
+            this.movePawn(notif.args.fromSquareId, notif.args.toSquareId);
         },
     });
 });

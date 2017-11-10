@@ -41,7 +41,6 @@
 
 /********* You can start writing your CSS below this line: **********/
 
-/* Layout */
 #board {
     position: relative;
     height: auto;
@@ -54,4 +53,10 @@
     height: 4rem;
     border: 1px solid black;
     background-color: red;
+}
+.possibleMove {
+    background-color: white;
+    opacity: 0.2;
+    filter:alpha(opacity=20); /* For IE8 and earlier */  
+    cursor: pointer;  
 }

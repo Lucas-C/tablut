@@ -48,15 +48,9 @@ class Tablut extends Table
     protected function setupNewGame($players, $options = [])
     {
         $this->setupPlayers($players);
+        $this->setupBoard();
         $this->setupStats();
         $this->activeNextPlayer();
-        $this->gamestate->setAllPlayersMultiactive();
-    }
-
-    private function setupStats()
-    {
-        $this->initStat('table', 'turns_number', 0);
-        $this->initStat('player', 'turns_number', 0);
     }
 
     /**
@@ -67,7 +61,51 @@ class Tablut extends Table
         if (count($players) !== 2) {
             throw new InvalidArgumentException('Can only work with 2 players');
         }
+        $default_color = array( "000000", "ffffff" );
+        $sql = "INSERT INTO player (player_id, player_color, player_canal, player_name, player_avatar) VALUES ";
+        $values = array();
+        foreach( $players as $player_id => $player )
+        {
+            $color = array_shift( $default_color );
+            $values[] = "('".$player_id."','$color','".$player['player_canal']."','".addslashes( $player['player_name'] )."','".addslashes( $player['player_avatar'] )."')";
+            
+            if( $color == '000000' )
+                $blackplayer_id = $player_id;
+            else
+                $whiteplayer_id = $player_id;
+        }
+        $sql .= implode( $values, ',' );
+        self::DbQuery( $sql );
+        self::reloadPlayersBasicInfos();
     }
+    
+    private function setupBoard(array $players)
+    {
+        $sql = "INSERT INTO board (board_x,board_y,board_player) VALUES ";
+        $sql_values = array();
+        for( $x=1; $x<=8; $x++ )
+        {
+            for( $y=1; $y<=8; $y++ )
+            {
+                $disc_value = "NULL";
+                if( ($x==4 && $y==4) || ($x==5 && $y==5) )  // Initial positions of white player
+                    $disc_value = "'$whiteplayer_id'";
+                else if( ($x==4 && $y==5) || ($x==5 && $y==4) )  // Initial positions of black player
+                    $disc_value = "'$blackplayer_id'";
+                    
+                $sql_values[] = "('$x','$y',$disc_value)";
+            }
+        }
+        $sql .= implode( $sql_values, ',' );
+        self::DbQuery( $sql );
+    }
+
+    private function setupStats()
+    {
+        $this->initStat('table', 'turns_number', 0);
+        $this->initStat('player', 'turns_number', 0);
+    }
+    
 
     /**
      * Gather all informations about current game situation (visible by the current player).
@@ -77,7 +115,24 @@ class Tablut extends Table
     */
     protected function getAllDatas()
     {
-        $playerId = (int) $this->getActivePlayerId();
+        $result = array( 'players' => array() );
+    
+        // Add players specific infos
+        $sql = "SELECT player_id id, player_score score ";
+        $sql .= "FROM player ";
+        $sql .= "WHERE 1 ";
+        $dbres = self::DbQuery( $sql );
+        while( $player = mysql_fetch_assoc( $dbres ) )
+        {
+            $result['players'][ $player['id'] ] = $player;
+        }
+        
+        // Get reversi board disc
+        $result['board'] = self::getObjectListFromDB( "SELECT board_x x, board_y y, board_player player
+                                                       FROM board
+                                                       WHERE board_player IS NOT NULL" );
+  
+        return $result;
     }
 
     /*
@@ -92,19 +147,11 @@ class Tablut extends Table
     */
     public function getGameProgression()
     {
-        $percent = 42;
-        return (int) round(100 * $percent);
-    }
-
-    public function stNextPlay()
-    {
-        $playerId = (int) $this->getActivePlayerId();
-
-        /*self::DbQuery(
-            "UPDATE player SET turn_plays_remaining = turn_plays_remaining - 1 WHERE player_id = {$playerId}"
-        );*/
+        // Game progression: get the number of free squares
+        // (number of free squares goes from 60 to 0
+        $freeSquare = self::getUniqueValueFromDb( "SELECT COUNT( board_x ) FROM board WHERE board_player IS NULL" );
         
-        $this->gamestate->nextState('playAgain');
+        return round( ( 60-$freeSquare )/60*100 );
     }
 
 
@@ -112,15 +159,29 @@ class Tablut extends Table
 //////////// Player actions
 ////////////
     /**
-     * @param int $squareId
+     * @param int $fromSquareId
+     * @param int $toSquareId
      * @throws BgaUserException
      */
-    public function moveTo(array $squareId)
+    public function move(int $fromSquareId, int $toSquareId)
     {
         $this->checkAction('moveTo');
-        $this->move($this->getCurrentPlayerId(), $squareId); // should call $this->notifyAllPlayers(
+        // should call $this->notifyAllPlayers(
     }
 
+
+//////////////////////////////////////////////////////////////////////////////
+//////////// Game state reactions   (reactions to game planned states from state machine
+////////////
+
+    function stNextPlayer()
+    {
+        $next_player_id = self::activeNextPlayer();
+
+        //$this->gamestate->nextState( 'endGame' );
+        //$this->gamestate->nextState( 'cantPlay' );
+        $this->gamestate->nextState( 'nextTurn' );
+    }
 
 //////////////////////////////////////////////////////////////////////////////
 //////////// Zombie
@@ -135,11 +196,12 @@ class Tablut extends Table
     */
     public function zombieTurn($state, $activePlayerId)
     {
-        switch ($state['name']) {
-            default:
-                throw new BgaSystemException("Unknown state for zombie {$state['name']}");
+        if( $state['name'] == 'playerTurn' )
+        {
+            $this->gamestate->nextState( "zombiePass" );
         }
-        //$this->gamestate->updateMultiactiveOrNextState( '' );
+        else
+            throw new feException( "Zombie mode not supported at this game state:".$state['name'] );
     }
     
 ///////////////////////////////////////////////////////////////////////////////////:

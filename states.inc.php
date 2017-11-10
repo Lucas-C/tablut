@@ -48,7 +48,7 @@ $machinestates = array(
 
     1 => array(
         "name" => "gameSetup",
-        "description" => clienttranslate("Game setup"),
+        "description" => clienttranslate('Game setup'),
         "type" => "manager",
         "action" => "stGameSetup",
         "transitions" => array( "" => 10 )
@@ -60,8 +60,8 @@ $machinestates = array(
 		"descriptionmyturn" => clienttranslate('${you} must play a disc'),
         "type" => "activeplayer",
         "args" => "argPlayerTurn",
-        "possibleactions" => array( 'playDisc' ),
-        "transitions" => array( "playDisc" => 11, "zombiePass" => 11 )
+        "possibleactions" => array( 'move' ),
+        "transitions" => array( "move" => 11, "zombiePass" => 11 )
     ),
     
     11 => array(
@@ -69,12 +69,12 @@ $machinestates = array(
         "type" => "game",
         "action" => "stNextPlayer",
         "updateGameProgression" => true,        
-        "transitions" => array( "nextTurn" => 10, "cantPlay" => 11, "endGame" => 99 )
+        "transitions" => array( "nextTurn" => 10, "endGame" => 99 )
     ),
    
     99 => array(
         "name" => "gameEnd",
-        "description" => clienttranslate("End of game"),
+        "description" => clienttranslate('End of game'),
         "type" => "manager",
         "action" => "stGameEnd",
         "args" => "argGameEnd"
