@@ -13,14 +13,14 @@ Very basic:
 
 # Development
 
-## Running Tests
+## Validating PHP code
 ```
 composer fix-styles
 composer test
 composer bgaw-validate
 ```
 
-## Validating Javascript
+## Validating Javascript code
 ```
 npm install -g eslint eslint-config-strict eslint-plugin-filenames
 eslint --fix tablut.js

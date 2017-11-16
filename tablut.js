@@ -131,6 +131,9 @@ define([
         // /////////////////////////////////////////////////
         // // Player's action
         onMove(event) {
+            if (!event) {
+                return;
+            }
             event.preventDefault();
             dojo.stopEvent(event);
 
@@ -142,7 +145,6 @@ define([
             const y = coords[2];
 
             this.placePawn(x, y);
-            return;
 
             if (this.checkAction('move')) { // eslint-disable-line no-unreachable
                 this.ajaxcall(
