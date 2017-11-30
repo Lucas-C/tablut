@@ -12,8 +12,6 @@ before_script:
 script:
   # Code style & syntax linters
   - composer check-styles
-  - eslint tablut.js
-  - csslint --ignore=box-sizing,import,order-alphabetical tablut.css
 
   # Unit tests
   - composer test

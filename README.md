@@ -15,17 +15,17 @@ Very basic:
 
 # Development
 
-## Validating PHP code
+## Installation
 ```
-composer fix-styles
-composer test
-composer bgaw-validate
+composer install
+npm install -g csslint eslint eslint-config-strict eslint-plugin-filenames
 ```
 
-## Validating Javascript code
+## Code validation
 ```
-npm install -g eslint eslint-config-strict eslint-plugin-filenames
-eslint --fix tablut.js
+composer check-styles
+composer test
+composer bgaw-validate
 ```
 
 ## Deploying to Studio
