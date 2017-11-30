@@ -87,8 +87,8 @@ define([
                 color: 'red',
             }), 'discs');
 
-            //this.placeOnObject(String(`disc_${x}_${y}`), `overall_player_board_${player}`);
-            this.slideToObject(String(`disc_${x}_${y}`), `square_${x}_${y}`).play();
+            // this.placeOnObject(String(`disc_${x}_${y}`), `overall_player_board_${player}`);
+            this.slideToObject(String(`disc_${ x }_${ y }`), `square_${ x }_${ y }`).play();
         },
 
         movePawn(discId, squareId) {
