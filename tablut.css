@@ -41,7 +41,7 @@
 
 /********* You can start writing your CSS below this line: **********/
 
-#board {
+.board {
     position: relative;
     margin: 0 auto;
     height: 540px;
@@ -49,16 +49,17 @@
     overflow: hidden;
     background-image: url('img/board.jpg');
 }
+
 .square {
     position: absolute;
     width: 60px;
     height: 60px;
     border: 1px solid black;
+    box-sizing: border-box;
 }
 .square:hover {
     background-color: white;
     opacity: 0.2;
-    filter:alpha(opacity=20); /* For IE8 and earlier */
     cursor: pointer;
 }
 .fortress {
@@ -70,10 +71,14 @@
       #465298 20px
     );
 }
+
 .disc {
     width: 60px;
     height: 60px;
     position: absolute;
     background-color: red;
     border-radius: 30px;
+}
+.selected {
+   background-color: darkred;
 }

@@ -20,7 +20,7 @@
     Please REMOVE this comment before publishing your game on BGA
 -->
 
-<div id="board">
+<div class="board">
     <!-- BEGIN square -->
         <div id="square_{X}_{Y}" class="square {EXTRA_CLASS}" style="left: {LEFT}px; top: {TOP}px;"></div>
     <!-- END square -->
@@ -29,7 +29,7 @@
 </div>
 
 <script type="text/javascript"> // Templates
-    var jstpl_disc='<div class="disc disccolor_${color}" id="disc_${xy}"></div>';
+    var jstpl_disc='<div class="disc disccolor_${color}" id="disc_${x}_${y}"></div>';
 </script>
 
 {OVERALL_GAME_FOOTER}
