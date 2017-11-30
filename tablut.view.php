@@ -44,9 +44,23 @@ class view_tablut_tablut extends game_view  // @codingStandardsIgnoreLine
                     'X' => $x + 1,
                     'Y' => $y + 1,
                     'LEFT' => round($x * self::PX_SCALE),
-                    'TOP' => round($y * self::PX_SCALE)
+                    'TOP' => round($y * self::PX_SCALE),
+                    'EXTRA_CLASS' => $this->isFortressSquare($x, $y) ? 'fortress' : ''
                 ));
             }
         }
+    }
+
+    public function isFortressSquare($x, $y)
+    {
+        return ($x == 4 && $y == 4)
+        || ($x == 0 && $y >= 3 && $y <= 5)
+        || ($x == 1 && $y == 4)
+        || ($x == 8 && $y >= 3 && $y <= 5)
+        || ($x == 7 && $y == 4)
+        || ($x >= 3 && $x <= 5 && $y == 0)
+        || ($x == 4 && $y == 1)
+        || ($x >= 3 && $x <= 5 && $y == 8)
+        || ($x == 4 && $y == 7);
     }
 }

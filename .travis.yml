@@ -10,15 +10,16 @@ php:
   - 7.1
 
 before_script:
-  - npm install eslint eslint-config-strict eslint-plugin-filenames
+  - npm install csslint eslint eslint-config-strict eslint-plugin-filenames
   - composer install
   - echo "USE mysql;\nUPDATE user SET password=PASSWORD('tablutpw') WHERE user='root';\nFLUSH PRIVILEGES;\n" | mysql -u root
 
 script:
-  - node_modules/.bin/eslint tablut.js
-
   - composer check-styles
   - composer test
+
+  - node_modules/.bin/eslint tablut.js
+  - node_modules/.bin/csslint tablut.css
 
   - cp bgaproject.yml.dist bgaproject.yml
   - composer bgaw-clean
