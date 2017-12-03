@@ -75,35 +75,51 @@ class Tablut extends Table
 
     private function setupBoard(array $players)
     {
+
+        /* Initialize all the board */
+        $sql_values = array();
+        $sql = "INSERT INTO board (board_x,board_y,board_wall) VALUES ";
+        for ($x=1; $x<=9; $x++) {
+            for ($y=1; $y<=9; $y++) {
+                if($x==9 and $y==9) {
+                    $sql .= "('$x', '$y', '0') ";
+                }
+                else{
+                    $sql .= "('$x', '$y', '0'), ";
+                }
+            }
+        }
+        self::DbQuery($sql);
+        
         $player1 = "'".array_keys($players)[0]."'"; /* Not King for test */
         $player2 = "'".array_keys($players)[1]."'"; /* King fir test */ 
         
         /* initialize the player 1 piece*/
-        $sql = "INSERT INTO board (board_x,board_y,board_king,board_wall,board_player) VALUES  ('4', '1', '0', '1', $player1), ('5', '1', '0', '1', $player1), ('6', '1', '0', '1', $player1), ('5', '2', '0', '1', $player1)" ;
+        $sql = "UPDATE board SET board_player=$player1, board_wall='1' WHERE ( board_x, board_y) IN (('4','1'), ('5','1'), ('6','1'), ('5','2') ) ";
         self::DbQuery($sql);
-        $sql = "INSERT INTO board (board_x,board_y,board_king,board_wall,board_player) VALUES  ('4', '9', '0', '1', $player1), ('5', '9', '0', '1', $player1), ('6', '9', '0', '1', $player1), ('5', '8', '0', '1', $player1)" ;
+        $sql = "UPDATE board SET board_player=$player1, board_wall='1' WHERE ( board_x, board_y) IN (('4','9'), ('5','9'), ('6','9'), ('5','8') ) ";
         self::DbQuery($sql);
-        $sql = "INSERT INTO board (board_x,board_y,board_king,board_wall,board_player) VALUES  ('1', '4', '0', '1', $player1), ('1', '5', '0', '1', $player1), ('1', '6', '0', '1', $player1), ('2', '5', '0', '1', $player1)" ;
+        $sql = "UPDATE board SET board_player=$player1, board_wall='1' WHERE ( board_x, board_y) IN (('1','4'), ('1','5'), ('1','6'), ('2','5') ) ";
         self::DbQuery($sql);
-        $sql = "INSERT INTO board (board_x,board_y,board_king,board_wall,board_player) VALUES  ('9', '4', '0', '1', $player1), ('9', '5', '0', '1', $player1), ('9', '6', '0', '1', $player1), ('8', '5', '0', '1', $player1)" ;
+        $sql = "UPDATE board SET board_player=$player1, board_wall='1' WHERE ( board_x, board_y) IN (('9','4'), ('9','5'), ('9','6'), ('8','5') ) ";
         self::DbQuery($sql);
-		
+
         /* initialize the player 2 piece*/
-        $sql = "INSERT INTO board (board_x,board_y,board_king,board_wall,board_player) VALUES  ('5', '5', '1', '1', $player2)" ;
+        $sql = "UPDATE board SET board_player=$player2, board_wall='1', board_king='1' WHERE ( board_x, board_y) IN (('5','5')) ";
         self::DbQuery($sql);
-        $sql = "INSERT INTO board (board_x,board_y,board_king,board_wall,board_player)  VALUES  ('3', '5', '0', '0', $player2), ('4', '5', '0', '0', $player2), ('6', '5', '0', '0', $player2), ('7', '5', '0', '0', $player2)" ;
+        $sql = "UPDATE board SET board_player=$player2 WHERE ( board_x, board_y) IN (('3','5'), ('4','5'), ('6','5'), ('7','5')) ";
         self::DbQuery($sql);
-        $sql = "INSERT INTO board (board_x,board_y,board_king,board_wall,board_player)  VALUES  ('5', '3', '0', '0', $player2), ('5', '4', '0', '0', $player2), ('5', '6', '0', '0', $player2), ('5', '7', '0', '0', $player2)" ;
+        $sql = "UPDATE board SET board_player=$player2 WHERE ( board_x, board_y) IN (('5','3'), ('5','4'), ('5','6'), ('5','7')) ";
         self::DbQuery($sql);
-        
+
         /* Initialize the limit winning game */
-        $sql = "INSERT INTO board (board_x,board_y,board_limitWin) VALUES  ('1', '1', '1'), ('1', '2', '1'), ('1', '3', '1'), ('1', '7', '1'), ('1', '8', '1'), ('1', '9', '1')" ;
+        $sql = "UPDATE board SET board_limitWin='1' WHERE ( board_x, board_y) IN (('1','1'), ('1','2'), ('1','3'), ('1','7'), ('1','8'), ('1','9')) ";
         self::DbQuery($sql);
-        $sql = "INSERT INTO board (board_x,board_y,board_limitWin) VALUES  ('9', '1', '1'), ('9', '2', '1'), ('9', '3', '1'), ('9', '7', '1'), ('9', '8', '1'), ('9', '9', '1')" ;
+        $sql = "UPDATE board SET board_limitWin='1' WHERE ( board_x, board_y) IN (('9','1'), ('9','2'), ('9','3'), ('9','7'), ('9','8'), ('9','9')) ";
         self::DbQuery($sql);
-        $sql = "INSERT INTO board (board_x,board_y,board_limitWin) VALUES  ('2', '1', '1'), ('3', '1', '1'), ('7', '1', '1'), ('8', '1', '1')" ;
+        $sql = "UPDATE board SET board_limitWin='1' WHERE ( board_x, board_y) IN (('2','1'), ('3','1'), ('7','1'), ('8','1')) ";
         self::DbQuery($sql);
-        $sql = "INSERT INTO board (board_x,board_y,board_limitWin) VALUES  ('2', '9', '1'), ('3', '9', '1'), ('7', '9', '1'), ('8', '9', '1')" ;
+        $sql = "UPDATE board SET board_limitWin='1' WHERE ( board_x, board_y) IN (('2','9'), ('3','9'), ('7','9'), ('8','9')) ";
         self::DbQuery($sql);
 
 	}
@@ -135,9 +151,8 @@ class Tablut extends Table
         }
 
         // Get reversi board disc
-        $result['board'] = self::getObjectListFromDB("SELECT board_x x, board_y y, board_player player, board_king king, board_wall wall, board_limitWin WinPosition
-                                                      FROM board
-                                                      WHERE board_player IS NOT NULL");
+        $result['board'] = self::getObjectListFromDB("SELECT board_x x, board_y y, board_player player, board_king king, 
+                                                      board_wall wall, board_limitWin WinPosition FROM board WHERE 1");
 
         return $result;
     }
