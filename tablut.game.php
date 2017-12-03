@@ -135,7 +135,7 @@ class Tablut extends Table
         }
 
         // Get reversi board disc
-        $result['board'] = self::getObjectListFromDB("SELECT board_x x, board_y y, board_player player, board_king king
+        $result['board'] = self::getObjectListFromDB("SELECT board_x x, board_y y, board_player player, board_king king, board_wall wall, board_limitWin WinPosition
                                                       FROM board
                                                       WHERE board_player IS NOT NULL");
 
