@@ -1,6 +1,8 @@
 # Tablut
 
 [![Build Status](https://travis-ci.org/Lucas-C/tablut.svg?branch=master)](https://travis-ci.org/Lucas-C/tablut)
+[![Waffle.io - Columns and their card count](https://badge.waffle.io/Lucas-C/tablut.svg?columns=all)](https://waffle.io/Lucas-C/tablut)
+
 
 Implémentation du jeu [Tablut](http://jeuxstrategieter.free.fr/Tablut_complet.php) pour [BoardGameArena](https://boardgamearena.com).
 
@@ -13,17 +15,17 @@ Very basic:
 
 # Development
 
-## Validating PHP code
+## Installation
 ```
-composer fix-styles
-composer test
-composer bgaw-validate
+composer install
+npm install -g csslint eslint eslint-config-strict eslint-plugin-filenames
 ```
 
-## Validating Javascript code
+## Code validation
 ```
-npm install -g eslint eslint-config-strict eslint-plugin-filenames
-eslint --fix tablut.js
+composer check-styles
+composer test
+composer bgaw-validate
 ```
 
 ## Deploying to Studio

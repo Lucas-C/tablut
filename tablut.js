@@ -56,6 +56,7 @@ define([
                     this.placePawn(square.x, square.y);
                 }
             }
+            dojo.query('.disc').on('click', lang.hitch(this, this.onSelectPawn));
             dojo.query('.square').on('click', lang.hitch(this, this.onMove));
             this.addTooltip('move', _('Move'), '');
         },
@@ -81,16 +82,18 @@ define([
 
         placePawn(x, y) {
             dojo.place(this.format_block('jstpl_disc', {
-                xy: String(x) + y,
+                x,
+                y,
                 color: 'red',
             }), 'discs');
 
-            // this.placeOnObject(String(`disc_${ x }`) + y, `overall_player_board_${ player }`);
-            this.slideToObject(String(`disc_${ x }`) + y, `square_${ x }_${ y }`).play();
+            // this.placeOnObject(String(`disc_${x}_${y}`), `overall_player_board_${player}`);
+            this.slideToObject(String(`disc_${ x }_${ y }`), `square_${ x }_${ y }`).play();
         },
 
-        movePawn(fromSquareId, toSquareId) {
-            console.log('movePawn', fromSquareId, toSquareId);
+        movePawn(discId, squareId) {
+            console.log('movePawn', discId, squareId);
+            this.slideToObject(discId, squareId).play();
         },
 
 
@@ -130,21 +133,40 @@ define([
 
         // /////////////////////////////////////////////////
         // // Player's action
-        onMove(event) {
+        onSelectPawn(event) {
             if (!event) {
+                console.log('Unexpected empty event');
                 return;
             }
             event.preventDefault();
             dojo.stopEvent(event);
 
-            // Get the cliqued square x and y
-            // Note: square id format is "square_X_Y"
-            const coords = event.currentTarget.id.split('_');
-            console.log('onMove', coords);
-            const x = coords[1];
-            const y = coords[2];
+            if (this.selectedDisc) {
+                this.selectedDisc.classList.remove('selected');
+            }
+            this.selectedDisc = event.currentTarget;
+            this.selectedDisc.classList.add('selected');
+        },
 
-            this.placePawn(x, y);
+        onMove(event) {
+            if (!event) {
+                console.log('Unexpected empty event');
+                return;
+            }
+            event.preventDefault();
+            dojo.stopEvent(event);
+            if (!this.selectedDisc) {
+                console.log('No disc selected, doing nothing');
+                return;
+            }
+
+            let coords = this.selectedDisc.id.split('_');
+            const fromPos = { x: coords[1], y: coords[2] };
+            coords = event.currentTarget.id.split('_');
+            const toPos = { x: coords[1], y: coords[2] };
+            console.log('onMove', fromPos, toPos);
+
+            this.movePawn(this.selectedDisc.id, event.currentTarget.id);
 
             if (this.checkAction('move')) { // eslint-disable-line no-unreachable
                 this.ajaxcall(
