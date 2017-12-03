@@ -44,6 +44,7 @@ define([
          *  - when a player refreshes the game page (F5)
          */
         setup(datas) {
+            console.log( "start creating player boards" );
             this.setupLayout(datas);
             this.setupNotifications();
         },
@@ -53,10 +54,12 @@ define([
             for (const i in gamedatas.board) {
                 const square = gamedatas.board[i];
                 if (square.player !== null) {
-                    this.placePawn(square.x, square.y);
+                    this.placePawn(square.x, square.y, square.player, square.king);
                 }
             }
-            dojo.query('.disc').on('click', lang.hitch(this, this.onSelectPawn));
+            dojo.query('.discPlayer1').on('click', lang.hitch(this, this.onSelectPawn));
+            dojo.query('.discPlayer1King').on('click', lang.hitch(this, this.onSelectPawn));
+            dojo.query('.discPlayer2').on('click', lang.hitch(this, this.onSelectPawn));
             dojo.query('.square').on('click', lang.hitch(this, this.onMove));
             this.addTooltip('move', _('Move'), '');
         },
@@ -80,13 +83,44 @@ define([
         // /////////////////////////////////////////////////
         // // Utility functions
 
-        placePawn(x, y) {
-            dojo.place(this.format_block('jstpl_disc', {
-                x,
-                y,
-                color: 'red',
-            }), 'discs');
-
+        placePawn(x, y, player, king) {
+            var vcolor = this.gamedatas.players[ player ].color;
+            // console.log("vcolor ", vcolor);  // DBG
+            
+            if (king == '1')
+            {
+                // console.log('king position')
+                dojo.place(this.format_block('jstpl_discPlayer1King', {
+                    x,
+                    y,
+                }), 'discs');
+            }
+            else if (vcolor == "ffffff")
+            {
+                // console.log('player 1') // DBG
+                dojo.place(this.format_block('jstpl_discPlayer1', {
+                    x,
+                    y,
+                }), 'discs');
+            }
+            else
+            {
+                //console.log('player 2') // DBG
+                /* Debug Test */
+                /*
+                dojo.place(this.format_block('jstpl_disc', {
+                    x,
+                    y,
+                    color: "000000",
+                }), 'discs');
+                */
+                
+                dojo.place(this.format_block('jstpl_discPlayer2', {
+                    x,
+                    y,
+                }), 'discs');
+            }
+            
             // this.placeOnObject(String(`disc_${x}_${y}`), `overall_player_board_${player}`);
             this.slideToObject(String(`disc_${ x }_${ y }`), `square_${ x }_${ y }`).play();
         },

@@ -72,13 +72,45 @@
     );
 }
 
+.discPlayer1 {
+    width: 60px;
+    height: 60px;
+    position: absolute;
+    background-color: grey;
+    border-radius: 30px;
+}
+
+.discPlayer1King {
+    width: 60px;
+    height: 60px;
+    position: absolute;
+    background-color: black;
+    border-radius: 30px;
+}
+
+/******************************/
+/* debug test */
 .disc {
     width: 60px;
     height: 60px;
     position: absolute;
-    background-color: red;
     border-radius: 30px;
 }
+
+.disc_000000 {
+    background-color: white;
+}
+/******************************/
+
+.discPlayer2 {
+    width: 60px;
+    height: 60px;
+    position: absolute;
+    background-color: white;
+    border-radius: 30px;
+}
+
+
 .selected {
    background-color: darkred;
 }
