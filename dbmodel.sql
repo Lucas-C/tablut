@@ -29,10 +29,17 @@
 -- Example 2: add a custom field to the standard "player" table
 -- ALTER TABLE `player` ADD `player_my_custom_field` INT UNSIGNED NOT NULL DEFAULT '0';
 
-
+-- Create table for define each position on the board
+-- if board_king is 1 the piece is the king else is a simple piece of the game
+-- if board_wall is 1 then the piece can only down of the wall but not up on the wall
+-- if board_limitWin is 1 then the position is at the limit of the board (for the king it is the victory)
 CREATE TABLE IF NOT EXISTS `board` (
   `board_x` smallint(5) unsigned NOT NULL,
   `board_y` smallint(5) unsigned NOT NULL,
+  `board_king`  int(10) unsigned DEFAULT NULL,
+  `board_wall`  int(10) unsigned DEFAULT NULL,
+  `board_limitWin`  int(10) unsigned DEFAULT NULL,
   `board_player` int(10) unsigned DEFAULT NULL,
   PRIMARY KEY (`board_x`,`board_y`)
 ) ENGINE=InnoDB;
+

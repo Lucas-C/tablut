@@ -4,3 +4,4 @@
 /vendor
 /bgaproject.yml
 !/bgaproject.yml.dist
+tests/hello.php

@@ -75,23 +75,38 @@ class Tablut extends Table
 
     private function setupBoard(array $players)
     {
-        $sql = "INSERT INTO board (board_x,board_y,board_player) VALUES ";
-        $sql_values = array();
-        for ($x=1; $x<=8; $x++) {
-            for ($y=1; $y<=8; $y++) {
-                $disc_value = "NULL";
-                if (($x==4 && $y==4) || ($x==5 && $y==5)) {  // Initial positions of white player
-                    $disc_value = "'".array_keys($players)[0]."'";
-                } elseif (($x==4 && $y==5) || ($x==5 && $y==4)) {  // Initial positions of black player
-                    $disc_value = "'".array_keys($players)[1]."'";
-                }
-
-                $sql_values[] = "('$x','$y',$disc_value)";
-            }
-        }
-        $sql .= implode($sql_values, ',');
+        $player1 = "'".array_keys($players)[0]."'"; /* Not King for test */
+        $player2 = "'".array_keys($players)[1]."'"; /* King fir test */ 
+        
+        /* initialize the player 1 piece*/
+        $sql = "INSERT INTO board (board_x,board_y,board_king,board_wall,board_player) VALUES  ('4', '1', '0', '1', $player1), ('5', '1', '0', '1', $player1), ('6', '1', '0', '1', $player1), ('5', '2', '0', '1', $player1)" ;
         self::DbQuery($sql);
-    }
+        $sql = "INSERT INTO board (board_x,board_y,board_king,board_wall,board_player) VALUES  ('4', '9', '0', '1', $player1), ('5', '9', '0', '1', $player1), ('6', '9', '0', '1', $player1), ('5', '8', '0', '1', $player1)" ;
+        self::DbQuery($sql);
+        $sql = "INSERT INTO board (board_x,board_y,board_king,board_wall,board_player) VALUES  ('1', '4', '0', '1', $player1), ('1', '5', '0', '1', $player1), ('1', '6', '0', '1', $player1), ('2', '5', '0', '1', $player1)" ;
+        self::DbQuery($sql);
+        $sql = "INSERT INTO board (board_x,board_y,board_king,board_wall,board_player) VALUES  ('9', '4', '0', '1', $player1), ('9', '5', '0', '1', $player1), ('9', '6', '0', '1', $player1), ('8', '5', '0', '1', $player1)" ;
+        self::DbQuery($sql);
+		
+        /* initialize the player 2 piece*/
+        $sql = "INSERT INTO board (board_x,board_y,board_king,board_wall,board_player) VALUES  ('5', '5', '1', '1', $player2)" ;
+        self::DbQuery($sql);
+        $sql = "INSERT INTO board (board_x,board_y,board_king,board_wall,board_player)  VALUES  ('3', '5', '0', '0', $player2), ('4', '5', '0', '0', $player2), ('6', '5', '0', '0', $player2), ('7', '5', '0', '0', $player2)" ;
+        self::DbQuery($sql);
+        $sql = "INSERT INTO board (board_x,board_y,board_king,board_wall,board_player)  VALUES  ('5', '3', '0', '0', $player2), ('5', '4', '0', '0', $player2), ('5', '6', '0', '0', $player2), ('5', '7', '0', '0', $player2)" ;
+        self::DbQuery($sql);
+        
+        /* Initialize the limit winning game */
+        $sql = "INSERT INTO board (board_x,board_y,board_limitWin) VALUES  ('1', '1', '1'), ('1', '2', '1'), ('1', '3', '1'), ('1', '7', '1'), ('1', '8', '1'), ('1', '9', '1')" ;
+        self::DbQuery($sql);
+        $sql = "INSERT INTO board (board_x,board_y,board_limitWin) VALUES  ('9', '1', '1'), ('9', '2', '1'), ('9', '3', '1'), ('9', '7', '1'), ('9', '8', '1'), ('9', '9', '1')" ;
+        self::DbQuery($sql);
+        $sql = "INSERT INTO board (board_x,board_y,board_limitWin) VALUES  ('2', '1', '1'), ('3', '1', '1'), ('7', '1', '1'), ('8', '1', '1')" ;
+        self::DbQuery($sql);
+        $sql = "INSERT INTO board (board_x,board_y,board_limitWin) VALUES  ('2', '9', '1'), ('3', '9', '1'), ('7', '9', '1'), ('8', '9', '1')" ;
+        self::DbQuery($sql);
+
+	}
 
     private function setupStats()
     {
