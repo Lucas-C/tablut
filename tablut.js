@@ -87,7 +87,7 @@ define([
             var vcolor = this.gamedatas.players[ player ].color;
             // console.log("vcolor ", vcolor);  // DBG
             
-            if (king == '1')
+            if (king === '1')
             {
                 // console.log('king position')
                 dojo.place(this.format_block('jstpl_discPlayer1King', {
@@ -95,7 +95,7 @@ define([
                     y,
                 }), 'discs');
             }
-            else if (vcolor == "ffffff")
+            else if (vcolor === "ffffff")
             {
                 // console.log('player 1') // DBG
                 dojo.place(this.format_block('jstpl_discPlayer1', {
