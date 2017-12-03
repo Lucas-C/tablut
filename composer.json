@@ -42,7 +42,7 @@
     "check-styles": ["@check-css", "@check-js", "@check-php"],
     "check-css": "csslint --ignore=box-sizing,import,order-alphabetical tablut.css",
     "check-js": "eslint --fix tablut.js",
-    "check-php": "phpcbf --tab-width=4 --ignore=vendor,backup,*\\.js,*\\.css -q -p -s .",
+    "check-php": "phpcs --tab-width=4 --ignore=vendor,backup,*\\.js,*\\.css -q -p -s .",
     "fix-php": "phpcbf --tab-width=4 --ignore=vendor,backup,*\\.js,*\\.css -q -p -s .",
     "bgaw-clean": "composer exec -- bgawb -v clean",
     "bgaw-build": "composer exec -- bgawb -v build",
