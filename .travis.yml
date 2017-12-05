@@ -5,7 +5,8 @@ services: mysql
 php: 7.1
 
 before_script:
-  - npm install -g csslint eslint eslint-config-strict eslint-plugin-filenames
+  - npm install -g eslint eslint-config-strict eslint-plugin-filenames stylelint
+  - npm install stylelint-config-standard
   - composer install
   - echo "USE mysql;\nUPDATE user SET password=PASSWORD('tablutpw') WHERE user='root';\nFLUSH PRIVILEGES;\n" | mysql -u root
 

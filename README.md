@@ -18,7 +18,8 @@ Very basic:
 ## Installation
 ```
 composer install
-npm install -g csslint eslint eslint-config-strict eslint-plugin-filenames
+npm install -g eslint eslint-config-strict eslint-plugin-filenames stylelint
+npm install stylelint-config-standard
 ```
 
 ## Code validation

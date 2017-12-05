@@ -57,19 +57,22 @@
     border: 1px solid black;
     box-sizing: border-box;
 }
+
 .square:hover {
     background-color: white;
     opacity: 0.2;
     cursor: pointer;
 }
+
 .fortress {
-    background: repeating-linear-gradient(
-      45deg,
-      #606dbc,
-      #606dbc 10px,
-      #465298 10px,
-      #465298 20px
-    );
+    background:
+        repeating-linear-gradient(
+            45deg,
+            #606dbc,
+            #606dbc 10px,
+            #465298 10px,
+            #465298 20px
+        );
 }
 
 .discPlayer1 {
@@ -88,7 +91,7 @@
     border-radius: 30px;
 }
 
-/******************************/
+/* **************************** */
 /* debug test */
 .disc {
     width: 60px;
@@ -100,7 +103,7 @@
 .disccolor_000000 {
     background-color: white;
 }
-/******************************/
+/* **************************** */
 
 .discPlayer2 {
     width: 60px;
@@ -112,5 +115,5 @@
 
 
 .selected {
-   background-color: darkred;
+    background-color: darkred;
 }

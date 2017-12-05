@@ -1,0 +1,8 @@
+{
+  "extends": "stylelint-config-standard",
+  "rules": {
+    "comment-empty-line-before": null,
+    "max-empty-lines": 2,
+    "indentation": 4
+  }
+}
