@@ -81,10 +81,9 @@ class Tablut extends Table
         $sql = "INSERT INTO board (board_x,board_y,board_wall) VALUES ";
         for ($x=1; $x<=9; $x++) {
             for ($y=1; $y<=9; $y++) {
-                if($x==9 and $y==9) {
+                if ($x==9 and $y==9) {
                     $sql .= "('$x', '$y', '0') ";
-                }
-                else{
+                } else {
                     $sql .= "('$x', '$y', '0'), ";
                 }
             }
@@ -92,7 +91,7 @@ class Tablut extends Table
         self::DbQuery($sql);
         
         $player1 = "'".array_keys($players)[0]."'"; /* Not King for test */
-        $player2 = "'".array_keys($players)[1]."'"; /* King fir test */ 
+        $player2 = "'".array_keys($players)[1]."'"; /* King fir test */
         
         /* initialize the player 1 piece*/
         $sql = "UPDATE board SET board_player=$player1, board_wall='1' WHERE ( board_x, board_y) IN (('4','1'), ('5','1'), ('6','1'), ('5','2') ) ";
@@ -121,8 +120,7 @@ class Tablut extends Table
         self::DbQuery($sql);
         $sql = "UPDATE board SET board_limitWin='1' WHERE ( board_x, board_y) IN (('2','9'), ('3','9'), ('7','9'), ('8','9')) ";
         self::DbQuery($sql);
-
-	}
+    }
 
     private function setupStats()
     {
