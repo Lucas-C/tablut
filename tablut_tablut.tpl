@@ -31,7 +31,7 @@
 <script type="text/javascript"> // Templates
     var jstpl_discPlayer1='<div class="discPlayer1 disccolor" id="disc_${x}_${y}"></div>';
     var jstpl_discPlayer1King='<div class="discPlayer1King disccolor" id="disc_${x}_${y}"></div>';
-    var jstpl_discPlayer2='<div class="discPlayer2 disccolor" id="disc_${x}_${y}"></div>';
+    var jstpl_discPlayer0='<div class="discPlayer0 disccolor" id="disc_${x}_${y}"></div>';
 </script>
 
 {OVERALL_GAME_FOOTER}

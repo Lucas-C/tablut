@@ -4,7 +4,9 @@
 [![Waffle.io - Columns and their card count](https://badge.waffle.io/Lucas-C/tablut.svg?columns=all)](https://waffle.io/Lucas-C/tablut)
 
 
-Implémentation du jeu [Tablut](http://jeuxstrategieter.free.fr/Tablut_complet.php) pour [BoardGameArena](https://boardgamearena.com).
+[Tablut](http://jeuxstrategieter.free.fr/Tablut_complet.php) board game implementation for [BoardGameArena](https://boardgamearena.com).
+
+The player invited to join the game plays the king.
 
 ## Game state machine
 
@@ -14,6 +16,8 @@ Very basic:
 
 
 # Development
+
+Player 1 is the king.
 
 ## Installation
 ```

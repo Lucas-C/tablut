@@ -33,7 +33,7 @@ class Tablut extends Table
      */
     protected function getGameName()
     {
-        return "tablut";
+        return 'tablut';
     }
 
     /*
@@ -59,8 +59,8 @@ class Tablut extends Table
      */
     private function setupPlayers(array $players)
     {
-        $default_color = array( "000000", "ffffff" );
-        $sql = "INSERT INTO player (player_id, player_color, player_canal, player_name, player_avatar) VALUES ";
+        $default_color = array( '000000', 'ffffff' );
+        $sql = 'INSERT INTO player (player_id, player_color, player_canal, player_name, player_avatar) VALUES ';
         $values = array();
         foreach ($players as $player_id => $player) {
             $color = array_shift($default_color);
@@ -78,7 +78,7 @@ class Tablut extends Table
 
         /* Initialize all the board */
         $sql_values = array();
-        $sql = "INSERT INTO board (board_x,board_y,board_wall) VALUES ";
+        $sql = 'INSERT INTO board (board_x,board_y,board_wall) VALUES ';
         for ($x=1; $x<=9; $x++) {
             for ($y=1; $y<=9; $y++) {
                 if ($x==9 and $y==9) {
@@ -90,36 +90,25 @@ class Tablut extends Table
         }
         self::DbQuery($sql);
         
-        $player1 = "'".array_keys($players)[0]."'"; /* Not King for test */
-        $player2 = "'".array_keys($players)[1]."'"; /* King fir test */
+        $player0 = "'".array_keys($players)[0]."'"; /* Not King for test */
+        $player1 = "'".array_keys($players)[1]."'"; /* King fir test */
         
-        /* initialize the player 1 piece*/
-        $sql = "UPDATE board SET board_player=$player1, board_wall='1' WHERE ( board_x, board_y) IN (('4','1'), ('5','1'), ('6','1'), ('5','2') ) ";
-        self::DbQuery($sql);
-        $sql = "UPDATE board SET board_player=$player1, board_wall='1' WHERE ( board_x, board_y) IN (('4','9'), ('5','9'), ('6','9'), ('5','8') ) ";
-        self::DbQuery($sql);
-        $sql = "UPDATE board SET board_player=$player1, board_wall='1' WHERE ( board_x, board_y) IN (('1','4'), ('1','5'), ('1','6'), ('2','5') ) ";
-        self::DbQuery($sql);
-        $sql = "UPDATE board SET board_player=$player1, board_wall='1' WHERE ( board_x, board_y) IN (('9','4'), ('9','5'), ('9','6'), ('8','5') ) ";
-        self::DbQuery($sql);
+        /* Initialize the player 0 pieces */
+        self::DbQuery("UPDATE board SET board_player=$player0, board_wall='1' WHERE ( board_x, board_y) IN (('4','1'), ('5','1'), ('6','1'), ('5','2') )");
+        self::DbQuery("UPDATE board SET board_player=$player0, board_wall='1' WHERE ( board_x, board_y) IN (('4','9'), ('5','9'), ('6','9'), ('5','8') )");
+        self::DbQuery("UPDATE board SET board_player=$player0, board_wall='1' WHERE ( board_x, board_y) IN (('1','4'), ('1','5'), ('1','6'), ('2','5') )");
+        self::DbQuery("UPDATE board SET board_player=$player0, board_wall='1' WHERE ( board_x, board_y) IN (('9','4'), ('9','5'), ('9','6'), ('8','5') )");
 
-        /* initialize the player 2 piece*/
-        $sql = "UPDATE board SET board_player=$player2, board_wall='1', board_king='1' WHERE ( board_x, board_y) IN (('5','5')) ";
-        self::DbQuery($sql);
-        $sql = "UPDATE board SET board_player=$player2 WHERE ( board_x, board_y) IN (('3','5'), ('4','5'), ('6','5'), ('7','5')) ";
-        self::DbQuery($sql);
-        $sql = "UPDATE board SET board_player=$player2 WHERE ( board_x, board_y) IN (('5','3'), ('5','4'), ('5','6'), ('5','7')) ";
-        self::DbQuery($sql);
+        /* Initialize the player 1 pieces */
+        self::DbQuery("UPDATE board SET board_player=$player1, board_wall='1', board_king='1' WHERE ( board_x, board_y) IN (('5','5'))");
+        self::DbQuery("UPDATE board SET board_player=$player1 WHERE ( board_x, board_y) IN (('3','5'), ('4','5'), ('6','5'), ('7','5'))");
+        self::DbQuery("UPDATE board SET board_player=$player1 WHERE ( board_x, board_y) IN (('5','3'), ('5','4'), ('5','6'), ('5','7'))");
 
         /* Initialize the limit winning game */
-        $sql = "UPDATE board SET board_limitWin='1' WHERE ( board_x, board_y) IN (('1','1'), ('1','2'), ('1','3'), ('1','7'), ('1','8'), ('1','9')) ";
-        self::DbQuery($sql);
-        $sql = "UPDATE board SET board_limitWin='1' WHERE ( board_x, board_y) IN (('9','1'), ('9','2'), ('9','3'), ('9','7'), ('9','8'), ('9','9')) ";
-        self::DbQuery($sql);
-        $sql = "UPDATE board SET board_limitWin='1' WHERE ( board_x, board_y) IN (('2','1'), ('3','1'), ('7','1'), ('8','1')) ";
-        self::DbQuery($sql);
-        $sql = "UPDATE board SET board_limitWin='1' WHERE ( board_x, board_y) IN (('2','9'), ('3','9'), ('7','9'), ('8','9')) ";
-        self::DbQuery($sql);
+        self::DbQuery("UPDATE board SET board_limitWin='1' WHERE ( board_x, board_y) IN (('1','1'), ('1','2'), ('1','3'), ('1','7'), ('1','8'), ('1','9'))");
+        self::DbQuery("UPDATE board SET board_limitWin='1' WHERE ( board_x, board_y) IN (('9','1'), ('9','2'), ('9','3'), ('9','7'), ('9','8'), ('9','9'))");
+        self::DbQuery("UPDATE board SET board_limitWin='1' WHERE ( board_x, board_y) IN (('2','1'), ('3','1'), ('7','1'), ('8','1'))");
+        self::DbQuery("UPDATE board SET board_limitWin='1' WHERE ( board_x, board_y) IN (('2','9'), ('3','9'), ('7','9'), ('8','9'))");
     }
 
     private function setupStats()
@@ -140,17 +129,20 @@ class Tablut extends Table
         $result = array( 'players' => array() );
 
         // Add players specific infos
-        $sql = "SELECT player_id id, player_score score ";
-        $sql .= "FROM player ";
-        $sql .= "WHERE 1 ";
-        $dbres = self::DbQuery($sql);
+        $dbres = self::DbQuery('SELECT player_id id, player_score score FROM player ');
         while ($player = mysql_fetch_assoc($dbres)) {
             $result['players'][ $player['id'] ] = $player;
         }
 
         // Get reversi board disc
-        $result['board'] = self::getObjectListFromDB("SELECT board_x x, board_y y, board_player player, board_king king, 
-                                                      board_wall wall, board_limitWin WinPosition FROM board WHERE 1");
+        $result['board'] = self::getObjectListFromDB('SELECT
+                                                          board_x x,
+                                                          board_y y,
+                                                          board_player player,
+                                                          board_king king, 
+                                                          board_wall wall,
+                                                          board_limitWin WinPosition
+                                                      FROM board');
 
         return $result;
     }
@@ -169,7 +161,7 @@ class Tablut extends Table
     {
         // Game progression: get the number of free squares
         // (number of free squares goes from 60 to 0
-        $freeSquare = self::getUniqueValueFromDb("SELECT COUNT( board_x ) FROM board WHERE board_player IS NULL");
+        $freeSquare = self::getUniqueValueFromDb('SELECT COUNT( board_x ) FROM board WHERE board_player IS NULL');
 
         return round(( 60-$freeSquare )/60*100);
     }
@@ -183,10 +175,36 @@ class Tablut extends Table
      * @param int $toSquareId
      * @throws BgaUserException
      */
-    public function move(int $fromSquareId, int $toSquareId)
+    public function move(string $fromSquareId, string $toSquareId)
     {
-        $this->checkAction('moveTo');
+        $player_id = self::getActivePlayerId();
+
+        $fromSquarePos = explode('_', $fromSquareId);
+        $fromX = $fromSquarePos[1];
+        $fromY = $fromSquarePos[2];
+        $toSquarePos = explode('_', $toSquareId);
+        $toX = $toSquarePos[1];
+        $toY = $toSquarePos[2];
+
+        $this->checkAction('move'); // Check that this state change is possible
+
+        // Validate that this is an OK move
+        // throw new feException('Impossible move');
+
+        self::DbQuery("UPDATE board SET board_player=NULL       WHERE board_x = $fromX AND board_y = $fromY");
+        self::DbQuery("UPDATE board SET board_player=$player_id WHERE board_x = $toX   AND board_y = $toY");
+
+        self::notifyAllPlayers('playDisc', clienttranslate('${player_name} moves a pawn'), array(
+            'player_id' => $player_id,
+            'player_name' => self::getActivePlayerName(),
+            'fromSquareId' => $fromSquareId,
+            'toSquareId' => $toSquareId
+        ));
+
+        // Send another notif if a pawn was eaten
+
         // should call $this->notifyAllPlayers(
+        $this->gamestate->nextState('move');
     }
 
 
@@ -228,9 +246,9 @@ class Tablut extends Table
     public function zombieTurn($state, $activePlayerId)
     {
         if ($state['name'] == 'playerTurn') {
-            $this->gamestate->nextState("zombiePass");
+            $this->gamestate->nextState('zombiePass');
         } else {
-            throw new feException("Zombie mode not supported at this game state:".$state['name']);
+            throw new feException('Zombie mode not supported at this game state:'.$state['name']);
         }
     }
 
