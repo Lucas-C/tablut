@@ -82,9 +82,9 @@ class Tablut extends Table
         for ($x=1; $x<=9; $x++) {
             for ($y=1; $y<=9; $y++) {
                 if ($x==9 and $y==9) {
-                    $sql .= "('$x', '$y', '0') ";
+                    $sql .= "('$x', '$y', NULL) ";
                 } else {
-                    $sql .= "('$x', '$y', '0'), ";
+                    $sql .= "('$x', '$y', NULL), ";
                 }
             }
         }
@@ -186,13 +186,19 @@ class Tablut extends Table
         $toX = $toSquarePos[1];
         $toY = $toSquarePos[2];
 
-        $pawnFromDb = self::DbQuery("SELECT board_king, board_player FROM board WHERE board_x = $fromX AND board_y = $fromY")->fetch_assoc();
-        $pawnPlayerId = (int) $pawnFromDb['board_player'];
-        $pawnBoardKing = $pawnFromDb['board_king'] ? "'1'" : 'NULL';
-
-        // Validate that this is an OK move
+        $srcPawnFromDb = self::DbQuery("SELECT board_player, board_king FROM board WHERE board_x = $fromX AND board_y = $fromY")->fetch_assoc();
+        $pawnPlayerId = (int) $srcPawnFromDb['board_player'];
+        $pawnBoardKing = $srcPawnFromDb['board_king'] ? "'1'" : 'NULL';
         if (self::getActivePlayerId() != $pawnPlayerId) {
             throw new feException("This pawn belongs to your opponent: pawnPlayerId=$pawnPlayerId | pawnBoardKing=$pawnBoardKing");
+        }
+
+        $dstSquareFromDb = self::DbQuery("SELECT board_player, board_wall FROM board WHERE board_x = $toX AND board_y = $toY")->fetch_assoc();
+        if ($dstSquareFromDb['board_wall'] != NULL) {
+            throw new feException("Cannot move onto a wall");
+        }
+        if ($dstSquareFromDb['board_player'] != NULL) {
+            throw new feException("Cannot move onto another pawn");
         }
 
         self::DbQuery("UPDATE board SET board_player=NULL,            board_king=NULL           WHERE board_x = $fromX AND board_y = $fromY");
