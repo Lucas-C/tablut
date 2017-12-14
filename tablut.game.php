@@ -235,13 +235,25 @@ class Tablut extends Table
 
     public function stNextPlayer()
     {
+        $ActivePLayer = self::getActivePlayerId();        
         $next_player_id = self::activeNextPlayer();
 
-        //$this->gamestate->nextState( 'endGame' );
-        //$this->gamestate->nextState( 'cantPlay' );
-        $this->gamestate->nextState('nextTurn');
+        $WinKing = self::DbQuery("SELECT board_limitWin FROM board WHERE board_king='1' ")->fetch_assoc()['board_limitWin'];        
+        $MoscovitWin = self::DbQuery("SELECT board_x FROM board WHERE board_king='1' ")->fetch_assoc()['board_x'];
+        if( $MoscovitWin == NULL )
+        {
+            self::DbQuery("UPDATE player SET player_score='2' WHERE player_id='$ActivePLayer'");
+            $this->gamestate->nextState( 'endGame' );
+        }
+        else if( $WinKing == '1' ) 
+        {
+            self::DbQuery("UPDATE player SET player_score='1' WHERE player_id='$ActivePLayer'");
+            $this->gamestate->nextState( 'endGame' );
+        }
+        else{
+            $this->gamestate->nextState('nextTurn');
+        }
     }
-
 //////////////////////////////////////////////////////////////////////////////
 //////////// Zombie
 ////////////
