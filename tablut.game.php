@@ -78,7 +78,7 @@ class Tablut extends Table
 
         /* Initialize all the board */
         $sql_values = array();
-        $sql = 'INSERT INTO board (board_x,board_y,board_wall) VALUES ';
+        $sql = 'INSERT INTO board (board_x, board_y, board_wall) VALUES ';
         for ($x=1; $x<=9; $x++) {
             for ($y=1; $y<=9; $y++) {
                 if ($x==9 and $y==9) {
@@ -89,20 +89,20 @@ class Tablut extends Table
             }
         }
         self::DbQuery($sql);
-        
-        $player0 = "'".array_keys($players)[0]."'"; /* Not King for test */
-        $player1 = "'".array_keys($players)[1]."'"; /* King fir test */
-        
+
+        $player0 = array_keys($players)[0];
+        $player1 = array_keys($players)[1];
+
         /* Initialize the player 0 pieces */
-        self::DbQuery("UPDATE board SET board_player=$player0, board_wall='1' WHERE ( board_x, board_y) IN (('4','1'), ('5','1'), ('6','1'), ('5','2') )");
-        self::DbQuery("UPDATE board SET board_player=$player0, board_wall='1' WHERE ( board_x, board_y) IN (('4','9'), ('5','9'), ('6','9'), ('5','8') )");
-        self::DbQuery("UPDATE board SET board_player=$player0, board_wall='1' WHERE ( board_x, board_y) IN (('1','4'), ('1','5'), ('1','6'), ('2','5') )");
-        self::DbQuery("UPDATE board SET board_player=$player0, board_wall='1' WHERE ( board_x, board_y) IN (('9','4'), ('9','5'), ('9','6'), ('8','5') )");
+        self::DbQuery("UPDATE board SET board_player='$player0', board_wall='1' WHERE ( board_x, board_y) IN (('4','1'), ('5','1'), ('6','1'), ('5','2') )");
+        self::DbQuery("UPDATE board SET board_player='$player0', board_wall='1' WHERE ( board_x, board_y) IN (('4','9'), ('5','9'), ('6','9'), ('5','8') )");
+        self::DbQuery("UPDATE board SET board_player='$player0', board_wall='1' WHERE ( board_x, board_y) IN (('1','4'), ('1','5'), ('1','6'), ('2','5') )");
+        self::DbQuery("UPDATE board SET board_player='$player0', board_wall='1' WHERE ( board_x, board_y) IN (('9','4'), ('9','5'), ('9','6'), ('8','5') )");
 
         /* Initialize the player 1 pieces */
-        self::DbQuery("UPDATE board SET board_player=$player1, board_wall='1', board_king='1' WHERE ( board_x, board_y) IN (('5','5'))");
-        self::DbQuery("UPDATE board SET board_player=$player1 WHERE ( board_x, board_y) IN (('3','5'), ('4','5'), ('6','5'), ('7','5'))");
-        self::DbQuery("UPDATE board SET board_player=$player1 WHERE ( board_x, board_y) IN (('5','3'), ('5','4'), ('5','6'), ('5','7'))");
+        self::DbQuery("UPDATE board SET board_player='$player1', board_wall='1', board_king='1' WHERE ( board_x, board_y) IN (('5','5'))");
+        self::DbQuery("UPDATE board SET board_player='$player1' WHERE ( board_x, board_y) IN (('3','5'), ('4','5'), ('6','5'), ('7','5'))");
+        self::DbQuery("UPDATE board SET board_player='$player1' WHERE ( board_x, board_y) IN (('5','3'), ('5','4'), ('5','6'), ('5','7'))");
 
         /* Initialize the limit winning game */
         self::DbQuery("UPDATE board SET board_limitWin='1' WHERE ( board_x, board_y) IN (('1','1'), ('1','2'), ('1','3'), ('1','7'), ('1','8'), ('1','9'))");
@@ -129,7 +129,7 @@ class Tablut extends Table
         $result = array( 'players' => array() );
 
         // Add players specific infos
-        $dbres = self::DbQuery('SELECT player_id id, player_score score FROM player ');
+        $dbres = self::DbQuery('SELECT player_id id, player_score score FROM player');
         while ($player = mysql_fetch_assoc($dbres)) {
             $result['players'][ $player['id'] ] = $player;
         }
@@ -139,7 +139,7 @@ class Tablut extends Table
                                                           board_x x,
                                                           board_y y,
                                                           board_player player,
-                                                          board_king king, 
+                                                          board_king king,
                                                           board_wall wall,
                                                           board_limitWin WinPosition
                                                       FROM board');
@@ -177,7 +177,9 @@ class Tablut extends Table
      */
     public function move(string $fromSquareId, string $toSquareId)
     {
-        $player_id = self::getActivePlayerId();
+        $this->checkAction('move'); // Check that this state change is possible
+
+        $activePlayerId = self::getActivePlayerId();
 
         $fromSquarePos = explode('_', $fromSquareId);
         $fromX = $fromSquarePos[1];
@@ -186,16 +188,18 @@ class Tablut extends Table
         $toX = $toSquarePos[1];
         $toY = $toSquarePos[2];
 
-        $this->checkAction('move'); // Check that this state change is possible
+        $pawnPlayerId = (int) self::DbQuery("SELECT board_player FROM board WHERE board_x = $fromX AND board_y = $fromY")->fetch_assoc()['board_player'];
 
         // Validate that this is an OK move
-        // throw new feException('Impossible move');
+        if ($activePlayerId != $pawnPlayerId) {
+            throw new feException("This pawn belongs to your opponent: $activePlayerId != $pawnPlayerId");
+        }
 
-        self::DbQuery("UPDATE board SET board_player=NULL       WHERE board_x = $fromX AND board_y = $fromY");
-        self::DbQuery("UPDATE board SET board_player=$player_id WHERE board_x = $toX   AND board_y = $toY");
+        self::DbQuery("UPDATE board SET board_player=NULL            WHERE board_x = $fromX AND board_y = $fromY");
+        self::DbQuery("UPDATE board SET board_player=$activePlayerId WHERE board_x = $toX   AND board_y = $toY");
 
-        self::notifyAllPlayers('playDisc', clienttranslate('${player_name} moves a pawn'), array(
-            'player_id' => $player_id,
+        self::notifyAllPlayers('pawnMoved', clienttranslate('${player_name} moves a pawn'), array(
+            'player_id' => $activePlayerId,
             'player_name' => self::getActivePlayerName(),
             'fromSquareId' => $fromSquareId,
             'toSquareId' => $toSquareId

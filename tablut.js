@@ -43,22 +43,28 @@ define([
          *  - when the game starts
          *  - when a player refreshes the game page (F5)
          */
-        setup(datas) {
-            this.setupLayout(datas);
+        setup() {
+            this.setupLayout();
             this.setupNotifications();
         },
 
-        setupLayout(gamedatas) {
-            console.log('setupLayout', gamedatas);
-            for (const i in gamedatas.board) {
-                const square = gamedatas.board[i];
-                if (square.player !== null) {
-                    this.placePawn(square.x, square.y, square.player, square.king);
+        setupLayout() {
+            console.log('setupLayout', this.gamedatas);
+            const myPlayerIndex = this.gamedatas.players[this.gamedatas.playerorder[0]].color === 'ffffff' ? 1 : 0;
+            console.log('myPlayerIndex:', myPlayerIndex);
+
+            for (const pawn of this.gamedatas.board) {
+                if (pawn.player !== null) {
+                    this.placePawn(pawn);
                 }
             }
-            dojo.query('.discPlayer1').on('click', lang.hitch(this, this.onSelectPawn));
-            dojo.query('.discPlayer1King').on('click', lang.hitch(this, this.onSelectPawn));
-            dojo.query('.discPlayer0').on('click', lang.hitch(this, this.onSelectPawn));
+
+            if (myPlayerIndex === 1) {
+                dojo.query('.discPlayer1').on('click', lang.hitch(this, this.onSelectPawn));
+                dojo.query('.discPlayer1King').on('click', lang.hitch(this, this.onSelectPawn));
+            } else {
+                dojo.query('.discPlayer0').on('click', lang.hitch(this, this.onSelectPawn));
+            }
             dojo.query('.square').on('click', lang.hitch(this, this.onMove));
             this.addTooltip('move', _('Move'), '');
         },
@@ -82,46 +88,26 @@ define([
         // /////////////////////////////////////////////////
         // // Utility functions
 
-        placePawn(x, y, player, king) {
-            var vcolor = this.gamedatas.players[ player ].color;
-            // console.log("vcolor ", vcolor);  // DBG
-            
-            if (king === '1')
-            {
-                // console.log('king position')
+        placePawn(pawn) {
+            const pawnPlayerIndex = this.gamedatas.players[pawn.player].color === 'ffffff' ? 1 : 0;
+            if (pawn.king) {
                 dojo.place(this.format_block('jstpl_discPlayer1King', {
-                    x,
-                    y,
+                    x: pawn.x,
+                    y: pawn.y,
                 }), 'discs');
-            }
-            else if (vcolor === "ffffff")
-            {
-                // console.log('player 1') // DBG
+            } else if (pawnPlayerIndex === 1) {
                 dojo.place(this.format_block('jstpl_discPlayer1', {
-                    x,
-                    y,
+                    x: pawn.x,
+                    y: pawn.y,
                 }), 'discs');
-            }
-            else
-            {
-                //console.log('player 2') // DBG
-                /* Debug Test */
-                /*
-                dojo.place(this.format_block('jstpl_disc', {
-                    x,
-                    y,
-                    color: "000000",
-                }), 'discs');
-                */
-                
+            } else {
                 dojo.place(this.format_block('jstpl_discPlayer0', {
-                    x,
-                    y,
+                    x: pawn.x,
+                    y: pawn.y,
                 }), 'discs');
             }
-            
             // this.placeOnObject(String(`disc_${x}_${y}`), `overall_player_board_${player}`);
-            this.slideToObject(`disc_${ x }_${ y }`, `square_${ x }_${ y }`).play();
+            this.slideToObject(`disc_${ pawn.x }_${ pawn.y }`, `square_${ pawn.x }_${ pawn.y }`).play();
         },
 
         movePawn(discId, squareId) {
@@ -177,8 +163,13 @@ define([
             if (this.selectedDisc) {
                 this.selectedDisc.classList.remove('selected');
             }
-            this.selectedDisc = event.currentTarget;
-            this.selectedDisc.classList.add('selected');
+            if (event.currentTarget === this.selectedDisc) {
+                // unselect:
+                this.selectedDisc = null;
+            } else {
+                this.selectedDisc = event.currentTarget;
+                this.selectedDisc.classList.add('selected');
+            }
         },
 
         onMove(event) {
@@ -199,8 +190,6 @@ define([
             const toPos = { x: coords[1], y: coords[2] };
             console.log('onMove', fromPos, toPos);
 
-            this.movePawn(this.selectedDisc.id, event.currentTarget.id);
-
             if (this.checkAction('move')) { // eslint-disable-line no-unreachable
                 this.ajaxcall(
                     '/tablut/tablut/move.html',
@@ -208,11 +197,7 @@ define([
                         lock: true,
                         fromSquareId: this.selectedDisc.id,
                         toSquareId: event.currentTarget.id,
-                    },
-                    this,
-                    function onSuccess() {
-                    },
-                    function onFailure() {}
+                    }
                 );
             }
         },
@@ -221,13 +206,14 @@ define([
         // /////////////////////////////////////////////////
         // // Reaction to cometD notifications
         setupNotifications() {
-            dojo.subscribe('playerMoved', this, 'notifPlayerMoved');
-            dojo.subscribe('endOfGame', this, function notifNoop() {});
+            dojo.subscribe('pawnMoved', this, 'notifPlayerMoved');
+            // dojo.subscribe('endOfGame', this, 'notifEndOfGame');
             // Delay end of game for interface stock stability before switching to game result
             this.notifqueue.setSynchronous('endOfGame', END_OF_GAME_DELAY);
         },
 
         notifPlayerMoved(notif) {
+            console.log('notifPlayerMoved', notif);
             this.movePawn(notif.args.fromSquareId, notif.args.toSquareId);
         },
     });
