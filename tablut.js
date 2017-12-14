@@ -115,8 +115,8 @@ define([
             const coords = toSquareId.split('_');
             const x = coords[1];
             const y = coords[2];
-            const newDiscId = `disc_${x}_${y}`;
-            dojo.query('#' + fromDiscId).attr('id', newDiscId);
+            const newDiscId = `disc_${ x }_${ y }`;
+            dojo.query(`#${ fromDiscId }`).attr('id', newDiscId);
             this.slideToObject(newDiscId, toSquareId).play();
         },
 
@@ -204,8 +204,8 @@ define([
                         toSquareId: event.currentTarget.id,
                     },
                     this,
-                    function () {},
-                    function () {}
+                    function noop() {},
+                    function noop() {}
                 );
             }
         },
