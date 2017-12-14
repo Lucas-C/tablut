@@ -129,8 +129,7 @@ class Tablut extends Table
         $result = array( 'players' => array() );
 
         // Add players specific infos
-        $dbres = self::DbQuery('SELECT player_id id, player_score score FROM player');
-        while ($player = mysql_fetch_assoc($dbres)) {
+        while ($player = self::DbQuery('SELECT player_id id, player_score score FROM player')->fetch_assoc()) {
             $result['players'][ $player['id'] ] = $player;
         }
 
@@ -194,10 +193,10 @@ class Tablut extends Table
         }
 
         $dstSquareFromDb = self::DbQuery("SELECT board_player, board_wall FROM board WHERE board_x = $toX AND board_y = $toY")->fetch_assoc();
-        if ($dstSquareFromDb['board_wall'] != NULL) {
+        if ($dstSquareFromDb['board_wall'] != null) {
             throw new feException("Cannot move onto a wall");
         }
-        if ($dstSquareFromDb['board_player'] != NULL) {
+        if ($dstSquareFromDb['board_player'] != null) {
             throw new feException("Cannot move onto another pawn");
         }
 
@@ -235,8 +234,9 @@ class Tablut extends Table
 
     public function stNextPlayer()
     {
-        $ActivePLayer = self::getActivePlayerId();        
+        $activePLayer = self::getActivePlayerId();        
         $next_player_id = self::activeNextPlayer();
+
 
         $WinKing = self::DbQuery("SELECT board_limitWin FROM board WHERE board_king='1' ")->fetch_assoc()['board_limitWin'];        
         $MoscovitWin = self::DbQuery("SELECT board_x FROM board WHERE board_king='1' ")->fetch_assoc()['board_x'];
@@ -254,6 +254,7 @@ class Tablut extends Table
             $this->gamestate->nextState('nextTurn');
         }
     }
+    
 //////////////////////////////////////////////////////////////////////////////
 //////////// Zombie
 ////////////
