@@ -241,15 +241,6 @@ class Tablut extends Table
         $this->gamestate->nextState('nextTurn');
     }
 
-    private function getOtherPlayerId($playerId)
-    {
-        while ($player = self::DbQuery('SELECT player_id FROM player')->fetch_assoc()) {
-            if ($player['player_id'] != $playerId) {
-                return $player['player_id']
-            }
-        }
-    }
-
 //////////////////////////////////////////////////////////////////////////////
 //////////// Zombie
 ////////////
