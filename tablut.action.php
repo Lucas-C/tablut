@@ -36,9 +36,9 @@ class action_tablut extends APP_GameAction  // @codingStandardsIgnoreLine
     public function move()
     {
         self::setAjaxMode();
-        $fromSquareId = self::getArg("fromSquareId", AT_alphanum, true);
+        $fromDiscId = self::getArg("fromDiscId", AT_alphanum, true);
         $toSquareId = self::getArg("toSquareId", AT_alphanum, true);
-        $result = $this->game->move($fromSquareId, $toSquareId);
+        $result = $this->game->move($fromDiscId, $toSquareId);
         self::ajaxResponse();
     }
 }

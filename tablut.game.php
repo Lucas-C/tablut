@@ -59,8 +59,8 @@ class Tablut extends Table
      */
     private function setupPlayers(array $players)
     {
-        $default_color = array( '000000', 'ffffff' );
-        $sql = 'INSERT INTO player (player_id, player_color, player_canal, player_name, player_avatar) VALUES ';
+        $default_color = array('000000', 'ffffff');
+        $sql = 'INSERT INTO player (player_id, player_color, player_canal, player_name, player_avatar) VALUES';
         $values = array();
         foreach ($players as $player_id => $player) {
             $color = array_shift($default_color);
@@ -171,43 +171,43 @@ class Tablut extends Table
 //////////// Player actions
 ////////////
     /**
-     * @param int $fromSquareId
+     * @param int $fromDiscId
      * @param int $toSquareId
      * @throws BgaUserException
      */
-    public function move(string $fromSquareId, string $toSquareId)
+    public function move(string $fromDiscId, string $toSquareId)
     {
         $this->checkAction('move'); // Check that this state change is possible
 
-        $activePlayerId = self::getActivePlayerId();
-
-        $fromSquarePos = explode('_', $fromSquareId);
-        $fromX = $fromSquarePos[1];
-        $fromY = $fromSquarePos[2];
+        $fromDiscPos = explode('_', $fromDiscId);
+        $fromX = $fromDiscPos[1];
+        $fromY = $fromDiscPos[2];
         $toSquarePos = explode('_', $toSquareId);
         $toX = $toSquarePos[1];
         $toY = $toSquarePos[2];
 
-        $pawnPlayerId = (int) self::DbQuery("SELECT board_player FROM board WHERE board_x = $fromX AND board_y = $fromY")->fetch_assoc()['board_player'];
+        $pawnFromDb = self::DbQuery("SELECT board_king, board_player FROM board WHERE board_x = $fromX AND board_y = $fromY")->fetch_assoc();
+        $pawnPlayerId = (int) $pawnFromDb['board_player'];
+        $pawnBoardKing = $pawnFromDb['board_king'] ? "'1'" : 'NULL';
 
         // Validate that this is an OK move
-        if ($activePlayerId != $pawnPlayerId) {
-            throw new feException("This pawn belongs to your opponent: $activePlayerId != $pawnPlayerId");
+        if (self::getActivePlayerId() != $pawnPlayerId) {
+            throw new feException("This pawn belongs to your opponent: pawnPlayerId=$pawnPlayerId | pawnBoardKing=$pawnBoardKing");
         }
 
-        self::DbQuery("UPDATE board SET board_player=NULL            WHERE board_x = $fromX AND board_y = $fromY");
-        self::DbQuery("UPDATE board SET board_player=$activePlayerId WHERE board_x = $toX   AND board_y = $toY");
+        self::DbQuery("UPDATE board SET board_player=NULL,            board_king=NULL           WHERE board_x = $fromX AND board_y = $fromY");
+        self::DbQuery("UPDATE board SET board_player='$pawnPlayerId', board_king=$pawnBoardKing WHERE board_x = $toX   AND board_y = $toY");
 
         self::notifyAllPlayers('pawnMoved', clienttranslate('${player_name} moves a pawn'), array(
-            'player_id' => $activePlayerId,
+            'player_id' => $pawnPlayerId,
             'player_name' => self::getActivePlayerName(),
-            'fromSquareId' => $fromSquareId,
-            'toSquareId' => $toSquareId
+            'fromDiscId' => $fromDiscId,
+            'toSquareId' => $toSquareId,
+            'gamedatas' => $this->getAllDatas()
         ));
 
         // Send another notif if a pawn was eaten
 
-        // should call $this->notifyAllPlayers(
         $this->gamestate->nextState('move');
     }
 

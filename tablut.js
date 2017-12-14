@@ -110,9 +110,14 @@ define([
             this.slideToObject(`disc_${ pawn.x }_${ pawn.y }`, `square_${ pawn.x }_${ pawn.y }`).play();
         },
 
-        movePawn(discId, squareId) {
-            console.log('movePawn', discId, squareId);
-            this.slideToObject(discId, squareId).play();
+        movePawn(fromDiscId, toSquareId) {
+            console.log('movePawn', fromDiscId, toSquareId);
+            const coords = toSquareId.split('_');
+            const x = coords[1];
+            const y = coords[2];
+            const newDiscId = `disc_${x}_${y}`;
+            dojo.query('#' + fromDiscId).attr('id', newDiscId);
+            this.slideToObject(newDiscId, toSquareId).play();
         },
 
 
@@ -195,9 +200,12 @@ define([
                     '/tablut/tablut/move.html',
                     {
                         lock: true,
-                        fromSquareId: this.selectedDisc.id,
+                        fromDiscId: this.selectedDisc.id,
                         toSquareId: event.currentTarget.id,
-                    }
+                    },
+                    this,
+                    function () {},
+                    function () {}
                 );
             }
         },
@@ -214,7 +222,7 @@ define([
 
         notifPlayerMoved(notif) {
             console.log('notifPlayerMoved', notif);
-            this.movePawn(notif.args.fromSquareId, notif.args.toSquareId);
+            this.movePawn(notif.args.fromDiscId, notif.args.toSquareId);
         },
     });
 });
