@@ -129,7 +129,8 @@ class Tablut extends Table
         $result = array( 'players' => array() );
 
         // Add players specific infos
-        while ($player = self::DbQuery('SELECT player_id id, player_score score FROM player')->fetch_assoc()) {
+        $dbres = self::DbQuery('SELECT player_id id, player_score score FROM player');
+        while ($player = mysql_fetch_assoc($dbres)) {
             $result['players'][ $player['id'] ] = $player;
         }
 
@@ -193,10 +194,10 @@ class Tablut extends Table
         }
 
         $dstSquareFromDb = self::DbQuery("SELECT board_player, board_wall FROM board WHERE board_x = $toX AND board_y = $toY")->fetch_assoc();
-        if ($dstSquareFromDb['board_wall'] != null) {
+        if ($dstSquareFromDb['board_wall'] != NULL) {
             throw new feException("Cannot move onto a wall");
         }
-        if ($dstSquareFromDb['board_player'] != null) {
+        if ($dstSquareFromDb['board_player'] != NULL) {
             throw new feException("Cannot move onto another pawn");
         }
 
@@ -241,10 +242,10 @@ class Tablut extends Table
         $WinKing = self::DbQuery("SELECT board_limitWin FROM board WHERE board_king='1' ")->fetch_assoc()['board_limitWin'];
         $MoscovitWin = self::DbQuery("SELECT board_x FROM board WHERE board_king='1' ")->fetch_assoc()['board_x'];
         if ($MoscovitWin == null) {
-            self::DbQuery("UPDATE player SET player_score='2' WHERE player_id='$ActivePLayer'");
+            self::DbQuery("UPDATE player SET player_score='2' WHERE player_id='$activePLayer'");
             $this->gamestate->nextState('endGame');
         } elseif ($WinKing == '1') {
-            self::DbQuery("UPDATE player SET player_score='1' WHERE player_id='$ActivePLayer'");
+            self::DbQuery("UPDATE player SET player_score='1' WHERE player_id='$activePLayer'");
             $this->gamestate->nextState('endGame');
         } else {
             $this->gamestate->nextState('nextTurn');
