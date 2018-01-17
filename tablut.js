@@ -9,6 +9,7 @@
  *
  * In this file, you are describing the logic of your user interface, in Javascript language.
  *
+ * Available JS functions reference: http://en.doc.boardgamearena.com/Studio_function_reference
  */
 
 define([
@@ -214,15 +215,20 @@ define([
         // /////////////////////////////////////////////////
         // // Reaction to cometD notifications
         setupNotifications() {
-            dojo.subscribe('pawnMoved', this, 'notifPlayerMoved');
+            dojo.subscribe('pawnMoved', this, 'notifPawnMoved');
+            dojo.subscribe('pawnEaten', this, 'notifPawnEaten');
             // dojo.subscribe('endOfGame', this, 'notifEndOfGame');
             // Delay end of game for interface stock stability before switching to game result
             this.notifqueue.setSynchronous('endOfGame', END_OF_GAME_DELAY);
         },
 
-        notifPlayerMoved(notif) {
-            console.log('notifPlayerMoved', notif);
+        notifPawnMoved(notif) {
             this.movePawn(notif.args.fromDiscId, notif.args.toSquareId);
+        },
+
+        notifPawnEaten(notif) {
+            const discId = `disc_${ notif.args.eatenPawnX }_${ notif.args.eatenPawnY }`;
+            dojo.destroy(discId);
         },
     });
 });

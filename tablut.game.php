@@ -141,7 +141,7 @@ class Tablut extends Table
                                                           board_player player,
                                                           board_king king,
                                                           board_wall wall,
-                                                          board_limitWin WinPosition
+                                                          board_limitWin limitWin
                                                       FROM board');
 
         return $result;
@@ -180,29 +180,29 @@ class Tablut extends Table
         $this->checkAction('move'); // Check that this state change is possible
 
         $fromDiscPos = explode('_', $fromDiscId);
-        $fromX = $fromDiscPos[1];
-        $fromY = $fromDiscPos[2];
+        $fromX = (int) $fromDiscPos[1];
+        $fromY = (int) $fromDiscPos[2];
         $toSquarePos = explode('_', $toSquareId);
-        $toX = $toSquarePos[1];
-        $toY = $toSquarePos[2];
+        $toX = (int) $toSquarePos[1];
+        $toY = (int) $toSquarePos[2];
 
-        $srcPawnFromDb = self::DbQuery("SELECT board_player, board_king FROM board WHERE board_x = $fromX AND board_y = $fromY")->fetch_assoc();
+        $srcPawnFromDb = $this->dbPawnAt($fromX, $fromY);
         $pawnPlayerId = (int) $srcPawnFromDb['board_player'];
-        $pawnBoardKing = $srcPawnFromDb['board_king'] ? "'1'" : 'NULL';
+        $pawnIsKing = $srcPawnFromDb['board_king'] ? "'1'" : 'NULL';
         if (self::getActivePlayerId() != $pawnPlayerId) {
-            throw new feException("This pawn belongs to your opponent: pawnPlayerId=$pawnPlayerId | pawnBoardKing=$pawnBoardKing");
+            throw new feException("This pawn belongs to your opponent: pawnPlayerId=$pawnPlayerId | pawnIsKing=$pawnIsKing");
         }
 
-        $dstSquareFromDb = self::DbQuery("SELECT board_player, board_wall FROM board WHERE board_x = $toX AND board_y = $toY")->fetch_assoc();
-        if ($dstSquareFromDb['board_wall'] != NULL) {
+        $dstSquareFromDb = $this->dbPawnAt($toX, $toY);
+        if ($dstSquareFromDb['board_wall'] != null) {
             throw new feException("Cannot move onto a wall");
         }
-        if ($dstSquareFromDb['board_player'] != NULL) {
+        if ($dstSquareFromDb['board_player'] != null) {
             throw new feException("Cannot move onto another pawn");
         }
 
         self::DbQuery("UPDATE board SET board_player=NULL,            board_king=NULL           WHERE board_x = $fromX AND board_y = $fromY");
-        self::DbQuery("UPDATE board SET board_player='$pawnPlayerId', board_king=$pawnBoardKing WHERE board_x = $toX   AND board_y = $toY");
+        self::DbQuery("UPDATE board SET board_player='$pawnPlayerId', board_king=$pawnIsKing WHERE board_x = $toX   AND board_y = $toY");
 
         self::notifyAllPlayers('pawnMoved', clienttranslate('${player_name} moves a pawn'), array(
             'player_id' => $pawnPlayerId,
@@ -213,10 +213,74 @@ class Tablut extends Table
         ));
 
         // Send another notif if a pawn was eaten
+        $eatenPawns = $this->findEatenPawns($toX, $toY);
+        foreach ($eatenPawns as $eatenPawn) {
+            list($eatenPawnX, $eatenPawnY) = $eatenPawn;
+            self::DbQuery("UPDATE board SET board_player=NULL, board_king=NULL WHERE board_x = $eatenPawnX AND board_y = $eatenPawnY");
+            self::notifyAllPlayers('pawnEaten', clienttranslate("Pawn at position x=$eatenPawnX,y=$eatenPawnY has been eaten by player by \${player_name} !"), array(
+                'player_id' => $pawnPlayerId,
+                'player_name' => self::getActivePlayerName(),
+                'eatenPawnX' => $eatenPawnX,
+                'eatenPawnY' => $eatenPawnY,
+                'gamedatas' => $this->getAllDatas()
+            ));
+        }
 
         $this->gamestate->nextState('move');
     }
 
+    /**
+     * @param int $x : new position of the pawn moved
+     * @param int $y : new position of the pawn moved
+     * @return array(array(int x, int y))
+     */
+    private function findEatenPawns(int $x, int $y)
+    {
+        $activePlayer = self::getActivePlayerId();
+        $positionsToTest = array(
+            array('victim' => array($x, $y + 1), 'dual' => array($x, $y + 2), 'third' => array($x - 1, $y + 1), 'fourth' => array($x + 1, $y + 1)),
+            array('victim' => array($x, $y - 1), 'dual' => array($x, $y - 2), 'third' => array($x - 1, $y - 1), 'fourth' => array($x - 1, $y - 1)),
+            array('victim' => array($x + 1, $y), 'dual' => array($x + 2, $y), 'third' => array($x + 1, $y - 1), 'fourth' => array($x + 1, $y + 1)),
+            array('victim' => array($x - 1, $y), 'dual' => array($x - 2, $y), 'third' => array($x - 1, $y - 1), 'fourth' => array($x - 1, $y + 1)),
+        );
+
+        $eatenPawns = array();
+        foreach ($positionsToTest as $pos) {
+            $victimPawn = $this->dbPawnAtPos($pos['victim']);
+            if ($victimPawn['board_player'] == null || $victimPawn['board_player'] == $activePlayer) {
+                continue;
+            }
+            $dualPawn = $this->dbPawnAtPos($pos['dual']);
+            if ($victimPawn['board_king']) {
+                $thirdPawn = $this->dbPawnAtPos($pos['third']);
+                $fourthPawn = $this->dbPawnAtPos($pos['fourth']);
+                if (($dualPawn['board_player'] == $activePlayer || $dualPawn['board_wall'])
+                    && ($thirdPawn['board_player'] == $activePlayer || $thirdPawn['board_wall'])
+                    && ($fourthPawn['board_player'] == $activePlayer || $fourthPawn['board_wall'])) {
+                    array_push($eatenPawns, $pos['victim']);
+                }
+            } else {
+                if ($dualPawn['board_player'] == $activePlayer) {
+                    array_push($eatenPawns, $pos['victim']);
+                }
+            }
+        }
+        return $eatenPawns;
+    }
+
+    private function dbPawnAtPos($pos)
+    {
+        list($x, $y) = $pos;
+        return $this->dbPawnAt($x, $y);
+    }
+
+    private function dbPawnAt($x, $y)
+    {
+        if ($x < 1 || $x > 9 || $y < 1 || $y > 9) {
+            return array('board_player' => null, 'board_king' => null);
+        }
+        return self::DbQuery("SELECT board_player, board_king, board_wall FROM board WHERE board_x = $x AND board_y = $y")->fetch_assoc();
+    }
 
 //////////////////////////////////////////////////////////////////////////////
 //////////// Game state arguments
@@ -236,15 +300,14 @@ class Tablut extends Table
     public function stNextPlayer()
     {
         $activePLayer = self::getActivePlayerId();
-        $next_player_id = self::activeNextPlayer();
+        $nextPlayerId = self::activeNextPlayer();
 
-
-        $WinKing = self::DbQuery("SELECT board_limitWin FROM board WHERE board_king='1' ")->fetch_assoc()['board_limitWin'];
-        $MoscovitWin = self::DbQuery("SELECT board_x FROM board WHERE board_king='1' ")->fetch_assoc()['board_x'];
-        if ($MoscovitWin == null) {
+        $kingWins = self::DbQuery("SELECT board_limitWin FROM board WHERE board_king='1' ")->fetch_assoc()['board_limitWin'];
+        $moscovitWin = self::DbQuery("SELECT board_x FROM board WHERE board_king='1' ")->fetch_assoc()['board_x'];
+        if ($moscovitWin == null) {
             self::DbQuery("UPDATE player SET player_score='2' WHERE player_id='$activePLayer'");
             $this->gamestate->nextState('endGame');
-        } elseif ($WinKing == '1') {
+        } elseif ($kingWins == '1') {
             self::DbQuery("UPDATE player SET player_score='1' WHERE player_id='$activePLayer'");
             $this->gamestate->nextState('endGame');
         } else {
