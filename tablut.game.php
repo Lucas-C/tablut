@@ -186,20 +186,190 @@ class Tablut extends Table
         $toX = (int) $toSquarePos[1];
         $toY = (int) $toSquarePos[2];
 
+		// pawn player identification
         $srcPawnFromDb = $this->dbPawnAt($fromX, $fromY);
         $pawnPlayerId = (int) $srcPawnFromDb['board_player'];
         $pawnIsKing = $srcPawnFromDb['board_king'] ? "'1'" : 'NULL';
-        if (self::getActivePlayerId() != $pawnPlayerId) {
-            throw new feException("This pawn belongs to your opponent: pawnPlayerId=$pawnPlayerId | pawnIsKing=$pawnIsKing");
-        }
-
-        $dstSquareFromDb = $this->dbPawnAt($toX, $toY);
-        if ($dstSquareFromDb['board_wall'] != null) {
-            throw new feException("Cannot move onto a wall");
-        }
-        if ($dstSquareFromDb['board_player'] != null) {
+		$pawnIsOnWall = $srcPawnFromDb['board_wall'] ? true : false ;
+        
+        // ------------------
+        // reject play
+        // ------------------
+        
+        $RejectMove = false;
+        // reject if a pawn is present
+        $dstSquareFromDb = self::DbQuery("SELECT board_player, board_wall FROM board WHERE board_x = $toX AND board_y = $toY")->fetch_assoc();
+        if ($dstSquareFromDb['board_player'] != NULL) {
             throw new feException("Cannot move onto another pawn");
         }
+        
+        // reject diagonal move
+        if ($toX != $fromX && $toY != $fromY ) {
+            throw new feException("Cannot move on diagonal");
+        }
+        
+        // throw an exception if is not in same column without pawn or wall between the disc to the final position
+        if ( $toX == $fromX ) {
+            if ( $fromY < $toY ) {
+                $dbres_asc  = self::DbQuery("SELECT board_y posY, board_wall wall_present, board_player player_present FROM board WHERE board_x = $toX ORDER BY board_y ASC");
+                // Loop on each position between the start position to the end position and verify that no wall and no pawn
+                // specific case for down of the wall 
+                while ($Column = mysql_fetch_assoc ($dbres_asc) ) {
+                    if ( $fromY < $Column['posY'] &&  $Column['posY'] <= $toY ) {
+                        ///////////////////
+                        // dbg
+                        //self::notifyAllPlayers('moveposible', "test", array(
+                        //'column' => $Column,
+                        //'IsWall' => $pawnIsOnWall,
+                        //'king' => $pawnIsKing,
+                        //'player' => $pawnPlayerId,
+                        //'egal' => $pawnIsOnWall == true
+                        //));
+                        // End DBG
+                        ///////////////////
+                        if( $pawnIsOnWall ){
+                            ///////////////////
+                            // dbg
+                            //self::notifyAllPlayers('moveposible2', "test", array(
+                            //'IsWall' => $pawnIsOnWall
+                            //));
+                            //// End DBG
+                            ///////////////////                        
+                            if ($Column['wall_present'] == null ) {
+                                $pawnIsOnWall = false;
+                            }
+                            if ($Column['player_present'] != null ) {
+                                $RejectMove = true;
+                            }
+                            
+                        } else {
+                            if ($Column['wall_present'] != null || $Column['player_present'] != null ) {
+                                $RejectMove = true;
+								///////////////////
+								// dbg
+                                //self::notifyAllPlayers('Error', "test", array(
+                                //    'Xmove' => true, 
+                                //    'wall_present' => $Column['wall_present'],
+                                //    'player_p' => $Column['player_present'] 
+                                //    ));
+								// End DBG
+								///////////////////
+                            }
+                        }
+                    }
+                    
+                } 
+            } else {
+                $dbres_desc = self::DbQuery("SELECT board_y posY, board_wall wall_present, board_player player_present FROM board WHERE board_x = $toX ORDER BY board_y DESC");
+                // Loop on each position between the start position to the end position and verify that no wall and no pawn
+                // specific case for down of the wall 
+                while ($Column = mysql_fetch_assoc($dbres_desc) ) {
+                    if ( $Column['posY'] < $fromY &&  $Column['posY'] >= $toY ) {
+                        ///////////////////
+                        // dbg
+                        //self::notifyAllPlayers('moveposible', "test", array(
+                        //'column' => $Column,
+                        //'IsWall' => $pawnIsOnWall,
+                        //'king' => $pawnIsKing,
+                        //'player' => $pawnPlayerId,
+                        //'egal' => $pawnIsOnWall == "1"
+                        //));
+                        // End DBG
+                        ///////////////////
+                        if( $pawnIsOnWall ){
+                            ///////////////////
+                            // dbg
+                            //self::notifyAllPlayers('moveposible2', "test", array(
+                            //'IsWall' => $pawnIsOnWall
+                            //));
+                            // End DBG
+                            ///////////////////  
+                            if ($Column['wall_present'] == null ) {
+                                $pawnIsOnWall = false;
+                            }
+                            if ($Column['player_present'] != null ) {
+                                $RejectMove = true;
+                            }
+                            
+                        } else {
+                            if ($Column['wall_present'] != null || $Column['player_present'] != null) {
+                                $RejectMove = true;
+								///////////////////
+								// dbg
+                                //self::notifyAllPlayers('Error', "test", array(
+                                //    'Xmove2' => true, 
+                                //    'wall_present' => $Column['wall_present'],
+                                //    'player_p' => $Column['player_present'] 
+                                //    ));
+								// End DBG
+								///////////////////
+                            }
+                        }
+                    }
+                }
+            }
+        } else {
+            // $toY == $fromY 
+            if ( $fromX < $toX ) {
+                // Loop on each position between the start position to the end position and verify that no wall and no pawn
+                // specific case for down of the wall 
+                $dbres_asc  = self::DbQuery("SELECT board_X posX, board_wall wall_present, board_player player_present FROM board WHERE board_y = $toY ORDER BY board_y ASC");
+                while ($row = mysql_fetch_assoc ($dbres_asc) ) {
+                    if ( $fromX < $row['posX'] &&  $row['posX'] <= $toX ) {
+                        if( $pawnIsOnWall ){
+                            if ($row['wall_present'] == null ) {
+                                $pawnIsOnWall = false;
+                            }
+                            if ($row['player_present'] != null ) {
+                                $RejectMove = true;
+                            }
+                            
+                        } else {
+                            if ($row['wall_present'] != null || $row['player_present'] != null ) {
+                                $RejectMove = true;
+                            }
+                        }
+                    }
+                    
+                } 
+            } else {
+                // Loop on each position between the start position to the end position and verify that no wall and no pawn
+                // specific case for down of the wall 
+                $dbres_desc = self::DbQuery("SELECT board_X posX, board_wall wall_present, board_player player_present FROM board WHERE board_y = $toY ORDER BY board_y DESC");
+                while ($row = mysql_fetch_assoc($dbres_desc) ) {
+                    if ( $row['posX'] < $fromX &&  $row['posX'] >= $toX ) {
+                        if( $pawnIsOnWall ){
+                            if ($row['wall_present'] == null ) {
+                                $pawnIsOnWall = false;
+                            }
+                            if ($row['player_present'] != null ) {
+                                $RejectMove = true;
+                            }
+                            
+                        } else {
+                            if ($row['wall_present'] != null || $row['player_present'] != null) {
+                                $RejectMove = true;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        
+        
+        // throw an exception if is not in same row without pawn or wall between the disc to the final position
+        if ($RejectMove) {
+            ///////////////////
+            // dbg
+            //self::notifyAllPlayers('Error', "test", array(
+            //    'invalid move' => true,
+            //    'reject' => $RejectMove
+            //    ));
+            // end dbg
+            ///////////////////
+            throw new feException("Cannot move");
+        }
+
 
         self::DbQuery("UPDATE board SET board_player=NULL,            board_king=NULL           WHERE board_x = $fromX AND board_y = $fromY");
         self::DbQuery("UPDATE board SET board_player='$pawnPlayerId', board_king=$pawnIsKing WHERE board_x = $toX   AND board_y = $toY");
