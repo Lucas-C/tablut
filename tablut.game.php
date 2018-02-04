@@ -227,7 +227,7 @@ class Tablut extends Table
                         //));
                         // End DBG
                         ///////////////////
-                        if($pawnIsOnWall) {
+                        if ($pawnIsOnWall) {
                             ///////////////////
                             // dbg
                             //self::notifyAllPlayers('moveposible2', "test", array(
