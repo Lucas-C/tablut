@@ -94,7 +94,8 @@
     border-radius: 30px;
     cursor: pointer;
 }
-.p1King:before {
+
+.p1King::before {
     content: '♕';
     font-size: 3em;
     line-height: 54px;
@@ -118,7 +119,7 @@
     background-color: darkred;
 }
 
-.availableMove:before {
+.availableMove::before {
     content: ' ';
     width: 54px;
     height: 54px;
@@ -127,5 +128,5 @@
     background-color: darkred;
     border-radius: 30px;
     cursor: pointer;
-    opacity: .4;
+    opacity: 0.4;
 }

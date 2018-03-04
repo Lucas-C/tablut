@@ -10,6 +10,8 @@
  * In this file, you are describing the logic of your user interface, in Javascript language.
  *
  * Available JS functions reference: http://en.doc.boardgamearena.com/Studio_function_reference
+ *
+ * Note: this === window.gameui
  */
 
 define([
@@ -223,10 +225,12 @@ define([
         },
 
         notifPawnMoved(notif) {
+            this.gamedatas.board = notif.args.gamedatas.board;
             this.movePawn(notif.args.fromDiscId, notif.args.toSquareId);
         },
 
         notifPawnEaten(notif) {
+            this.gamedatas.board = notif.args.gamedatas.board;
             const discId = `disc_${ notif.args.eatenPawnX }_${ notif.args.eatenPawnY }`;
             dojo.destroy(discId);
         },
