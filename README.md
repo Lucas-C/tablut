@@ -5,7 +5,7 @@
 
 Tablut board game implementation for [BoardGameArena](https://boardgamearena.com).
 
-![Board screenshot](board_screenshot.png)
+![Board screenshot](img/board_screenshot.png)
 
 Rules:
 - [in English](http://en.doc.boardgamearena.com/Gamehelptablut)
@@ -17,7 +17,7 @@ Note: The player invited to join the game currently always plays the king.
 
 Very basic:
 
-![4-states simple state machine](GameStateMachine.png)
+![4-states simple state machine](img/GameStateMachine.png)
 
 
 # Development
