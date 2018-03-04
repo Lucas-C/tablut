@@ -175,6 +175,7 @@ define([
             vElementDisc = this.gamedatas.board.find(vElement => vElement.x === vDiscPosition.x && vElement.y === vDiscPosition.y)
 
             let vDiscOnWall = vElementDisc.wall;
+            let vi;
             // all X < discPosition.x
             for (vi = vDiscPosition.x * 9 - (9 - vDiscPosition.y) -2 ; vi > (vDiscPosition.x - 1) * 9 - 1 ; --vi){
                 if (this.gamedatas.board[vi].player != null){
