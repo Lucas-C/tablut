@@ -402,7 +402,7 @@ class Tablut extends Table
         $activePlayer = self::getActivePlayerId();
         $positionsToTest = array(
             array('victim' => array($x, $y + 1), 'dual' => array($x, $y + 2), 'third' => array($x - 1, $y + 1), 'fourth' => array($x + 1, $y + 1)),
-            array('victim' => array($x, $y - 1), 'dual' => array($x, $y - 2), 'third' => array($x - 1, $y - 1), 'fourth' => array($x - 1, $y - 1)),
+            array('victim' => array($x, $y - 1), 'dual' => array($x, $y - 2), 'third' => array($x - 1, $y - 1), 'fourth' => array($x + 1, $y - 1)),
             array('victim' => array($x + 1, $y), 'dual' => array($x + 2, $y), 'third' => array($x + 1, $y - 1), 'fourth' => array($x + 1, $y + 1)),
             array('victim' => array($x - 1, $y), 'dual' => array($x - 2, $y), 'third' => array($x - 1, $y - 1), 'fourth' => array($x - 1, $y + 1)),
         );
