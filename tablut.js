@@ -63,7 +63,7 @@ define([
             }
 
             if (myPlayerIndex === 1) {
-                dojo.query('.p1Soldier').on('click', lang.hitch(this, this.onSelectPawn));
+                dojo.query('.p1Swede').on('click', lang.hitch(this, this.onSelectPawn));
                 dojo.query('.p1King').on('click', lang.hitch(this, this.onSelectPawn));
             } else {
                 dojo.query('.p0Muscovite').on('click', lang.hitch(this, this.onSelectPawn));
@@ -99,7 +99,7 @@ define([
                     y: pawn.y,
                 }), 'discs');
             } else if (pawnPlayerIndex === 1) {
-                dojo.place(this.format_block('jstpl_p1Soldier', {
+                dojo.place(this.format_block('jstpl_p1Swede', {
                     x: pawn.x,
                     y: pawn.y,
                 }), 'discs');
