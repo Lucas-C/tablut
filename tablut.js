@@ -157,6 +157,100 @@ define([
             };
         },
 
+        // /////////////////////////////////////////////////
+        // function to remove the display of all available move
+        removeAllAvailableMove(){
+            for (v_Element of this.gamedatas.board ){
+                dojo.query(`#square_${v_Element.x}_${v_Element.y}`)[0].classList.remove('availableMove');
+            }            
+        },
+
+        // /////////////////////////////////////////////////
+        // function to display all available move of the input disc selected
+        availableMode(inselectedDics){
+            let coords = this.selectedDisc.id.split('_');            
+            const vDiscPosition = { x: coords[1], y: coords[2] };
+            
+            // find the element present on the table
+            vElementDisc = this.gamedatas.board.find(vElement => vElement.x === vDiscPosition.x && vElement.y === vDiscPosition.y)
+
+            let vDiscOnWall = vElementDisc.wall;
+            // all X < discPosition.x
+            for (vi = vDiscPosition.x * 9 - (9 - vDiscPosition.y) -2 ; vi > (vDiscPosition.x - 1) * 9 - 1 ; --vi){
+                if (this.gamedatas.board[vi].player != null){
+                    break;
+                } else {
+                    if (this.gamedatas.board[vi].wall === "1") {
+                        if (vDiscOnWall === "1") {
+                            dojo.query(`#square_${this.gamedatas.board[vi].x}_${this.gamedatas.board[vi].y}`)[0].classList.add('availableMove');
+                        }else{
+                            break;
+                        }
+                    } else {
+                        dojo.query(`#square_${this.gamedatas.board[vi].x}_${this.gamedatas.board[vi].y}`)[0].classList.add('availableMove');                     
+                    }
+                    vDiscOnWall = this.gamedatas.board[vi].wall
+                }
+            }
+            
+            vDiscOnWall = vElementDisc.wall;
+            // all X > discPosition.x
+            for (vi = vDiscPosition.x * 9 - (9 - vDiscPosition.y) ; vi < (vDiscPosition.x) * 9 ; ++vi){
+                if (this.gamedatas.board[vi].player != null){
+                    break;
+                } else {
+                    if (this.gamedatas.board[vi].wall === "1") {
+                        if (vDiscOnWall === "1") {
+                            dojo.query(`#square_${this.gamedatas.board[vi].x}_${this.gamedatas.board[vi].y}`)[0].classList.add('availableMove');
+                        }else{
+                            break;
+                        }
+                    } else {
+                        dojo.query(`#square_${this.gamedatas.board[vi].x}_${this.gamedatas.board[vi].y}`)[0].classList.add('availableMove');                     
+                    }
+                    vDiscOnWall = this.gamedatas.board[vi].wall
+                }
+            }
+            
+            vDiscOnWall = vElementDisc.wall;
+            // all y < discPosition.y
+            for (vi = vDiscPosition.x * 9 - (9 - vDiscPosition.y) -1 - 9 ; vi > - 1 ; vi-=9){
+                if (this.gamedatas.board[vi].player != null){
+                    break;
+                } else {
+                    if (this.gamedatas.board[vi].wall === "1") {
+                        if (vDiscOnWall === "1") {
+                            dojo.query(`#square_${this.gamedatas.board[vi].x}_${this.gamedatas.board[vi].y}`)[0].classList.add('availableMove');
+                        }else{
+                            break;
+                        }
+                    } else {
+                        dojo.query(`#square_${this.gamedatas.board[vi].x}_${this.gamedatas.board[vi].y}`)[0].classList.add('availableMove');                     
+                    }
+                    vDiscOnWall = this.gamedatas.board[vi].wall
+                }
+            }
+            
+            vDiscOnWall = vElementDisc.wall;
+            // all y > discPosition.y
+            for (vi = vDiscPosition.x * 9 - (9 - vDiscPosition.y) -1 + 9 ; vi < 82 ; vi+=9){
+                if (this.gamedatas.board[vi].player != null){
+                    break;
+                } else {
+                    if (this.gamedatas.board[vi].wall === "1") {
+                        if (vDiscOnWall === "1") {
+                            dojo.query(`#square_${this.gamedatas.board[vi].x}_${this.gamedatas.board[vi].y}`)[0].classList.add('availableMove');
+                        }else{
+                            break;
+                        }
+                    } else {
+                        dojo.query(`#square_${this.gamedatas.board[vi].x}_${this.gamedatas.board[vi].y}`)[0].classList.add('availableMove');                     
+                    }
+                    vDiscOnWall = this.gamedatas.board[vi].wall
+                }
+            }
+        },
+
 
         // /////////////////////////////////////////////////
         // // Player's action
@@ -170,6 +264,8 @@ define([
 
             if (this.selectedDisc) {
                 this.selectedDisc.classList.remove('selected');
+                // remove all the availableMode
+                this.removeAllAvailableMove();
             }
             if (event.currentTarget === this.selectedDisc) {
                 // unselect:
@@ -177,6 +273,8 @@ define([
             } else {
                 this.selectedDisc = event.currentTarget;
                 this.selectedDisc.classList.add('selected');
+                // Display possible all available move
+                this.availableMode(this.selectedDics);
             }
         },
 
@@ -210,6 +308,9 @@ define([
                     function noop() {},
                     function noop() {}
                 );
+                this.selectedDisc.classList.remove('selected');
+                this.selectedDisc = null;  
+                this.removeAllAvailableMove();
             }
         },
 
