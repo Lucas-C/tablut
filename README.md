@@ -3,10 +3,15 @@
 [![Build Status](https://travis-ci.org/Lucas-C/tablut.svg?branch=master)](https://travis-ci.org/Lucas-C/tablut)
 [![Waffle.io - Columns and their card count](https://badge.waffle.io/Lucas-C/tablut.svg?columns=all)](https://waffle.io/Lucas-C/tablut)
 
+Tablut board game implementation for [BoardGameArena](https://boardgamearena.com).
 
-[Tablut](http://jeuxstrategieter.free.fr/Tablut_complet.php) board game implementation for [BoardGameArena](https://boardgamearena.com).
+![Board screenshot](board_screenshot.png)
 
-The player invited to join the game plays the king.
+Rules:
+- [in English](http://en.doc.boardgamearena.com/Gamehelptablut)
+- [in French](http://fr.doc.boardgamearena.com/Gamehelptablut)
+
+Note: The player invited to join the game currently always plays the king.
 
 ## Game state machine
 

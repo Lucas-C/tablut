@@ -61,10 +61,10 @@ define([
             }
 
             if (myPlayerIndex === 1) {
-                dojo.query('.discPlayer1').on('click', lang.hitch(this, this.onSelectPawn));
-                dojo.query('.discPlayer1King').on('click', lang.hitch(this, this.onSelectPawn));
+                dojo.query('.p1Soldier').on('click', lang.hitch(this, this.onSelectPawn));
+                dojo.query('.p1King').on('click', lang.hitch(this, this.onSelectPawn));
             } else {
-                dojo.query('.discPlayer0').on('click', lang.hitch(this, this.onSelectPawn));
+                dojo.query('.p0Muscovite').on('click', lang.hitch(this, this.onSelectPawn));
             }
             dojo.query('.square').on('click', lang.hitch(this, this.onMove));
             this.addTooltip('move', _('Move'), '');
@@ -92,17 +92,17 @@ define([
         placePawn(pawn) {
             const pawnPlayerIndex = this.gamedatas.players[pawn.player].color === 'ffffff' ? 1 : 0;
             if (pawn.king) {
-                dojo.place(this.format_block('jstpl_discPlayer1King', {
+                dojo.place(this.format_block('jstpl_p1King', {
                     x: pawn.x,
                     y: pawn.y,
                 }), 'discs');
             } else if (pawnPlayerIndex === 1) {
-                dojo.place(this.format_block('jstpl_discPlayer1', {
+                dojo.place(this.format_block('jstpl_p1Soldier', {
                     x: pawn.x,
                     y: pawn.y,
                 }), 'discs');
             } else {
-                dojo.place(this.format_block('jstpl_discPlayer0', {
+                dojo.place(this.format_block('jstpl_p0Muscovite', {
                     x: pawn.x,
                     y: pawn.y,
                 }), 'discs');
