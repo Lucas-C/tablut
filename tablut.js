@@ -160,8 +160,8 @@ define([
         // /////////////////////////////////////////////////
         // function to remove the display of all available move
         removeAllAvailableMove(){
-            let vElement;
-            for (vElement of this.gamedatas.board ){
+            let vElement = null;
+            for (vElement of this.gamedatas.board){
                 dojo.query(`#square_${vElement.x}_${vElement.y}`)[0].classList.remove('availableMove');
             }            
         },
@@ -173,87 +173,52 @@ define([
             const vDiscPosition = { x: coords[1], y: coords[2] };
             const vLineSize = 9;
             const vBoardSize = 81;
+            const vNumberOfDirection = 4;
             
             // find the element present on the table
             let vElementDisc = this.gamedatas.board.find(vElement => 
                                 vElement.x === vDiscPosition.x && vElement.y === vDiscPosition.y)
 
             let vDiscOnWall = vElementDisc.wall;
-            let vIndex;
-            let vPosition;
-            // all X < discPosition.x
-            for ( vIndex = (vDiscPosition.x * vLineSize) - (vLineSize - vDiscPosition.y) -2 ;
-                  vIndex > ((vDiscPosition.x - 1) * vLineSize) - 1 ;
-                  --vIndex ){
-                vPosition = this.gamedatas.board[vIndex];
-                if (vPosition.player !== null){
-                    break;
-                }
+            let vIndex = 0;
+            let vPosition = null;
+            
+            vStart = [ (vDiscPosition.x * vLineSize) - (vLineSize - vDiscPosition.y) -2, 
+                       (vDiscPosition.x * vLineSize) - (vLineSize - vDiscPosition.y), 
+                       (vDiscPosition.x * vLineSize) - (vLineSize - vDiscPosition.y) -1 - vLineSize,
+                       (vDiscPosition.x * vLineSize) - (vLineSize - vDiscPosition.y) -1 + vLineSize
+                     ];
+            vEnd   = [ ((vDiscPosition.x - 1) * vLineSize) - 1,
+                       vDiscPosition.x * vLineSize,
+                       0,
+                       vBoardSize
+                      ];
+            vCoeff =     [ -1, 1, -1, 1 ];
+            vIncrement = [ -1, 1, -9, 9 ];
 
-                if (vPosition.wall === "1" && vDiscOnWall !== "1") {
-                    break;
-                }
+            let vDirection = 0;
+            for (vDirection = 0; vDirection < vNumberOfDirection; ++vDirection) {
+                console.log("vDirection ", vDirection)
+                vDiscOnWall = vElementDisc.wall;       // initialize the default position
+                for( vIndex = vStart[vDirection]; 
+                     vIndex*vCoeff[vDirection] < vEnd[vDirection]*vCoeff[vDirection]; 
+                     vIndex += vIncrement[vDirection] 
+                   ){
+                    console.log("vIndex ", vIndex)
+                    vPosition = this.gamedatas.board[vIndex];
+                    if (vPosition.player !== null){
+                        break;
+                    }
 
-                dojo.query(`#square_${vPosition.x}_${vPosition.y}`)[0].classList.add('availableMove');
-                vDiscOnWall = vPosition.wall
+                    if (vPosition.wall === "1" && vDiscOnWall !== "1") {
+                        break;
+                    }
+
+                    dojo.query(`#square_${vPosition.x}_${vPosition.y}`)[0].classList.add('availableMove');
+                    vDiscOnWall = vPosition.wall
+                }
             }
             
-            vDiscOnWall = vElementDisc.wall;
-            // all X > discPosition.x
-            for ( vIndex = (vDiscPosition.x * vLineSize) - (vLineSize - vDiscPosition.y) ;
-                  vIndex < vDiscPosition.x * vLineSize ;
-                  ++vIndex){
-                
-                vPosition = this.gamedatas.board[vIndex];
-                if (vPosition.player !== null){
-                    break;
-                }
-
-                if (vPosition.wall === "1" && vDiscOnWall !== "1") {
-                    break;
-                }
-
-                dojo.query(`#square_${vPosition.x}_${vPosition.y}`)[0].classList.add('availableMove');
-                vDiscOnWall = vPosition.wall
-            }
-            
-            vDiscOnWall = vElementDisc.wall;
-            // all y < discPosition.y
-            for ( vIndex = (vDiscPosition.x * vLineSize) - (vLineSize - vDiscPosition.y) -1 - vLineSize ;
-                  vIndex >= 0 ;
-                  vIndex-=vLineSize){
-                  
-                vPosition = this.gamedatas.board[vIndex];
-                if (vPosition.player !== null){
-                    break;
-                }
-
-                if (vPosition.wall === "1" && vDiscOnWall !== "1") {
-                    break;
-                }
-
-                dojo.query(`#square_${vPosition.x}_${vPosition.y}`)[0].classList.add('availableMove');
-                vDiscOnWall = vPosition.wall
-            }
-            
-            vDiscOnWall = vElementDisc.wall;
-            // all y > discPosition.y
-            for ( vIndex = (vDiscPosition.x * vLineSize) - (vLineSize - vDiscPosition.y) -1 + vLineSize ;
-                  vIndex <= vBoardSize  ;
-                  vIndex+=vLineSize){
-                  
-                vPosition = this.gamedatas.board[vIndex];
-                if (vPosition.player !== null){
-                    break;
-                }
-
-                if (vPosition.wall === "1" && vDiscOnWall !== "1") {
-                    break;
-                }
-
-                dojo.query(`#square_${vPosition.x}_${vPosition.y}`)[0].classList.add('availableMove');
-                vDiscOnWall = vPosition.wall
-            }
         },
 
 
