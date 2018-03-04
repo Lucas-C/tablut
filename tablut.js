@@ -194,8 +194,8 @@ define([
                        0,
                        vBoardSize
                       ];
-            let vCoeff =     [ -vIncUn, vIncUn, -vIncUn, vIncUn ];
-            let vIncrement = [ -vIncUn, vIncUn, -vLineSize, vLineSize ];
+            let vCoeff =     [ -vValueUn, vValueUn, -vValueUn, vValueUn ];
+            let vIncrement = [ -vValueUn, vValueUn, -vLineSize, vLineSize ];
 
             let vDirection = 0;
             for (vDirection = 0; vDirection < vNumberOfDirection; ++vDirection) {
