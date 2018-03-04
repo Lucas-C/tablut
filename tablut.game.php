@@ -190,13 +190,16 @@ class Tablut extends Table
         $srcPawnFromDb = $this->dbPawnAt($fromX, $fromY);
         $pawnPlayerId = (int) $srcPawnFromDb['board_player'];
         $pawnIsKing = $srcPawnFromDb['board_king'] ? "'1'" : 'NULL';
+        if (self::getActivePlayerId() != $pawnPlayerId) {
+            throw new feException("This pawn belongs to your opponent: pawnPlayerId=$pawnPlayerId | pawnIsKing=$pawnIsKing");
+        }
         $pawnIsOnWall = $srcPawnFromDb['board_wall'] ? true : false ;
         
         // ------------------
         // reject play
         // ------------------
         
-        $RejectMove = false;
+        $rejectMove = false;
         // reject if a pawn is present
         $dstSquareFromDb = self::DbQuery("SELECT board_player, board_wall FROM board WHERE board_x = $toX AND board_y = $toY")->fetch_assoc();
         if ($dstSquareFromDb['board_player'] != null) {
@@ -239,11 +242,11 @@ class Tablut extends Table
                                 $pawnIsOnWall = false;
                             }
                             if ($Column['player_present'] != null) {
-                                $RejectMove = true;
+                                $rejectMove = true;
                             }
                         } else {
                             if ($Column['wall_present'] != null || $Column['player_present'] != null) {
-                                $RejectMove = true;
+                                $rejectMove = true;
                                 ///////////////////
                                 // dbg
                                 //self::notifyAllPlayers('Error', "test", array(
@@ -286,11 +289,11 @@ class Tablut extends Table
                                 $pawnIsOnWall = false;
                             }
                             if ($Column['player_present'] != null) {
-                                $RejectMove = true;
+                                $rejectMove = true;
                             }
                         } else {
                             if ($Column['wall_present'] != null || $Column['player_present'] != null) {
-                                $RejectMove = true;
+                                $rejectMove = true;
                                 ///////////////////
                                 // dbg
                                 //self::notifyAllPlayers('Error', "test", array(
@@ -318,11 +321,11 @@ class Tablut extends Table
                                 $pawnIsOnWall = false;
                             }
                             if ($row['player_present'] != null) {
-                                $RejectMove = true;
+                                $rejectMove = true;
                             }
                         } else {
                             if ($row['wall_present'] != null || $row['player_present'] != null) {
-                                $RejectMove = true;
+                                $rejectMove = true;
                             }
                         }
                     }
@@ -338,11 +341,11 @@ class Tablut extends Table
                                 $pawnIsOnWall = false;
                             }
                             if ($row['player_present'] != null) {
-                                $RejectMove = true;
+                                $rejectMove = true;
                             }
                         } else {
                             if ($row['wall_present'] != null || $row['player_present'] != null) {
-                                $RejectMove = true;
+                                $rejectMove = true;
                             }
                         }
                     }
@@ -351,12 +354,12 @@ class Tablut extends Table
         }
 
         // throw an exception if is not in same row without pawn or wall between the disc to the final position
-        if ($RejectMove) {
+        if ($rejectMove) {
             ///////////////////
             // dbg
             //self::notifyAllPlayers('Error', "test", array(
             //    'invalid move' => true,
-            //    'reject' => $RejectMove
+            //    'reject' => $rejectMove
             //    ));
             // end dbg
             ///////////////////
