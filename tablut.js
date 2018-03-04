@@ -183,9 +183,11 @@ define([
             for (vIndex = (vDiscPosition.x * vLineSize) - (vLineSize - vDiscPosition.y) -2 ; vIndex > ((vDiscPosition.x - 1) * vLineSize) - 1 ; --vIndex){
                 if (this.gamedatas.board[vIndex].player !== null){
                     break;
+                }
 
                 if (this.gamedatas.board[vIndex].wall === "1" && vDiscOnWall !== "1") {
                     break;
+                }
 
                 dojo.query(`#square_${this.gamedatas.board[vIndex].x}_${this.gamedatas.board[vIndex].y}`)[0].classList.add('availableMove');                     
                 vDiscOnWall = this.gamedatas.board[vIndex].wall
@@ -196,9 +198,11 @@ define([
             for (vIndex = (vDiscPosition.x * vLineSize) - (vLineSize - vDiscPosition.y) ; vIndex < vDiscPosition.x * vLineSize ; ++vIndex){
                 if (this.gamedatas.board[vIndex].player !== null){
                     break;
+                }
 
                 if (this.gamedatas.board[vIndex].wall === "1" && vDiscOnWall !== "1") {
                     break;
+                }
 
                 dojo.query(`#square_${this.gamedatas.board[vIndex].x}_${this.gamedatas.board[vIndex].y}`)[0].classList.add('availableMove');                     
                 vDiscOnWall = this.gamedatas.board[vIndex].wall
@@ -209,9 +213,11 @@ define([
             for (vIndex = (vDiscPosition.x * vLineSize) - (vLineSize - vDiscPosition.y) -1 - vLineSize ; vIndex > - 1 ; vIndex-=vLineSize){
                 if (this.gamedatas.board[vIndex].player !== null){
                     break;
+                }
 
                 if (this.gamedatas.board[vIndex].wall === "1" && vDiscOnWall !== "1") {
                     break;
+                }
 
                 dojo.query(`#square_${this.gamedatas.board[vIndex].x}_${this.gamedatas.board[vIndex].y}`)[0].classList.add('availableMove');                     
                 vDiscOnWall = this.gamedatas.board[vIndex].wall
@@ -222,9 +228,11 @@ define([
             for (vIndex = (vDiscPosition.x * vLineSize) - (vLineSize - vDiscPosition.y) -1 + vLineSize ; vIndex <= vBoardSize  ; vIndex+=vLineSize){
                 if (this.gamedatas.board[vIndex].player !== null){
                     break;
+                }
 
                 if (this.gamedatas.board[vIndex].wall === "1" && vDiscOnWall !== "1") {
                     break;
+                }
 
                 dojo.query(`#square_${this.gamedatas.board[vIndex].x}_${this.gamedatas.board[vIndex].y}`)[0].classList.add('availableMove');                     
                 vDiscOnWall = this.gamedatas.board[vIndex].wall
