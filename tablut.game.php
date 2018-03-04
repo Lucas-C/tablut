@@ -219,25 +219,7 @@ class Tablut extends Table
                 // specific case for down of the wall
                 while ($Column = mysql_fetch_assoc($dbres_asc)) {
                     if ($fromY < $Column['posY'] &&  $Column['posY'] <= $toY) {
-                        ///////////////////
-                        // dbg
-                        //self::notifyAllPlayers('moveposible', "test", array(
-                        //'column' => $Column,
-                        //'IsWall' => $pawnIsOnWall,
-                        //'king' => $pawnIsKing,
-                        //'player' => $pawnPlayerId,
-                        //'egal' => $pawnIsOnWall == true
-                        //));
-                        // End DBG
-                        ///////////////////
                         if ($pawnIsOnWall) {
-                            ///////////////////
-                            // dbg
-                            //self::notifyAllPlayers('moveposible2', "test", array(
-                            //'IsWall' => $pawnIsOnWall
-                            //));
-                            //// End DBG
-                            ///////////////////
                             if ($Column['wall_present'] == null) {
                                 $pawnIsOnWall = false;
                             }
@@ -247,15 +229,6 @@ class Tablut extends Table
                         } else {
                             if ($Column['wall_present'] != null || $Column['player_present'] != null) {
                                 $rejectMove = true;
-                                ///////////////////
-                                // dbg
-                                //self::notifyAllPlayers('Error', "test", array(
-                                //    'Xmove' => true,
-                                //    'wall_present' => $Column['wall_present'],
-                                //    'player_p' => $Column['player_present']
-                                //    ));
-                                // End DBG
-                                ///////////////////
                             }
                         }
                     }
@@ -266,25 +239,7 @@ class Tablut extends Table
                 // specific case for down of the wall
                 while ($Column = mysql_fetch_assoc($dbres_desc)) {
                     if ($Column['posY'] < $fromY &&  $Column['posY'] >= $toY) {
-                        ///////////////////
-                        // dbg
-                        //self::notifyAllPlayers('moveposible', "test", array(
-                        //'column' => $Column,
-                        //'IsWall' => $pawnIsOnWall,
-                        //'king' => $pawnIsKing,
-                        //'player' => $pawnPlayerId,
-                        //'egal' => $pawnIsOnWall == "1"
-                        //));
-                        // End DBG
-                        ///////////////////
                         if ($pawnIsOnWall) {
-                            ///////////////////
-                            // dbg
-                            //self::notifyAllPlayers('moveposible2', "test", array(
-                            //'IsWall' => $pawnIsOnWall
-                            //));
-                            // End DBG
-                            ///////////////////
                             if ($Column['wall_present'] == null) {
                                 $pawnIsOnWall = false;
                             }
@@ -294,15 +249,6 @@ class Tablut extends Table
                         } else {
                             if ($Column['wall_present'] != null || $Column['player_present'] != null) {
                                 $rejectMove = true;
-                                ///////////////////
-                                // dbg
-                                //self::notifyAllPlayers('Error', "test", array(
-                                //    'Xmove2' => true,
-                                //    'wall_present' => $Column['wall_present'],
-                                //    'player_p' => $Column['player_present']
-                                //    ));
-                                // End DBG
-                                ///////////////////
                             }
                         }
                     }
@@ -315,28 +261,10 @@ class Tablut extends Table
                 // specific case for down of the wall
                 $dbres_asc  = self::DbQuery("SELECT board_X posX, board_wall wall_present, board_player player_present FROM board WHERE board_y = $toY ORDER BY board_x ASC");
                 while ($row = mysql_fetch_assoc($dbres_asc)) {
-                    ///////////////////
-                    // dbg
-                    //self::notifyAllPlayers('moveposible', "test", array(
-                    //'row' => $row,
-                    //'IsWall' => $pawnIsOnWall,
-                    //'king' => $pawnIsKing,
-                    //'player' => $pawnPlayerId,
-                    //'egal' => $pawnIsOnWall == true
-                    //));
-                    // End DBG
-                    ///////////////////                
                     if ($fromX < $row['posX'] &&  $row['posX'] <= $toX) {
                         if ($pawnIsOnWall) {
                             if ($row['wall_present'] == null) {
                                 $pawnIsOnWall = false;
-                                ///////////////////
-                                // dbg
-                                //self::notifyAllPlayers('moveposible2', "test", array(
-                                //'IsWall' => $pawnIsOnWall
-                                //));
-                                // End DBG
-                                ///////////////////                
                             }
                             if ($row['player_present'] != null) {
                                 $rejectMove = true;
@@ -354,17 +282,6 @@ class Tablut extends Table
                 $dbres_desc = self::DbQuery("SELECT board_X posX, board_wall wall_present, board_player player_present FROM board WHERE board_y = $toY ORDER BY board_x DESC");
                 while ($row = mysql_fetch_assoc($dbres_desc)) {
                     if ($row['posX'] < $fromX &&  $row['posX'] >= $toX) {
-                        ///////////////////
-                        // dbg
-                        //self::notifyAllPlayers('moveposible', "test", array(
-                        //'row' => $row,
-                        //'IsWall' => $pawnIsOnWall,
-                        //'king' => $pawnIsKing,
-                        //'player' => $pawnPlayerId,
-                        //'egal' => $pawnIsOnWall == true
-                        //));
-                        // End DBG
-                        /////////////////// 
                         if ($pawnIsOnWall) {
                             if ($row['wall_present'] == null) {
                                 $pawnIsOnWall = false;
@@ -384,14 +301,6 @@ class Tablut extends Table
 
         // throw an exception if is not in same row without pawn or wall between the disc to the final position
         if ($rejectMove) {
-            ///////////////////
-            // dbg
-            //self::notifyAllPlayers('Error', "test", array(
-            //    'invalid move' => true,
-            //    'reject' => $rejectMove
-            //    ));
-            // end dbg
-            ///////////////////
             throw new feException("Cannot move");
         }
 
