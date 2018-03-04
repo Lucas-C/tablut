@@ -174,6 +174,7 @@ define([
             const vLineSize = 9;
             const vBoardSize = 81;
             const vNumberOfDirection = 4;
+            const vValueUn = 1;
             
             // find the element present on the table
             let vElementDisc = this.gamedatas.board.find(vElement => 
@@ -183,23 +184,26 @@ define([
             let vIndex = 0;
             let vPosition = null;
             
-            vStart = [ (vDiscPosition.x * vLineSize) - (vLineSize - vDiscPosition.y) -2, 
+            let vStart = [ (vDiscPosition.x * vLineSize) - (vLineSize - vDiscPosition.y) -2, 
                        (vDiscPosition.x * vLineSize) - (vLineSize - vDiscPosition.y), 
                        (vDiscPosition.x * vLineSize) - (vLineSize - vDiscPosition.y) -1 - vLineSize,
                        (vDiscPosition.x * vLineSize) - (vLineSize - vDiscPosition.y) -1 + vLineSize
                      ];
-            vEnd   = [ ((vDiscPosition.x - 1) * vLineSize) - 1,
+            let vEnd   = [ ((vDiscPosition.x - 1) * vLineSize) - 1,
                        vDiscPosition.x * vLineSize,
                        0,
                        vBoardSize
                       ];
-            vCoeff =     [ -1, 1, -1, 1 ];
-            vIncrement = [ -1, 1, -9, 9 ];
+            let vCoeff =     [ -vIncUn, vIncUn, -vIncUn, vIncUn ];
+            let vIncrement = [ -vIncUn, vIncUn, -vLineSize, vLineSize ];
 
             let vDirection = 0;
             for (vDirection = 0; vDirection < vNumberOfDirection; ++vDirection) {
                 console.log("vDirection ", vDirection)
-                vDiscOnWall = vElementDisc.wall;       // initialize the default position
+                // initialize the default position
+                vDiscOnWall = vElementDisc.wall;  
+
+                // loop for each direction
                 for( vIndex = vStart[vDirection]; 
                      vIndex*vCoeff[vDirection] < vEnd[vDirection]*vCoeff[vDirection]; 
                      vIndex += vIncrement[vDirection] 
