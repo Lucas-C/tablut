@@ -159,8 +159,8 @@ define([
 
         // /////////////////////////////////////////////////
         // function to remove the display of all available move
-        let v_Element;
         removeAllAvailableMove(){
+            let v_Element;
             for (v_Element of this.gamedatas.board ){
                 dojo.query(`#square_${v_Element.x}_${v_Element.y}`)[0].classList.remove('availableMove');
             }            
