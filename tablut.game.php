@@ -313,12 +313,30 @@ class Tablut extends Table
             if ($fromX < $toX) {
                 // Loop on each position between the start position to the end position and verify that no wall and no pawn
                 // specific case for down of the wall
-                $dbres_asc  = self::DbQuery("SELECT board_X posX, board_wall wall_present, board_player player_present FROM board WHERE board_y = $toY ORDER BY board_y ASC");
+                $dbres_asc  = self::DbQuery("SELECT board_X posX, board_wall wall_present, board_player player_present FROM board WHERE board_y = $toY ORDER BY board_x ASC");
                 while ($row = mysql_fetch_assoc($dbres_asc)) {
+                    ///////////////////
+                    // dbg
+                    //self::notifyAllPlayers('moveposible', "test", array(
+                    //'row' => $row,
+                    //'IsWall' => $pawnIsOnWall,
+                    //'king' => $pawnIsKing,
+                    //'player' => $pawnPlayerId,
+                    //'egal' => $pawnIsOnWall == true
+                    //));
+                    // End DBG
+                    ///////////////////                
                     if ($fromX < $row['posX'] &&  $row['posX'] <= $toX) {
                         if ($pawnIsOnWall) {
                             if ($row['wall_present'] == null) {
                                 $pawnIsOnWall = false;
+                                ///////////////////
+                                // dbg
+                                //self::notifyAllPlayers('moveposible2', "test", array(
+                                //'IsWall' => $pawnIsOnWall
+                                //));
+                                // End DBG
+                                ///////////////////                
                             }
                             if ($row['player_present'] != null) {
                                 $rejectMove = true;
@@ -333,9 +351,20 @@ class Tablut extends Table
             } else {
                 // Loop on each position between the start position to the end position and verify that no wall and no pawn
                 // specific case for down of the wall
-                $dbres_desc = self::DbQuery("SELECT board_X posX, board_wall wall_present, board_player player_present FROM board WHERE board_y = $toY ORDER BY board_y DESC");
+                $dbres_desc = self::DbQuery("SELECT board_X posX, board_wall wall_present, board_player player_present FROM board WHERE board_y = $toY ORDER BY board_x DESC");
                 while ($row = mysql_fetch_assoc($dbres_desc)) {
                     if ($row['posX'] < $fromX &&  $row['posX'] >= $toX) {
+                        ///////////////////
+                        // dbg
+                        //self::notifyAllPlayers('moveposible', "test", array(
+                        //'row' => $row,
+                        //'IsWall' => $pawnIsOnWall,
+                        //'king' => $pawnIsKing,
+                        //'player' => $pawnPlayerId,
+                        //'egal' => $pawnIsOnWall == true
+                        //));
+                        // End DBG
+                        /////////////////// 
                         if ($pawnIsOnWall) {
                             if ($row['wall_present'] == null) {
                                 $pawnIsOnWall = false;
