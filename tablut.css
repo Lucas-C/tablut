@@ -75,48 +75,57 @@
         );
 }
 
-.discPlayer1 {
-    width: 60px;
-    height: 60px;
-    position: absolute;
-    background-color: grey;
-    border-radius: 30px;
-    cursor: pointer;
-}
-
-.discPlayer1King {
-    width: 60px;
-    height: 60px;
-    position: absolute;
-    background-color: black;
-    border-radius: 30px;
-    cursor: pointer;
-}
-
-/* **************************** */
-/* debug test */
-.disc {
-    width: 60px;
-    height: 60px;
-    position: absolute;
-    border-radius: 30px;
-}
-
-.disccolor_000000 {
-    background-color: white;
-}
-/* **************************** */
-
-.discPlayer0 {
-    width: 60px;
-    height: 60px;
+.p1Soldier {
+    width: 54px;
+    height: 54px;
+    margin: 3px;
     position: absolute;
     background-color: white;
     border-radius: 30px;
     cursor: pointer;
 }
 
+.p1King {
+    width: 54px;
+    height: 54px;
+    margin: 3px;
+    position: absolute;
+    background-color: white;
+    border-radius: 30px;
+    cursor: pointer;
+}
+.p1King:before {
+    content: '♕';
+    font-size: 3em;
+    line-height: 54px;
+    /* Horizontal centering: */
+    display: block;
+    width: 100%;
+    text-align: center;
+}
+
+.p0Muscovite {
+    width: 54px;
+    height: 54px;
+    margin: 3px;
+    position: absolute;
+    background-color: #111;
+    border-radius: 30px;
+    cursor: pointer;
+}
 
 .selected {
     background-color: darkred;
+}
+
+.availableMove:before {
+    content: ' ';
+    width: 54px;
+    height: 54px;
+    margin: 3px;
+    position: absolute;
+    background-color: darkred;
+    border-radius: 30px;
+    cursor: pointer;
+    opacity: .4;
 }
