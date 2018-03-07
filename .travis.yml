@@ -12,8 +12,8 @@ before_script:
 script:
   # Code style & syntax linters
   - composer check-php
-  - npm lint-css
-  - npm lint-js
+  - npm run lint-css
+  - npm run lint-js
 
   # Unit tests
   - composer test
