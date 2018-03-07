@@ -27,15 +27,18 @@ Player 1 is the king.
 ## Installation
 ```
 composer install
-npm install -g eslint eslint-config-strict eslint-plugin-filenames stylelint
-npm install stylelint-config-standard
+npm install
 ```
 
 ## Code validation
 ```
-composer check-styles
+composer check-php
 composer test
 composer bgaw-validate
+
+npm test
+npm run lint-js
+npm run lint-css
 ```
 
 ## Deploying to Studio

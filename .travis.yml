@@ -5,17 +5,19 @@ services: mysql
 php: 7.1
 
 before_script:
-  - npm install -g eslint eslint-config-strict eslint-plugin-filenames stylelint
-  - npm install stylelint-config-standard
   - composer install
+  - npm install
   - echo "USE mysql;\nUPDATE user SET password=PASSWORD('tablutpw') WHERE user='root';\nFLUSH PRIVILEGES;\n" | mysql -u root
 
 script:
   # Code style & syntax linters
-  - composer check-styles
+  - composer check-php
+  - npm lint-css
+  - npm lint-js
 
   # Unit tests
   - composer test
+  - npm test
 
   # BGA-specific checks
   - cp bgaproject.yml.dist bgaproject.yml

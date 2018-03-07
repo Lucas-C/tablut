@@ -14,16 +14,38 @@
  * Note: this === window.gameui
  */
 
+// If `define` does not exist and we are in a NodeJS module context (e.g. for unit tests),
+// mock `define` and the dojo dependencies
+if (typeof define === 'undefined' && typeof exports !== 'undefined') {
+    const depsMocks = {
+        'dojo/_base/declare': (className, superClass, props) => {
+            function dojoClass(...args) {
+                /* eslint no-invalid-this: "off" */
+                if (props.constructor) {
+                    props.constructor.apply(this, args);
+                }
+            }
+            dojoClass.prototype = props;
+            return dojoClass;
+        },
+    };
+    // Globals:
+    define = function define(depsPaths, main) {
+        exports.tablut = main(...depsPaths.map((path) => depsMocks[path]));
+    };
+    ebg = { core: { gamegui: null } };
+}
+
 define([
     'dojo',
     'dojo/_base/declare',
     'dojo/_base/lang',
     'dojo/dom',
     'dojo/query',
+    'dojo/dom-geometry',
+    /* Unused:
     'dojo/dom-construct',
     'dojo/dom-class',
-    'dojo/dom-geometry',
-    // Unused:
     'dojo/NodeList-data',
     'dojo/NodeList-traverse',
     'dojo/NodeList-html',
@@ -31,13 +53,14 @@ define([
     'dojo/fx',
     'ebg/core/gamegui',
     'ebg/counter',
-    'ebg/scrollmap',
-], function main(dojo, declare, lang, dom, query, domConstruct, domClass, domGeom) {
+    'ebg/scrollmap',//*/
+], function main(dojo, declare, lang, dom, query, domGeom) {
     const ANIMATION_ZINDEX = 100;
     const END_OF_GAME_DELAY = 2000;
 
     return declare('bgagame.tablut', ebg.core.gamegui, {
-        constructor() {
+        constructor(boardLineLength) {
+            this.boardLineLength = boardLineLength || 9;
         },
 
         /**
@@ -159,70 +182,61 @@ define([
 
         // /////////////////////////////////////////////////
         // function to remove the display of all available move
-        removeAllAvailableMove(){
+        removeAllAvailableMoves() {
             let vElement = null;
-            for (vElement of this.gamedatas.board){
-                dojo.query(`#square_${vElement.x}_${vElement.y}`)[0].classList.remove('availableMove');
-            }            
+            for (vElement of this.gamedatas.board) {
+                dojo.query(`#square_${ vElement.x }_${ vElement.y }`)[0].classList.remove('availableMove');
+            }
         },
 
         // /////////////////////////////////////////////////
-        // function to display all available move of the input disc selected
-        availableMove(){
-            let coords = this.selectedDisc.id.split('_');
+        // generator function, not supported by IE <= 11
+        * listAvailableMoves(board, selectedDiscId) {
+            const coords = selectedDiscId.split('_');
             const vDiscPosition = { x: coords[1], y: coords[2] };
-            const vLineSize = 9;
-            const vBoardSize = 81;
-            const vNumberOfDirection = 4;
-            const vValueUn = 1;
-            
+
             // find the element present on the table
-            let vElementDisc = this.gamedatas.board.find(vElement => 
-                                vElement.x === vDiscPosition.x && vElement.y === vDiscPosition.y)
+            const vElementDisc = board.find((vElement) =>
+                vElement.x === vDiscPosition.x && vElement.y === vDiscPosition.y);
 
-            let vDiscOnWall = vElementDisc.wall;
-            let vIndex = 0;
-            let vPosition = null;
-            
-            let vStart = [ (vDiscPosition.x * vLineSize) - (vLineSize - vDiscPosition.y) -2, 
-                       (vDiscPosition.x * vLineSize) - (vLineSize - vDiscPosition.y), 
-                       (vDiscPosition.x * vLineSize) - (vLineSize - vDiscPosition.y) -1 - vLineSize,
-                       (vDiscPosition.x * vLineSize) - (vLineSize - vDiscPosition.y) -1 + vLineSize
-                     ];
-            let vEnd   = [ ((vDiscPosition.x - 1) * vLineSize) - 1,
-                       vDiscPosition.x * vLineSize,
-                       0,
-                       vBoardSize
-                      ];
-            let vCoeff =     [ -vValueUn, vValueUn, -vValueUn, vValueUn ];
-            let vIncrement = [ -vValueUn, vValueUn, -vLineSize, vLineSize ];
+            const vStart = [
+                (vDiscPosition.x * this.boardLineLength) - (this.boardLineLength - vDiscPosition.y) - 2,
+                (vDiscPosition.x * this.boardLineLength) - (this.boardLineLength - vDiscPosition.y),
+                (vDiscPosition.x * this.boardLineLength) - (this.boardLineLength - vDiscPosition.y) - 1 - this.boardLineLength,
+                (vDiscPosition.x * this.boardLineLength) - (this.boardLineLength - vDiscPosition.y) - 1 + this.boardLineLength,
+            ];
+            const vEnd = [
+                ((vDiscPosition.x - 1) * this.boardLineLength) - 1,
+                vDiscPosition.x * this.boardLineLength,
+                0,
+                board.length,
+            ];
+            /* eslint no-magic-numbers: "off" */
+            const vIncrement = [ -1, 1, -this.boardLineLength, this.boardLineLength ];
 
-            let vDirection = 0;
-            for (vDirection = 0; vDirection < vNumberOfDirection; ++vDirection) {
-                console.log("vDirection ", vDirection)
+            for (let vDirection = 0; vDirection < vIncrement.length; ++vDirection) {
                 // initialize the default position
-                vDiscOnWall = vElementDisc.wall;  
+                let vDiscOnWall = vElementDisc.wall;
 
                 // loop for each direction
-                for( vIndex = vStart[vDirection]; 
-                     vIndex*vCoeff[vDirection] < vEnd[vDirection]*vCoeff[vDirection]; 
-                     vIndex += vIncrement[vDirection] 
-                   ){
-                    console.log("vIndex ", vIndex)
-                    vPosition = this.gamedatas.board[vIndex];
-                    if (vPosition.player !== null){
+                for (let vIndex = vStart[vDirection], vCoeff = Math.sign(vIncrement[vDirection]);
+                    vIndex * vCoeff < vEnd[vDirection] * vCoeff;
+                    vIndex += vIncrement[vDirection]
+                ) {
+                    const vPosition = board[vIndex];
+                    if (!vPosition) {
                         break;
                     }
-
-                    if (vPosition.wall === "1" && vDiscOnWall !== "1") {
+                    if (vPosition.player !== null) {
                         break;
                     }
-
-                    dojo.query(`#square_${vPosition.x}_${vPosition.y}`)[0].classList.add('availableMove');
-                    vDiscOnWall = vPosition.wall
+                    if (vPosition.wall === '1' && vDiscOnWall !== '1') {
+                        break;
+                    }
+                    yield vPosition;
+                    vDiscOnWall = vPosition.wall;
                 }
             }
-            
         },
 
 
@@ -239,7 +253,7 @@ define([
             if (this.selectedDisc) {
                 this.selectedDisc.classList.remove('selected');
                 // remove all the availableMode
-                this.removeAllAvailableMove();
+                this.removeAllAvailableMoves();
             }
             if (event.currentTarget === this.selectedDisc) {
                 // unselect:
@@ -248,7 +262,9 @@ define([
                 this.selectedDisc = event.currentTarget;
                 this.selectedDisc.classList.add('selected');
                 // Display possible all available move
-                this.availableMove();
+                for (const vPosition of this.listAvailableMoves(this.gamedatas.board, this.selectedDisc.id)) {
+                    dojo.query(`#square_${ vPosition.x }_${ vPosition.y }`)[0].classList.add('availableMove');
+                }
             }
         },
 
@@ -283,7 +299,7 @@ define([
                     function noop() {}
                 );
                 this.selectedDisc.classList.remove('selected');
-                this.selectedDisc = null;  
+                this.selectedDisc = null;
                 this.removeAllAvailableMove();
             }
         },

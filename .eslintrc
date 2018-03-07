@@ -2,8 +2,8 @@
     "extends": ["strict"],
     "globals": {
         "_": false,
-        "ebg": false,
-        "define": false
+        "ebg": true,
+        "define": true
     },
     "rules": {
         "array-element-newline": 0,

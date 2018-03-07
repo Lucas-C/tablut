@@ -39,16 +39,13 @@
     "squizlabs/php_codesniffer": "@stable"
   },
   "scripts": {
-    "check-styles": ["@check-css", "@check-js", "@check-php"],
-    "check-css": "stylelint tablut.css",
-    "check-js": "eslint --fix tablut.js",
+    "test": "phpunit tests",
     "check-php": "phpcs --tab-width=4 --ignore=vendor,backup,*\\.js,*\\.css -q -p -s .",
     "fix-php": "phpcbf --tab-width=4 --ignore=vendor,backup,*\\.js,*\\.css -q -p -s .",
     "bgaw-clean": "composer exec -- bgawb -v clean",
     "bgaw-build": "composer exec -- bgawb -v build",
     "bgaw-deploy": "composer exec -- bgawb -v build -d",
     "bgaw-watch": "composer exec -- bgawb -v build -w -d",
-    "bgaw-validate": "composer exec bgawb -v validate",
-    "test": "phpunit tests"
+    "bgaw-validate": "composer exec bgawb -v validate"
   }
 }

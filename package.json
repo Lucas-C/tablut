@@ -1,0 +1,33 @@
+{
+  "name": "tablut",
+  "version": "1.0.0",
+  "description": "Tablut board game implementation for BoardGameArena",
+  "main": "tablut.js",
+  "directories": {
+    "test": "tests"
+  },
+  "dependencies": {},
+  "devDependencies": {
+    "eslint": "^4.18.2",
+    "eslint-config-strict": "^14.0.1",
+    "eslint-plugin-filenames": "^1.2.0",
+    "mocha": "^5.0.3",
+    "stylelint": "^9.1.1",
+    "stylelint-config-standard": "^18.2.0"
+  },
+  "scripts": {
+    "test": "mocha tests",
+    "lint-js": "eslint --fix tablut.js",
+    "lint-css": "stylelint tablut.css"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Lucas-C/tablut.git"
+  },
+  "author": "",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/Lucas-C/tablut/issues"
+  },
+  "homepage": "https://github.com/Lucas-C/tablut#readme"
+}
