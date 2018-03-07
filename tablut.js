@@ -59,8 +59,7 @@ define([
     const END_OF_GAME_DELAY = 2000;
 
     return declare('bgagame.tablut', ebg.core.gamegui, {
-        constructor(boardLineLength) {
-            this.boardLineLength = boardLineLength || 9;
+        constructor() {
         },
 
         /**
@@ -191,28 +190,26 @@ define([
 
         // /////////////////////////////////////////////////
         // generator function, not supported by IE <= 11
-        * listAvailableMoves(board, selectedDiscId) {
-            const coords = selectedDiscId.split('_');
-            const vDiscPosition = { x: coords[1], y: coords[2] };
-
+        * listAvailableMoves({ board, pawnPos }) {
+            const boardLineLength = Math.sqrt(board.length);
             // find the element present on the table
             const vElementDisc = board.find((vElement) =>
-                vElement.x === vDiscPosition.x && vElement.y === vDiscPosition.y);
+                vElement.x === pawnPos.x && vElement.y === pawnPos.y);
 
             const vStart = [
-                (vDiscPosition.x * this.boardLineLength) - (this.boardLineLength - vDiscPosition.y) - 2,
-                (vDiscPosition.x * this.boardLineLength) - (this.boardLineLength - vDiscPosition.y),
-                (vDiscPosition.x * this.boardLineLength) - (this.boardLineLength - vDiscPosition.y) - 1 - this.boardLineLength,
-                (vDiscPosition.x * this.boardLineLength) - (this.boardLineLength - vDiscPosition.y) - 1 + this.boardLineLength,
+                (pawnPos.x * boardLineLength) - (boardLineLength - pawnPos.y) - 2,
+                (pawnPos.x * boardLineLength) - (boardLineLength - pawnPos.y),
+                (pawnPos.x * boardLineLength) - (boardLineLength - pawnPos.y) - 1 - boardLineLength,
+                (pawnPos.x * boardLineLength) - (boardLineLength - pawnPos.y) - 1 + boardLineLength,
             ];
             const vEnd = [
-                ((vDiscPosition.x - 1) * this.boardLineLength) - 1,
-                vDiscPosition.x * this.boardLineLength,
+                ((pawnPos.x - 1) * boardLineLength) - 1,
+                pawnPos.x * boardLineLength,
                 0,
                 board.length,
             ];
             /* eslint no-magic-numbers: "off" */
-            const vIncrement = [ -1, 1, -this.boardLineLength, this.boardLineLength ];
+            const vIncrement = [ -1, 1, -boardLineLength, boardLineLength ];
 
             for (let vDirection = 0; vDirection < vIncrement.length; ++vDirection) {
                 // initialize the default position
@@ -262,7 +259,9 @@ define([
                 this.selectedDisc = event.currentTarget;
                 this.selectedDisc.classList.add('selected');
                 // Display possible all available move
-                for (const vPosition of this.listAvailableMoves(this.gamedatas.board, this.selectedDisc.id)) {
+                const coords = this.selectedDisc.id.split('_');
+                const pawnPos = { x: coords[1], y: coords[2] };
+                for (const vPosition of this.listAvailableMoves({ board: this.gamedatas.board, pawnPos })) {
                     dojo.query(`#square_${ vPosition.x }_${ vPosition.y }`)[0].classList.add('availableMove');
                 }
             }

@@ -16,11 +16,13 @@ describe('listAvailableMoves', () => {
             {x: '3', y: '2', player: null, wall: null},
             {x: '3', y: '3', player: null, wall: null},
         ];
-        const selectedDiscId = 'disc_2_2';
 
-        const tablut = new Tablut(3);
+        const tablut = new Tablut();
+        const moves = [...tablut.listAvailableMoves({
+            board: board,
+            pawnPos: {x: '2', y: '2'},
+        })];
 
-        const moves = [...tablut.listAvailableMoves(board, selectedDiscId)];
         assert.equal(moves.length, 4);
     })
 })
