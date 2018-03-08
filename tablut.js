@@ -43,7 +43,8 @@ define([
     'dojo/dom',
     'dojo/query',
     'dojo/dom-geometry',
-    'ebg/core/gamegui', 'ebg/counter',  // Unused but required to define global `ebg.core.gamegui` 
+    // Unused but required to define global `ebg.core.gamegui`:
+    'ebg/core/gamegui', 'ebg/counter',
     /* Unused but available:
     'dojo/dom-construct',
     'dojo/dom-class',
