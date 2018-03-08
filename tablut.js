@@ -43,7 +43,8 @@ define([
     'dojo/dom',
     'dojo/query',
     'dojo/dom-geometry',
-    /* Unused:
+    'ebg/core/gamegui', 'ebg/counter',  // Unused but required to define global `ebg.core.gamegui` 
+    /* Unused but available:
     'dojo/dom-construct',
     'dojo/dom-class',
     'dojo/NodeList-data',
@@ -51,8 +52,6 @@ define([
     'dojo/NodeList-html',
     'dojo/_base/array',
     'dojo/fx',
-    'ebg/core/gamegui',
-    'ebg/counter',
     'ebg/scrollmap',//*/
 ], function main(dojo, declare, lang, dom, query, domGeom) {
     const ANIMATION_ZINDEX = 100;
@@ -299,7 +298,7 @@ define([
                 );
                 this.selectedDisc.classList.remove('selected');
                 this.selectedDisc = null;
-                this.removeAllAvailableMove();
+                this.removeAllAvailableMoves();
             }
         },
 

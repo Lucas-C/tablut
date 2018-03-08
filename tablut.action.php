@@ -22,7 +22,7 @@ use Functional as F;
 
 class action_tablut extends APP_GameAction  // @codingStandardsIgnoreLine
 {
-    public function __default()
+    public function __default()  // @codingStandardsIgnoreLine
     {
         if (self::isArg('notifwindow')) {
             $this->view = "common_notifwindow";

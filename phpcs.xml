@@ -9,5 +9,8 @@
   <exclude name="PSR1.Classes.ClassDeclaration.MissingNamespace"/>
   <exclude name="PSR1.Files.SideEffects.FoundWithSymbols"/>
  </rule>
+ 
+ <rule ref="PHPCompatibility">
+ </rule>
 
 </ruleset>

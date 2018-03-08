@@ -16,7 +16,6 @@ require_once(APP_GAMEMODULE_PATH . 'module/table/table.game.php');  // @codingSt
 
 use Functional as F;
 use Tablut\Functional as HF;
-use Tablut\GameSetup;
 use Tablut\SQLHelper;
 
 class Tablut extends Table
@@ -130,7 +129,7 @@ class Tablut extends Table
 
         // Add players specific infos
         $dbres = self::DbQuery('SELECT player_id id, player_score score FROM player');
-        while ($player = mysql_fetch_assoc($dbres)) {
+        while ($player = $dbres->fetch_assoc()) {
             $result['players'][ $player['id'] ] = $player;
         }
 
@@ -217,7 +216,7 @@ class Tablut extends Table
                 $dbres_asc  = self::DbQuery("SELECT board_y posY, board_wall wall_present, board_player player_present FROM board WHERE board_x = $toX ORDER BY board_y ASC");
                 // Loop on each position between the start position to the end position and verify that no wall and no pawn
                 // specific case for down of the wall
-                while ($Column = mysql_fetch_assoc($dbres_asc)) {
+                while ($Column = $dbres_asc->fetch_assoc()) {
                     if ($fromY < $Column['posY'] &&  $Column['posY'] <= $toY) {
                         if ($pawnIsOnWall) {
                             if ($Column['wall_present'] == null) {
@@ -237,7 +236,7 @@ class Tablut extends Table
                 $dbres_desc = self::DbQuery("SELECT board_y posY, board_wall wall_present, board_player player_present FROM board WHERE board_x = $toX ORDER BY board_y DESC");
                 // Loop on each position between the start position to the end position and verify that no wall and no pawn
                 // specific case for down of the wall
-                while ($Column = mysql_fetch_assoc($dbres_desc)) {
+                while ($Column = $dbres_desc->fetch_assoc()) {
                     if ($Column['posY'] < $fromY &&  $Column['posY'] >= $toY) {
                         if ($pawnIsOnWall) {
                             if ($Column['wall_present'] == null) {
@@ -260,7 +259,7 @@ class Tablut extends Table
                 // Loop on each position between the start position to the end position and verify that no wall and no pawn
                 // specific case for down of the wall
                 $dbres_asc  = self::DbQuery("SELECT board_X posX, board_wall wall_present, board_player player_present FROM board WHERE board_y = $toY ORDER BY board_x ASC");
-                while ($row = mysql_fetch_assoc($dbres_asc)) {
+                while ($row = $dbres_asc->fetch_assoc()) {
                     if ($fromX < $row['posX'] &&  $row['posX'] <= $toX) {
                         if ($pawnIsOnWall) {
                             if ($row['wall_present'] == null) {
@@ -280,7 +279,7 @@ class Tablut extends Table
                 // Loop on each position between the start position to the end position and verify that no wall and no pawn
                 // specific case for down of the wall
                 $dbres_desc = self::DbQuery("SELECT board_X posX, board_wall wall_present, board_player player_present FROM board WHERE board_y = $toY ORDER BY board_x DESC");
-                while ($row = mysql_fetch_assoc($dbres_desc)) {
+                while ($row = $dbres_desc->fetch_assoc()) {
                     if ($row['posX'] < $fromX &&  $row['posX'] >= $toX) {
                         if ($pawnIsOnWall) {
                             if ($row['wall_present'] == null) {
@@ -338,7 +337,7 @@ class Tablut extends Table
      * @param int $y : new position of the pawn moved
      * @return array(array(int x, int y))
      */
-    private function findEatenPawns(int $x, int $y)
+    public function findEatenPawns(int $x, int $y)
     {
         $activePlayer = self::getActivePlayerId();
         $positionsToTest = array(

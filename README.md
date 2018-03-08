@@ -5,13 +5,13 @@
 
 Tablut board game implementation for [BoardGameArena](https://boardgamearena.com).
 
-![Board screenshot](img/board_screenshot.png)
+![Board screenshot](img/initial_board_screenshot.png)
 
 Rules:
 - [in English](http://en.doc.boardgamearena.com/Gamehelptablut)
 - [in French](http://fr.doc.boardgamearena.com/Gamehelptablut)
 
-Note: The player invited to join the game currently always plays the king.
+Note: The player invited to join the game currently always plays the Swedes (player 1).
 
 ## Game state machine
 
@@ -21,8 +21,6 @@ Very basic:
 
 
 # Development
-
-Player 1 is the king.
 
 ## Installation
 ```

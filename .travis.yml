@@ -16,11 +16,13 @@ script:
   - npm run lint-js
 
   # Unit tests
-  - composer test
   - npm test
+  # Note: the PHP tests require a running  MySQL DB with config set in bgaproject.yml
+  - cp bgaproject.yml.dist bgaproject.yml
+  - composer test
 
   # BGA-specific checks
-  - cp bgaproject.yml.dist bgaproject.yml
+  # (note: `deploy` could be enabled by generating `bgaproject.yml` from TravisCI secrets)
   - composer bgaw-clean
   - composer bgaw-build
   - composer bgaw-validate
