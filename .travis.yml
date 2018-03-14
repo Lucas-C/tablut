@@ -17,12 +17,13 @@ script:
 
   # Unit tests
   - npm test
-  # Note: the PHP tests require a running  MySQL DB with config set in bgaproject.yml
+  # Note: the PHP tests require a running MySQL DB with its corresponding config set in bgaproject.yml
   - cp bgaproject.yml.dist bgaproject.yml
   - composer test
 
   # BGA-specific checks
   # (note: `deploy` could be enabled by generating `bgaproject.yml` from TravisCI secrets)
-  - composer bgaw-clean
-  - vendor/bin/bgawb -v build
   - composer bgaw-validate
+  - composer bgaw-clean
+  # Fail, cf. https://travis-ci.org/Lucas-C/tablut/builds/353327763 & https://github.com/danielholmes/bga-workbench/issues/4
+  #- composer bgawb-build
