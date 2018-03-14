@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "content-hash": "2effc23e104e76c47f09ca0e9b6f2c82",
+    "content-hash": "f7566bdac76f191a2d78f3d53be69d28",
     "packages": [
         {
             "name": "lstrojny/functional-php",
@@ -250,16 +250,16 @@
         },
         {
             "name": "dholmes/bga-workbench",
-            "version": "0.0.12",
+            "version": "0.0.14",
             "source": {
                 "type": "git",
                 "url": "https://github.com/danielholmes/bga-workbench.git",
-                "reference": "b834ca7d632d1e9b39c07417608aa2b03b4d93bf"
+                "reference": "b3122764e7fc60c41b4bc1530adb6704c242e9cd"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/danielholmes/bga-workbench/zipball/b834ca7d632d1e9b39c07417608aa2b03b4d93bf",
-                "reference": "b834ca7d632d1e9b39c07417608aa2b03b4d93bf",
+                "url": "https://api.github.com/repos/danielholmes/bga-workbench/zipball/b3122764e7fc60c41b4bc1530adb6704c242e9cd",
+                "reference": "b3122764e7fc60c41b4bc1530adb6704c242e9cd",
                 "shasum": ""
             },
             "require": {
@@ -308,7 +308,7 @@
                 }
             ],
             "description": "BoardGameArena Workbench",
-            "time": "2018-01-15T11:08:22+00:00"
+            "time": "2018-03-13T02:48:16+00:00"
         },
         {
             "name": "doctrine/annotations",
@@ -940,7 +940,7 @@
         },
         {
             "name": "illuminate/contracts",
-            "version": "v5.5.37",
+            "version": "v5.5.39",
             "source": {
                 "type": "git",
                 "url": "https://github.com/illuminate/contracts.git",
@@ -984,7 +984,7 @@
         },
         {
             "name": "illuminate/filesystem",
-            "version": "v5.5.37",
+            "version": "v5.5.39",
             "source": {
                 "type": "git",
                 "url": "https://github.com/illuminate/filesystem.git",
@@ -1034,16 +1034,16 @@
         },
         {
             "name": "illuminate/support",
-            "version": "v5.5.37",
+            "version": "v5.5.39",
             "source": {
                 "type": "git",
                 "url": "https://github.com/illuminate/support.git",
-                "reference": "400a321e52a4c93f71ed24b5b5f05ebadee2eff8"
+                "reference": "7540abdf66efe232bb657b9a5982fbb0d4de428f"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/illuminate/support/zipball/400a321e52a4c93f71ed24b5b5f05ebadee2eff8",
-                "reference": "400a321e52a4c93f71ed24b5b5f05ebadee2eff8",
+                "url": "https://api.github.com/repos/illuminate/support/zipball/7540abdf66efe232bb657b9a5982fbb0d4de428f",
+                "reference": "7540abdf66efe232bb657b9a5982fbb0d4de428f",
                 "shasum": ""
             },
             "require": {
@@ -1087,7 +1087,7 @@
             ],
             "description": "The Illuminate Support package.",
             "homepage": "https://laravel.com",
-            "time": "2018-03-05T13:53:42+00:00"
+            "time": "2018-03-09T16:54:15+00:00"
         },
         {
             "name": "jasonlewis/resource-watcher",
@@ -1179,20 +1179,20 @@
         },
         {
             "name": "nesbot/carbon",
-            "version": "1.23.0",
+            "version": "1.24.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/briannesbitt/Carbon.git",
-                "reference": "4a874a39b2b00d7e0146cd46fab6f47c41ce9e65"
+                "reference": "bba6c6e410c6b4317e37a9474aeaa753808c3875"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/briannesbitt/Carbon/zipball/4a874a39b2b00d7e0146cd46fab6f47c41ce9e65",
-                "reference": "4a874a39b2b00d7e0146cd46fab6f47c41ce9e65",
+                "url": "https://api.github.com/repos/briannesbitt/Carbon/zipball/bba6c6e410c6b4317e37a9474aeaa753808c3875",
+                "reference": "bba6c6e410c6b4317e37a9474aeaa753808c3875",
                 "shasum": ""
             },
             "require": {
-                "php": ">=5.3.0",
+                "php": ">=5.3.9",
                 "symfony/translation": "~2.6 || ~3.0 || ~4.0"
             },
             "require-dev": {
@@ -1228,7 +1228,7 @@
                 "datetime",
                 "time"
             ],
-            "time": "2018-02-28T09:22:05+00:00"
+            "time": "2018-03-10T10:10:14+00:00"
         },
         {
             "name": "nette/caching",

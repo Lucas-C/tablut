@@ -31,7 +31,7 @@ npm install
 ## Code validation
 ```
 composer check-php
-composer test
+composer test  # require a MySQL daemon running
 composer bgaw-validate
 
 npm test
