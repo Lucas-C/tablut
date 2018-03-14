@@ -48,7 +48,7 @@
     "check-php": "phpcs --tab-width=4 --ignore=backup,dist,vendor,*\\.js,*\\.css -q -p -s .",
     "fix-php": "phpcbf --tab-width=4 --ignore=backup,dist,vendor,*\\.js,*\\.css -q -p -s .",
     "bgaw-clean": "composer exec -- \"bgawb -v clean\"",
-    "bgaw-build": "composer exec -- \"bgawb -v build\"",
+    "bgaw-build": "composer exec \"bgawb -v build\"",
     "bgaw-validate": "composer exec -- \"bgawb -v validate\"",
     "bgaw-deploy": "composer exec -- \"bgawb -v build -d\"",
     "bgaw-watch": "composer exec -- \"bgawb -v build -w -d\""
