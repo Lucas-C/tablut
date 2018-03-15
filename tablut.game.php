@@ -161,10 +161,10 @@ class Tablut extends Table
         $kingPos = self::DbQuery("SELECT board_x x, board_y y FROM board WHERE board_king = '1'")->fetch_assoc();
 
         // The number of free squares goes from 56 (at the beginning of the game, 81-16-9) to 77 (hypothetically, only the king and 3 Swedes remain
-        $freeSquaresCount = self::getUniqueValueFromDb('SELECT COUNT( board_x ) FROM board WHERE board_player IS NULL');
+        $freeSquaresCount = self::getUniqueValueFromDb('SELECT COUNT( 1 ) FROM board WHERE board_player IS NULL');
 
         // Game progression = $freeSquaresCount scaled between 0 and 80 + 20 if king left the throne
-        return round(($freeSquaresCount - 56)/21*80 + ($kingPos['x'] != '5' || $kingPos['y'] != '5') ? 20 : 0);
+        return round(($freeSquaresCount - 56)*80/21 + ($kingPos['x'] != '5' || $kingPos['y'] != '5') ? 20 : 0);
     }
 
 
