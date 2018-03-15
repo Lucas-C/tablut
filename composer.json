@@ -28,7 +28,6 @@
   "bin": ["bin/tablut"],
   "require": {
     "php": ">=7.0.0",
-    "ext-pdo_mysql": "*",
     "phpoption/phpoption": "1.5.0",
     "lstrojny/functional-php": "1.6.0"
   },
