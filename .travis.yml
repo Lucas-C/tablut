@@ -25,5 +25,4 @@ script:
   # (note: `deploy` could be enabled by generating `bgaproject.yml` from TravisCI secrets)
   - composer bgaw-validate
   - composer bgaw-clean
-  # Fail, cf. https://travis-ci.org/Lucas-C/tablut/builds/353327763 & https://github.com/danielholmes/bga-workbench/issues/4
-  #- composer bgawb-build
+  - composer bgawb-build

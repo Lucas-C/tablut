@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "content-hash": "f7566bdac76f191a2d78f3d53be69d28",
+    "content-hash": "1f89dfd805dadfa89b4c5a629dd8bc48",
     "packages": [
         {
             "name": "lstrojny/functional-php",
@@ -250,21 +250,22 @@
         },
         {
             "name": "dholmes/bga-workbench",
-            "version": "0.0.14",
+            "version": "0.1.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/danielholmes/bga-workbench.git",
-                "reference": "b3122764e7fc60c41b4bc1530adb6704c242e9cd"
+                "reference": "115a822b76f5cefe780547a6319208a8a8f497e0"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/danielholmes/bga-workbench/zipball/b3122764e7fc60c41b4bc1530adb6704c242e9cd",
-                "reference": "b3122764e7fc60c41b4bc1530adb6704c242e9cd",
+                "url": "https://api.github.com/repos/danielholmes/bga-workbench/zipball/115a822b76f5cefe780547a6319208a8a8f497e0",
+                "reference": "115a822b76f5cefe780547a6319208a8a8f497e0",
                 "shasum": ""
             },
             "require": {
                 "classpreloader/classpreloader": "^3.1.0",
                 "doctrine/dbal": "^2.5.12",
+                "ext-mysqli": "*",
                 "ext-pdo_mysql": "*",
                 "fzaninotto/faker": "^1.7.1",
                 "hamcrest/hamcrest-php": "^2.0.0",
@@ -308,7 +309,7 @@
                 }
             ],
             "description": "BoardGameArena Workbench",
-            "time": "2018-03-13T02:48:16+00:00"
+            "time": "2018-03-16T00:13:39+00:00"
         },
         {
             "name": "doctrine/annotations",
@@ -3776,8 +3777,7 @@
     "prefer-stable": true,
     "prefer-lowest": false,
     "platform": {
-        "php": ">=7.0.0",
-        "ext-pdo_mysql": "*"
+        "php": ">=7.0.0"
     },
     "platform-dev": {
         "php": ">=7.0.8"
