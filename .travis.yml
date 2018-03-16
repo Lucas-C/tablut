@@ -25,4 +25,4 @@ script:
   # (note: `deploy` could be enabled by generating `bgaproject.yml` from TravisCI secrets)
   - composer bgaw-validate
   - composer bgaw-clean
-  - composer bgawb-build
+  - composer bgaw-build
