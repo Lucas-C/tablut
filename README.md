@@ -32,6 +32,7 @@ npm install
 ```
 composer check-php
 composer test  # require a MySQL daemon running
+composer test -- --filter testSimpleGetGameProgression
 composer bgaw-validate
 
 npm test

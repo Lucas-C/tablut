@@ -164,7 +164,7 @@ class Tablut extends Table
         $freeSquaresCount = self::getUniqueValueFromDb('SELECT COUNT( 1 ) FROM board WHERE board_player IS NULL');
 
         // Game progression = $freeSquaresCount scaled between 0 and 80 + 20 if king left the throne
-        return round(($freeSquaresCount - 56)*80/21 + ($kingPos['x'] != '5' || $kingPos['y'] != '5') ? 20 : 0);
+        return round(($freeSquaresCount - 56)*80/21) + ($kingPos['x'] != '5' || $kingPos['y'] != '5' ? 20 : 0);
     }
 
 
