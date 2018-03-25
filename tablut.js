@@ -267,6 +267,7 @@ define([
             }
         },
 
+        ///////////////////////////////////////////////////////
         onMove(event) {
             if (!event) {
                 console.log('Unexpected empty event');
@@ -285,6 +286,11 @@ define([
             const toPos = { x: coords[1], y: coords[2] };
             console.log('onMove', fromPos, toPos);
 
+            if (!event.currentTarget.classList.value.includes("availableMove")) {
+                console.log('No valid move');
+                return;
+            }
+            
             if (this.checkAction('move')) { // eslint-disable-line no-unreachable
                 this.ajaxcall(
                     '/tablut/tablut/move.html',
