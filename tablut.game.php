@@ -18,6 +18,9 @@ use Functional as F;
 use Tablut\Functional as HF;
 use Tablut\SQLHelper;
 
+define('BLACK_PLAYER_COLOR', '000000');
+define('WHITE_PLAYER_COLOR', 'ffffff');
+
 class Tablut extends Table
 {
     public function __construct()
@@ -58,7 +61,7 @@ class Tablut extends Table
      */
     private function setupPlayers(array $players)
     {
-        $default_color = array('000000', 'ffffff');
+        $default_color = array(BLACK_PLAYER_COLOR, WHITE_PLAYER_COLOR);
         $sql = 'INSERT INTO player (player_id, player_color, player_canal, player_name, player_avatar) VALUES';
         $values = array();
         foreach ($players as $player_id => $player) {
@@ -74,7 +77,6 @@ class Tablut extends Table
 
     private function setupBoard(array $players)
     {
-
         /* Initialize all the board */
         $sql_values = array();
         $sql = 'INSERT INTO board (board_x, board_y, board_wall) VALUES ';
@@ -133,7 +135,6 @@ class Tablut extends Table
             $result['players'][ $player['id'] ] = $player;
         }
 
-        // Get reversi board disc
         $result['board'] = self::getObjectListFromDB('SELECT
                                                           board_x x,
                                                           board_y y,
@@ -200,7 +201,6 @@ class Tablut extends Table
         // reject play
         // ------------------
         
-        $rejectMove = false;
         // reject if a pawn is present
         $dstSquareFromDb = self::DbQuery("SELECT board_player, board_wall FROM board WHERE board_x = $toX AND board_y = $toY")->fetch_assoc();
         if ($dstSquareFromDb['board_player'] != null) {
@@ -218,18 +218,18 @@ class Tablut extends Table
                 $dbres_asc  = self::DbQuery("SELECT board_y posY, board_wall wall_present, board_player player_present FROM board WHERE board_x = $toX ORDER BY board_y ASC");
                 // Loop on each position between the start position to the end position and verify that no wall and no pawn
                 // specific case for down of the wall
-                while ($Column = $dbres_asc->fetch_assoc()) {
-                    if ($fromY < $Column['posY'] &&  $Column['posY'] <= $toY) {
+                while ($column = $dbres_asc->fetch_assoc()) {
+                    if ($fromY < $column['posY'] &&  $column['posY'] <= $toY) {
+                        if ($column['player_present'] != null) {
+                            throw new feException("Cannot move on ($toX,${column['posY']}) : a pawn is already present");
+                        }
                         if ($pawnIsOnWall) {
-                            if ($Column['wall_present'] == null) {
+                            if ($column['wall_present'] == null) {
                                 $pawnIsOnWall = false;
                             }
-                            if ($Column['player_present'] != null) {
-                                $rejectMove = true;
-                            }
                         } else {
-                            if ($Column['wall_present'] != null || $Column['player_present'] != null) {
-                                $rejectMove = true;
+                            if ($column['wall_present'] != null) {
+                                throw new feException("Cannot move on ($toX,${column['posY']}) : a wall is blocking");
                             }
                         }
                     }
@@ -238,18 +238,18 @@ class Tablut extends Table
                 $dbres_desc = self::DbQuery("SELECT board_y posY, board_wall wall_present, board_player player_present FROM board WHERE board_x = $toX ORDER BY board_y DESC");
                 // Loop on each position between the start position to the end position and verify that no wall and no pawn
                 // specific case for down of the wall
-                while ($Column = $dbres_desc->fetch_assoc()) {
-                    if ($Column['posY'] < $fromY &&  $Column['posY'] >= $toY) {
+                while ($column = $dbres_desc->fetch_assoc()) {
+                    if ($column['posY'] < $fromY &&  $column['posY'] >= $toY) {
+                        if ($column['player_present'] != null) {
+                            throw new feException("Cannot move on ($toX,${column['posY']}) : a pawn is already present");
+                        }
                         if ($pawnIsOnWall) {
-                            if ($Column['wall_present'] == null) {
+                            if ($column['wall_present'] == null) {
                                 $pawnIsOnWall = false;
                             }
-                            if ($Column['player_present'] != null) {
-                                $rejectMove = true;
-                            }
                         } else {
-                            if ($Column['wall_present'] != null || $Column['player_present'] != null) {
-                                $rejectMove = true;
+                            if ($column['wall_present'] != null) {
+                                throw new feException("Cannot move on ($toX,${column['posY']}) : a wall is blocking");
                             }
                         }
                     }
@@ -263,16 +263,16 @@ class Tablut extends Table
                 $dbres_asc  = self::DbQuery("SELECT board_X posX, board_wall wall_present, board_player player_present FROM board WHERE board_y = $toY ORDER BY board_x ASC");
                 while ($row = $dbres_asc->fetch_assoc()) {
                     if ($fromX < $row['posX'] &&  $row['posX'] <= $toX) {
+                        if ($row['player_present'] != null) {
+                            throw new feException("Cannot move on (${column['posX']},$toX) : a pawn is already present");
+                        }
                         if ($pawnIsOnWall) {
                             if ($row['wall_present'] == null) {
                                 $pawnIsOnWall = false;
                             }
-                            if ($row['player_present'] != null) {
-                                $rejectMove = true;
-                            }
                         } else {
-                            if ($row['wall_present'] != null || $row['player_present'] != null) {
-                                $rejectMove = true;
+                            if ($row['wall_present'] != null) {
+                                throw new feException("Cannot move on (${column['posX']},$toX) : a wall is blocking");
                             }
                         }
                     }
@@ -283,26 +283,21 @@ class Tablut extends Table
                 $dbres_desc = self::DbQuery("SELECT board_X posX, board_wall wall_present, board_player player_present FROM board WHERE board_y = $toY ORDER BY board_x DESC");
                 while ($row = $dbres_desc->fetch_assoc()) {
                     if ($row['posX'] < $fromX &&  $row['posX'] >= $toX) {
+                        if ($row['player_present'] != null) {
+                            throw new feException("Cannot move on (${column['posX']},$toX) : a pawn is already present");
+                        }
                         if ($pawnIsOnWall) {
                             if ($row['wall_present'] == null) {
                                 $pawnIsOnWall = false;
                             }
-                            if ($row['player_present'] != null) {
-                                $rejectMove = true;
-                            }
                         } else {
-                            if ($row['wall_present'] != null || $row['player_present'] != null) {
-                                $rejectMove = true;
+                            if ($row['wall_present'] != null) {
+                                throw new feException("Cannot move on (${column['posX']},$toX) : a wall is blocking");
                             }
                         }
                     }
                 }
             }
-        }
-
-        // throw an exception if is not in same row without pawn or wall between the disc to the final position
-        if ($rejectMove) {
-            throw new feException("Cannot move");
         }
 
 
@@ -330,6 +325,9 @@ class Tablut extends Table
                 'gamedatas' => $this->getAllDatas()
             ));
         }
+
+        $this->incStat(1, 'turns_number'); // TABLE stat update
+        $this->incStat(1, 'turns_number', $pawnPlayerId); // PLAYER stat update
 
         $this->gamestate->nextState('move');
     }

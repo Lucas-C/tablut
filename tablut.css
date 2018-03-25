@@ -41,7 +41,7 @@
 
 /********* You can start writing your CSS below this line: **********/
 
-.board {
+#board {
     position: relative;
     margin: 0 auto;
     height: 540px;
@@ -61,7 +61,6 @@
 .square:hover {
     background-color: white;
     opacity: 0.2;
-    cursor: pointer;
 }
 
 .fortress {
@@ -82,7 +81,6 @@
     position: absolute;
     background-color: white;
     border-radius: 30px;
-    cursor: pointer;
 }
 
 .p1King {
@@ -92,7 +90,6 @@
     position: absolute;
     background-color: white;
     border-radius: 30px;
-    cursor: pointer;
 }
 
 .p1King::before {
@@ -112,7 +109,6 @@
     position: absolute;
     background-color: #111;
     border-radius: 30px;
-    cursor: pointer;
 }
 
 .selected {

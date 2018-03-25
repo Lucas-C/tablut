@@ -55,7 +55,6 @@ define([
     'dojo/fx',
     'ebg/scrollmap',//*/
 ], function main(dojo, declare, lang, dom, query, domGeom) {
-    const ANIMATION_ZINDEX = 100;
     const END_OF_GAME_DELAY = 2000;
 
     return declare('bgagame.tablut', ebg.core.gamegui, {
@@ -74,9 +73,7 @@ define([
         },
 
         setupLayout() {
-            console.log('setupLayout', this.gamedatas);
             const myPlayerIndex = this.gamedatas.players[this.gamedatas.playerorder[0]].color === 'ffffff' ? 1 : 0;
-            console.log('myPlayerIndex:', myPlayerIndex);
 
             for (const pawn of this.gamedatas.board) {
                 if (pawn.player !== null) {
@@ -85,13 +82,13 @@ define([
             }
 
             if (myPlayerIndex === 1) {
-                dojo.query('.p1Swede').on('click', lang.hitch(this, this.onSelectPawn));
-                dojo.query('.p1King').on('click', lang.hitch(this, this.onSelectPawn));
+                dojo.query('.p1Swede').style('cursor', 'pointer').on('click', lang.hitch(this, this.onSelectPawn));
+                dojo.query('.p1King').style('cursor', 'pointer').on('click', lang.hitch(this, this.onSelectPawn));
             } else {
-                dojo.query('.p0Muscovite').on('click', lang.hitch(this, this.onSelectPawn));
+                dojo.query('.p0Muscovite').style('cursor', 'pointer').on('click', lang.hitch(this, this.onSelectPawn));
             }
             dojo.query('.square').on('click', lang.hitch(this, this.onMove));
-            this.addTooltip('move', _('Move'), '');
+            this.addTooltipToClass('fortress', _('No one can enter fortress squares !'), '');
         },
 
 
@@ -136,47 +133,12 @@ define([
         },
 
         movePawn(fromDiscId, toSquareId) {
-            console.log('movePawn', fromDiscId, toSquareId);
             const coords = toSquareId.split('_');
             const x = coords[1];
             const y = coords[2];
             const newDiscId = `disc_${ x }_${ y }`;
             dojo.query(`#${ fromDiscId }`).attr('id', newDiscId);
             this.slideToObject(newDiscId, toSquareId).play();
-        },
-
-
-        // /////////////////////////////////////////////////
-        // // Animation Utility methods
-        prepareForAnimation(node) {
-            if (!node) {
-                throw new Error('Must provide a node');
-            }
-            return query(node)
-                .style('zIndex', ANIMATION_ZINDEX)
-                .style('position', 'absolute')
-                .pop();
-        },
-
-        recoverFromAnimation(node) {
-            if (!node) {
-                throw new Error('Must provide a node');
-            }
-            return query(node)
-                .style('zIndex', null)
-                .style('position', null)
-                .style('left', null)
-                .style('top', null)
-                .pop();
-        },
-
-        getCentredPosition(from, target) {
-            const fromBox = domGeom.position(from);
-            const targetBox = domGeom.position(target);
-            return {
-                x: targetBox.x + (targetBox.w / 2) - (fromBox.w / 2),
-                y: targetBox.y + (targetBox.h / 2) - (fromBox.h / 2),
-            };
         },
 
         // /////////////////////////////////////////////////
@@ -240,8 +202,7 @@ define([
         // /////////////////////////////////////////////////
         // // Player's action
         onSelectPawn(event) {
-            if (!event) {
-                console.log('Unexpected empty event');
+            if (!event || !this.isCurrentPlayerActive()) {
                 return;
             }
             event.preventDefault();
@@ -269,14 +230,12 @@ define([
 
         ///////////////////////////////////////////////////////
         onMove(event) {
-            if (!event) {
-                console.log('Unexpected empty event');
+            if (!event || !this.isCurrentPlayerActive()) {
                 return;
             }
             event.preventDefault();
             dojo.stopEvent(event);
             if (!this.selectedDisc) {
-                console.log('No disc selected, doing nothing');
                 return;
             }
 
@@ -284,7 +243,6 @@ define([
             const fromPos = { x: coords[1], y: coords[2] };
             coords = event.currentTarget.id.split('_');
             const toPos = { x: coords[1], y: coords[2] };
-            console.log('onMove', fromPos, toPos);
 
             if (!event.currentTarget.classList.value.includes("availableMove")) {
                 console.log('No valid move');
