@@ -144,6 +144,8 @@ class Tablut extends Table
                                                           board_limitWin limitWin
                                                       FROM board');
 
+        $result['turns_number'] = $this->getStat('turns_number');
+
         return $result;
     }
 

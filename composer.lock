@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "content-hash": "1f89dfd805dadfa89b4c5a629dd8bc48",
+    "content-hash": "fdd85b34f0c33ff4d0cbc67a13b1eb49",
     "packages": [
         {
             "name": "lstrojny/functional-php",
@@ -250,16 +250,16 @@
         },
         {
             "name": "dholmes/bga-workbench",
-            "version": "0.1.0",
+            "version": "0.1.3",
             "source": {
                 "type": "git",
                 "url": "https://github.com/danielholmes/bga-workbench.git",
-                "reference": "115a822b76f5cefe780547a6319208a8a8f497e0"
+                "reference": "7525a57aa92ea0a3ff90a2c48f390b9cf706c4af"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/danielholmes/bga-workbench/zipball/115a822b76f5cefe780547a6319208a8a8f497e0",
-                "reference": "115a822b76f5cefe780547a6319208a8a8f497e0",
+                "url": "https://api.github.com/repos/danielholmes/bga-workbench/zipball/7525a57aa92ea0a3ff90a2c48f390b9cf706c4af",
+                "reference": "7525a57aa92ea0a3ff90a2c48f390b9cf706c4af",
                 "shasum": ""
             },
             "require": {
@@ -269,6 +269,7 @@
                 "ext-pdo_mysql": "*",
                 "fzaninotto/faker": "^1.7.1",
                 "hamcrest/hamcrest-php": "^2.0.0",
+                "illuminate/support": ">=4.0 < 6.0.0",
                 "jasonlewis/resource-watcher": "1.2.0",
                 "lstrojny/functional-php": ">=1.6.0 <1.8.0",
                 "nette/reflection": "^2.4.2",
@@ -309,7 +310,7 @@
                 }
             ],
             "description": "BoardGameArena Workbench",
-            "time": "2018-03-16T00:13:39+00:00"
+            "time": "2018-03-26T21:34:35+00:00"
         },
         {
             "name": "doctrine/annotations",
@@ -1180,16 +1181,16 @@
         },
         {
             "name": "nesbot/carbon",
-            "version": "1.24.2",
+            "version": "1.25.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/briannesbitt/Carbon.git",
-                "reference": "bba6c6e410c6b4317e37a9474aeaa753808c3875"
+                "reference": "cbcf13da0b531767e39eb86e9687f5deba9857b4"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/briannesbitt/Carbon/zipball/bba6c6e410c6b4317e37a9474aeaa753808c3875",
-                "reference": "bba6c6e410c6b4317e37a9474aeaa753808c3875",
+                "url": "https://api.github.com/repos/briannesbitt/Carbon/zipball/cbcf13da0b531767e39eb86e9687f5deba9857b4",
+                "reference": "cbcf13da0b531767e39eb86e9687f5deba9857b4",
                 "shasum": ""
             },
             "require": {
@@ -1229,20 +1230,20 @@
                 "datetime",
                 "time"
             ],
-            "time": "2018-03-10T10:10:14+00:00"
+            "time": "2018-03-19T15:50:49+00:00"
         },
         {
             "name": "nette/caching",
-            "version": "v2.5.6",
+            "version": "v2.5.8",
             "source": {
                 "type": "git",
                 "url": "https://github.com/nette/caching.git",
-                "reference": "1231735b5135ca02bd381b70482c052d2a90bdc9"
+                "reference": "7fba7c7ab2585fafb7b31152f2595e1551120555"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/nette/caching/zipball/1231735b5135ca02bd381b70482c052d2a90bdc9",
-                "reference": "1231735b5135ca02bd381b70482c052d2a90bdc9",
+                "url": "https://api.github.com/repos/nette/caching/zipball/7fba7c7ab2585fafb7b31152f2595e1551120555",
+                "reference": "7fba7c7ab2585fafb7b31152f2595e1551120555",
                 "shasum": ""
             },
             "require": {
@@ -1298,7 +1299,7 @@
                 "nette",
                 "sqlite"
             ],
-            "time": "2017-08-30T12:12:25+00:00"
+            "time": "2018-03-21T11:04:32+00:00"
         },
         {
             "name": "nette/finder",

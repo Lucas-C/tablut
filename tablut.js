@@ -42,10 +42,10 @@ define([
     'dojo/_base/lang',
     'dojo/dom',
     'dojo/query',
-    'dojo/dom-geometry',
     // Unused but required to define global `ebg.core.gamegui`:
     'ebg/core/gamegui', 'ebg/counter',
     /* Unused but available:
+    'dojo/dom-geometry',
     'dojo/dom-construct',
     'dojo/dom-class',
     'dojo/NodeList-data',
@@ -54,7 +54,7 @@ define([
     'dojo/_base/array',
     'dojo/fx',
     'ebg/scrollmap',//*/
-], function main(dojo, declare, lang, dom, query, domGeom) {
+], function main(dojo, declare, lang, dom, query) {
     const END_OF_GAME_DELAY = 2000;
 
     return declare('bgagame.tablut', ebg.core.gamegui, {
@@ -89,6 +89,9 @@ define([
             }
             dojo.query('.square').on('click', lang.hitch(this, this.onMove));
             this.addTooltipToClass('fortress', _('No one can enter fortress squares !'), '');
+            if (this.gamedatas.turns_number == 0) {
+                console.log('You play the ' + (myPlayerIndex === 1 ? 'Swedes' ? 'Muscovites')); // to test
+            }
         },
 
 
@@ -238,11 +241,6 @@ define([
             if (!this.selectedDisc) {
                 return;
             }
-
-            let coords = this.selectedDisc.id.split('_');
-            const fromPos = { x: coords[1], y: coords[2] };
-            coords = event.currentTarget.id.split('_');
-            const toPos = { x: coords[1], y: coords[2] };
 
             if (!event.currentTarget.classList.value.includes("availableMove")) {
                 console.log('No valid move');
