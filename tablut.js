@@ -90,7 +90,7 @@ define([
             dojo.query('.square').on('click', lang.hitch(this, this.onMove));
             this.addTooltipToClass('fortress', _('No one can enter fortress squares !'), '');
             if (this.gamedatas.turns_number == 0) {
-                console.log('You play the ' + (myPlayerIndex === 1 ? 'Swedes' ? 'Muscovites')); // to test
+                console.log('You play the ' + (myPlayerIndex === 1 ? 'Swedes' : 'Muscovites')); // to test
             }
         },
 
