@@ -89,7 +89,7 @@ define([
             }
             dojo.query('.square').on('click', lang.hitch(this, this.onMove));
             this.addTooltipToClass('fortress', _('No one can enter fortress squares !'), '');
-            if (+this.gamedatas.turns_number === 0) {
+            if (Number(this.gamedatas.turns_number) === 0) {
                 dojo.place(this.format_block('jstpl_topMsg', {
                     message: myPlayerIndex === 1 ? _('You play the white pawns, the Swedes') : _('You play the black pawns, the Muscovites'),
                 }), 'maintitlebar_content', 'before');
@@ -233,7 +233,7 @@ define([
             }
         },
 
-        ///////////////////////////////////////////////////////
+        // /////////////////////////////////////////////////////
         onMove(event) {
             if (!event || !this.isCurrentPlayerActive()) {
                 return;
@@ -244,11 +244,11 @@ define([
                 return;
             }
 
-            if (!event.currentTarget.classList.value.includes("availableMove")) {
+            if (!event.currentTarget.classList.value.includes('availableMove')) {
                 console.log('No valid move');
                 return;
             }
-            
+
             if (this.checkAction('move')) { // eslint-disable-line no-unreachable
                 this.ajaxcall(
                     '/tablut/tablut/move.html',
