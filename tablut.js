@@ -89,8 +89,10 @@ define([
             }
             dojo.query('.square').on('click', lang.hitch(this, this.onMove));
             this.addTooltipToClass('fortress', _('No one can enter fortress squares !'), '');
-            if (this.gamedatas.turns_number === 0) {
-                console.log('You play the ' + (myPlayerIndex === 1 ? 'Swedes' : 'Muscovites'));
+            if (+this.gamedatas.turns_number === 0) {
+                dojo.place(this.format_block('jstpl_topMsg', {
+                    message: myPlayerIndex === 1 ? _('You play the white pawns, the Swedes') : _('You play the black pawns, the Muscovites'),
+                }), 'maintitlebar_content', 'before');
             }
         },
 

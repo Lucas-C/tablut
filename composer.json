@@ -53,6 +53,6 @@
     "bgaw-watch": "bgawb -v build --watch --deploy"
   },
   "config": {
-    "COMPOSER_PROCESS_TIMEOUT": 9000
+    "process-timeout": 9000
   }
 }
