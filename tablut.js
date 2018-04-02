@@ -40,10 +40,10 @@ define([
     'dojo',
     'dojo/_base/declare',
     'dojo/_base/lang',
-    'dojo/dom',
     // Unused but required to define global `ebg.core.gamegui`:
     'ebg/core/gamegui', 'ebg/counter',
     /* Unused but available:
+    'dojo/dom',
     'dojo/dom-construct',
     'dojo/dom-class',
     'dojo/dom-geometry',
@@ -54,7 +54,7 @@ define([
     'dojo/NodeList-html',
     'dojo/_base/array',
     'ebg/scrollmap',//*/
-], function main(dojo, declare, lang, dom) {
+], function main(dojo, declare, lang) {
     const END_OF_GAME_DELAY = 2000;
 
     return declare('bgagame.tablut', ebg.core.gamegui, {
