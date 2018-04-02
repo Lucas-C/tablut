@@ -41,20 +41,20 @@ define([
     'dojo/_base/declare',
     'dojo/_base/lang',
     'dojo/dom',
-    'dojo/query',
     // Unused but required to define global `ebg.core.gamegui`:
     'ebg/core/gamegui', 'ebg/counter',
     /* Unused but available:
-    'dojo/dom-geometry',
     'dojo/dom-construct',
     'dojo/dom-class',
+    'dojo/dom-geometry',
+    'dojo/fx',
+    'dojo/query',
     'dojo/NodeList-data',
     'dojo/NodeList-traverse',
     'dojo/NodeList-html',
     'dojo/_base/array',
-    'dojo/fx',
     'ebg/scrollmap',//*/
-], function main(dojo, declare, lang, dom, query) {
+], function main(dojo, declare, lang, dom) {
     const END_OF_GAME_DELAY = 2000;
 
     return declare('bgagame.tablut', ebg.core.gamegui, {
@@ -89,8 +89,8 @@ define([
             }
             dojo.query('.square').on('click', lang.hitch(this, this.onMove));
             this.addTooltipToClass('fortress', _('No one can enter fortress squares !'), '');
-            if (this.gamedatas.turns_number == 0) {
-                console.log('You play the ' + (myPlayerIndex === 1 ? 'Swedes' : 'Muscovites')); // to test
+            if (this.gamedatas.turns_number === 0) {
+                console.log('You play the ' + (myPlayerIndex === 1 ? 'Swedes' : 'Muscovites'));
             }
         },
 
