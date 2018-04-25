@@ -53,13 +53,37 @@ $stats_type = array(
                     "name" => totranslate("Number of turns"),
                     "type" => "int" ),
 
+        "muscovites_captured" => array("id"=> 11,
+                    "name" => totranslate("Number of Muscovite pawns captured during the game"),
+                    "type" => "int" ),
+
+        "swedes_captured" => array("id"=> 12,
+                    "name" => totranslate("Number of Swede pawns (king not included) captured during the game"),
+                    "type" => "int" ),
+
+        "swedes_won" => array("id"=> 13,
+                    "name" => totranslate("Wether or not the Swedes won against the Muscovites"),
+                    "type" => "bool" ),
+
     ),
 
     // Statistics existing for each player
     "player" => array(
 
-        "turns_number" => array("id"=> 10,
-                    "name" => totranslate("Number of turns"),
+        "games_playing_muscovites" => array("id"=> 10,
+                    "name" => totranslate("Number of games where the player played the Muscovites"),
+                    "type" => "int" ),
+
+        "games_playing_swedes" => array("id"=> 11,
+                    "name" => totranslate("Number of games where the player played the Muscovites"),
+                    "type" => "int" ),
+
+        "muscovites_captured" => array("id"=> 12,
+                    "name" => totranslate("Number of Muscovites pawns captured by the player"),
+                    "type" => "int" ),
+
+        "swedes_captured" => array("id"=> 13,
+                    "name" => totranslate("Number of Swedes pawns captured by the player"),
                     "type" => "int" ),
     )
 

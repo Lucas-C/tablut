@@ -50,9 +50,9 @@ class Tablut extends Table
         if (count($players) !== 2) {
             throw new InvalidArgumentException('Can only work with 2 players');
         }
-        $this->setupPlayers($players);
+        $activePlayerIsMuscovite = $this->setupPlayers($players);
         $this->setupBoard($players);
-        $this->setupStats();
+        $this->setupStats($activePlayerIsMuscovite);
         $this->activeNextPlayer();
     }
 
@@ -61,11 +61,14 @@ class Tablut extends Table
      */
     private function setupPlayers(array $players)
     {
-        $default_color = array(BLACK_PLAYER_COLOR, WHITE_PLAYER_COLOR);
+        $default_color = array(BLACK_PLAYER_COLOR, WHITE_PLAYER_COLOR); // black <=> Muscovites / white <=> Swedes
         $sql = 'INSERT INTO player (player_id, player_color, player_canal, player_name, player_avatar) VALUES';
         $values = array();
         foreach ($players as $player_id => $player) {
             $color = array_shift($default_color);
+            if (self::getActivePlayerId() == $player_id) {
+                $activePlayerIsMuscovite = ($color == BLACK_PLAYER_COLOR);
+            }
             $playerName = addslashes($player['player_name']);
             $playerAvatar = addslashes($player['player_avatar']);
             $values[] = "('$player_id','$color','$player[player_canal]','$playerName','$playerAvatar')";
@@ -73,6 +76,7 @@ class Tablut extends Table
         $sql .= implode($values, ',');
         self::DbQuery($sql);
         self::reloadPlayersBasicInfos();
+        return $activePlayerIsMuscovite;
     }
 
     private function setupBoard(array $players)
@@ -112,10 +116,22 @@ class Tablut extends Table
         self::DbQuery("UPDATE board SET board_limitWin='1' WHERE ( board_x, board_y) IN (('2','9'), ('3','9'), ('7','9'), ('8','9'))");
     }
 
-    private function setupStats()
+    private function setupStats($activePlayerIsMuscovite)
     {
+        // Table stats:
         $this->initStat('table', 'turns_number', 0);
-        $this->initStat('player', 'turns_number', 0);
+        $this->initStat('table', 'muscovites_captured', 0);
+        $this->initStat('table', 'swedes_captured', 0);
+        // Player stats:
+        if ($activePlayerIsMuscovite) {
+            $this->initStat('player', 'games_playing_muscovites', 1);
+            $this->initStat('player', 'games_playing_swedes', 0);
+        } else {
+            $this->initStat('player', 'games_playing_muscovites', 0);
+            $this->initStat('player', 'games_playing_swedes', 1);
+        }
+        $this->initStat('player', 'muscovites_captured', 0);
+        $this->initStat('player', 'swedes_captured', 0);
     }
 
 
@@ -128,10 +144,7 @@ class Tablut extends Table
     protected function getAllDatas()
     {
         $result = array( 'players' => array() );
-
-        // Add players specific infos
-        $dbres = self::DbQuery('SELECT player_id id, player_score score FROM player');
-        while ($player = $dbres->fetch_assoc()) {
+        while ($player = self::DbQuery('SELECT player_id id FROM player')->fetch_assoc()) {
             $result['players'][ $player['id'] ] = $player;
         }
 
@@ -302,7 +315,6 @@ class Tablut extends Table
             }
         }
 
-
         self::DbQuery("UPDATE board SET board_player=NULL,            board_king=NULL           WHERE board_x = $fromX AND board_y = $fromY");
         self::DbQuery("UPDATE board SET board_player='$pawnPlayerId', board_king=$pawnIsKing WHERE board_x = $toX   AND board_y = $toY");
 
@@ -326,6 +338,13 @@ class Tablut extends Table
                 'eatenPawnY' => $eatenPawnY,
                 'gamedatas' => $this->getAllDatas()
             ));
+            if ($this->dbPawnColor($eatenPawnX, $eatenPawnY) == BLACK_PLAYER_COLOR) {
+                $this->incStat(1, 'muscovites_captured'); // TABLE stat update
+                $this->incStat(1, 'muscovites_captured', $pawnPlayerId); // PLAYER stat update
+            } else {
+                $this->incStat(1, 'swedes_captured'); // TABLE stat update
+                $this->incStat(1, 'swedes_captured', $pawnPlayerId); // PLAYER stat update
+            }
         }
 
         $this->incStat(1, 'turns_number'); // TABLE stat update
@@ -387,6 +406,11 @@ class Tablut extends Table
         return self::DbQuery("SELECT board_player, board_king, board_wall FROM board WHERE board_x = $x AND board_y = $y")->fetch_assoc();
     }
 
+    private function dbPawnColor($x, $y)
+    {
+        return self::DbQuery("SELECT player_color FROM board, player WHERE board_x = $x AND board_y = $y AND player_id = board_player")->fetch_assoc()['player_color'];
+    }
+
 //////////////////////////////////////////////////////////////////////////////
 //////////// Game state arguments
 ////////////
@@ -411,9 +435,11 @@ class Tablut extends Table
         $moscovitWin = self::DbQuery("SELECT board_x FROM board WHERE board_king='1' ")->fetch_assoc()['board_x'];
         if ($moscovitWin == null) {
             self::DbQuery("UPDATE player SET player_score='2' WHERE player_id='$activePLayer'");
+            $this->setStat(0, 'swedes_won');
             $this->gamestate->nextState('endGame');
         } elseif ($kingWins == '1') {
             self::DbQuery("UPDATE player SET player_score='1' WHERE player_id='$activePLayer'");
+            $this->setStat(1, 'swedes_won');
             $this->gamestate->nextState('endGame');
         } else {
             $this->gamestate->nextState('nextTurn');
