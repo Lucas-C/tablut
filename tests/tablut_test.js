@@ -1,29 +1,102 @@
-const Tablut = require('../tablut').tablut;
+const assert = require('assert')
 
-var assert = require('assert');
+const Tablut = require('../tablut')
+
+
+function boardBuilder({size = 9} = {}) {
+    const matrix = [...Array(size)].map((_, i) =>
+        [...Array(size)].map((_, j) =>
+            ({x: '' + (i + 1), y: '' + (j + 1), player: null, wall: null}),
+        )
+    )
+    return {
+        board: Array.prototype.concat(...matrix),  // flatten
+        at: (x, y) => matrix[x - 1][y - 1],
+    }
+}
 
 
 describe('listAvailableMoves', () => {
+    const tablut = new Tablut()
+    const board = (() => {
+        const builder = boardBuilder({size: 3})
+        builder.at(2, 2).player = 'P1'
+        return builder.board
+    })()
+    tablut.gamedatas = {board: board}
+
     it('should return 4 available moves for a single pawn in the middle of a 3x3 board', () => {
-        const board = [
-            {x: '1', y: '1', player: null, wall: null},
-            {x: '1', y: '2', player: null, wall: null},
-            {x: '1', y: '3', player: null, wall: null},
-            {x: '2', y: '1', player: null, wall: null},
-            {x: '2', y: '2', player: 'P1', wall: null},
-            {x: '2', y: '3', player: null, wall: null},
-            {x: '3', y: '1', player: null, wall: null},
-            {x: '3', y: '2', player: null, wall: null},
-            {x: '3', y: '3', player: null, wall: null},
-        ];
-
-        const tablut = new Tablut();
-        const moves = [...tablut.listAvailableMoves({
-            board: board,
-            pawnPos: {x: '2', y: '2'},
-        })];
-
-        assert.equal(moves.length, 4);
+        assert.equal([...tablut.listAvailableMoves({x: 2, y: 2})].length, 4)
     })
 })
 
+describe('relativeDirection', () => {
+    const relativeDirection = Tablut.prototype.relativeDirection
+
+    it('should throw an error when going from the top left of the board to the bottom right', () => {
+        assert.throws(() => relativeDirection({x: 1, y: 1}, {x: 9, y: 9}))
+    })
+
+    it('should throw an error when source position equals destination', () => {
+        assert.throws(() => relativeDirection({x: 5, y: 5}, {x: 5, y: 5}))
+    })
+
+    it('should return LEFT for a destination position on the left side of source', () => {
+        assert.equal(relativeDirection({x: 2, y: 1}, {x: 1, y: 1}), 'LEFT')
+    })
+
+    it('should return RIGHT for a destination position on the right side of source', () => {
+        assert.equal(relativeDirection({x: 5, y: 5}, {x: 6, y: 5}), 'RIGHT')
+    })
+
+    it('should return DOWN for a destination position below the source', () => {
+        assert.equal(relativeDirection({x: 5, y: 4}, {x: 5, y: 5}), 'DOWN')
+    })
+
+    it('should return UP for a destination position above the source', () => {
+        assert.equal(relativeDirection({x: 9, y: 9}, {x: 9, y: 8}), 'UP')
+    })
+})
+
+describe('pathRange', () => {
+    const tablut = new Tablut()
+
+    it('should return a single element when source position equals destination', () => {
+        assert.deepEqual([...tablut.pathRange({x: 5, y: 5}, {x: 5, y: 5})], [{x: 5, y: 5}])
+    })
+
+    it('should be able to compute an horizontal path of size 2', () => {
+        assert.deepEqual([...tablut.pathRange({x: 1, y: 1}, {x: 2, y: 1})], [{x: 1, y: 1}, {x: 2, y: 1}])
+    })
+
+    it('should be able to compute a vertical path of size 9', () => {
+        assert.deepEqual([...tablut.pathRange({x: 9, y: 1}, {x: 9, y: 9})].length, 9)
+    })
+})
+
+describe('getRaichiOrTuichi', () => {
+    const tablut = new Tablut()
+
+    it('should be able to detect a RAICHI to the bottom of the board', () => {
+        const board = (() => {
+            const builder = boardBuilder({size: 3})
+            builder.at(2, 1).wall = '1'
+            builder.at(1, 2).wall = '1'
+            builder.at(3, 2).wall = '1'
+            return builder.board
+        })()
+        tablut.gamedatas = {board: board}
+        assert.deepEqual(tablut.getRaichiOrTuichi({x: 2, y: 2}), ['RAICHI', [{x: 2, y: 2}, {x: 2, y: 3}]])
+    })
+
+    it('should be able to detect an horizontal TUICHI', () => {
+        const board = (() => {
+            const builder = boardBuilder({size: 3})
+            builder.at(2, 1).wall = '1'
+            builder.at(2, 3).wall = '1'
+            return builder.board
+        })()
+        tablut.gamedatas = {board: board}
+        assert.deepEqual(tablut.getRaichiOrTuichi({x: 2, y: 2}), ['TUICHI', [{x: 3, y: 2}, {x: 2, y: 2}, {x: 1, y: 2}]])
+    })
+})

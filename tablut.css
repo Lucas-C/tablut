@@ -127,6 +127,18 @@
     opacity: 0.4;
 }
 
+.winningPath::before {
+    content: ' ';
+    width: 54px;
+    height: 54px;
+    margin: 3px;
+    position: absolute;
+    background-color: gold;
+    border-radius: 30px;
+    cursor: pointer;
+    opacity: 0.4;
+}
+
 #maintitlebar_topMsg {
     display: inline-block;
     position: relative;

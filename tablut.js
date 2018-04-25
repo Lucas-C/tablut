@@ -16,7 +16,7 @@
 
 // If `define` does not exist and we are in a NodeJS module context (e.g. for unit tests),
 // mock `define` and the dojo dependencies
-if (typeof define === 'undefined' && typeof exports !== 'undefined') {
+if (typeof define === 'undefined' && typeof module !== 'undefined') {
     const depsMocks = {
         'dojo/_base/declare': (className, superClass, props) => {
             function dojoClass(...args) {
@@ -31,7 +31,7 @@ if (typeof define === 'undefined' && typeof exports !== 'undefined') {
     };
     // Globals:
     define = function define(depsPaths, main) {
-        exports.tablut = main(...depsPaths.map((path) => depsMocks[path]));
+        module.exports = main(...depsPaths.map((path) => depsMocks[path]));
     };
     ebg = { core: { gamegui: null } };
 }
@@ -40,6 +40,8 @@ define([
     'dojo',
     'dojo/_base/declare',
     'dojo/_base/lang',
+    // dojo extension providing .removeClass:
+    'dojo/NodeList-dom',
     // Unused but required to define global `ebg.core.gamegui`:
     'ebg/core/gamegui', 'ebg/counter',
     /* Unused but available:
@@ -56,6 +58,13 @@ define([
     'ebg/scrollmap',//*/
 ], function main(dojo, declare, lang) {
     const END_OF_GAME_DELAY = 2000;
+    const DIRECTIONS = [ 'LEFT', 'RIGHT', 'DOWN', 'UP' ];
+    const POS_DELTA_PER_DIR = {
+        LEFT: { x: -1, y: 0 },
+        RIGHT: { x: 1, y: 0 },
+        DOWN: { x: 0, y: 1 },
+        UP: { x: 0, y: -1 },
+    };
 
     return declare('bgagame.tablut', ebg.core.gamegui, {
         constructor() {
@@ -90,12 +99,17 @@ define([
             dojo.query('.square').on('click', lang.hitch(this, this.onMove));
             this.addTooltipToClass('fortress', _('No one can enter fortress squares !'), '');
             if (Number(this.gamedatas.turns_number) === 0) {
-                dojo.place(this.format_block('jstpl_topMsg', {
-                    message: myPlayerIndex === 1 ? _('You play the white pawns, the Swedes') : _('You play the black pawns, the Muscovites'),
-                }), 'maintitlebar_content', 'before');
+                this.displayTitleBarMessage(myPlayerIndex === 1 ?
+                    _('You play the white pawns, the Swedes') :
+                    _('You play the black pawns, the Muscovites'));
             }
         },
 
+        displayTitleBarMessage(message) {
+            dojo.place(this.format_block('jstpl_topMsg', {
+                message,
+            }), 'maintitlebar_content', 'before');
+        },
 
         // /////////////////////////////////////////////////
         // // Game & client states
@@ -146,46 +160,60 @@ define([
             this.slideToObject(newDiscId, toSquareId).play();
         },
 
-        // /////////////////////////////////////////////////
-        // function to remove the display of all available move
-        removeAllAvailableMoves() {
-            let vElement = null;
-            for (vElement of this.gamedatas.board) {
-                dojo.query(`#square_${ vElement.x }_${ vElement.y }`)[0].classList.remove('availableMove');
+        displayWinningPaths(winningPathPositions) {
+            for (const vPosition of winningPathPositions) {
+                dojo.query(`#square_${ vPosition.x }_${ vPosition.y }`)[0].classList.add('winningPath');
             }
+        },
+
+        clearWinningPaths() {
+            dojo.query('.winningPath').removeClass('winningPath');
+        },
+
+        clearAllAvailableMoves() {
+            dojo.query('.availableMove').removeClass('availableMove');
+        },
+
+        getBoardElemAtPos(board, { x, y }) {
+            return board.find((vElement) => Number(vElement.x) === Number(x) && Number(vElement.y) === Number(y));
         },
 
         // /////////////////////////////////////////////////
         // generator function, not supported by IE <= 11
-        * listAvailableMoves({ board, pawnPos }) {
+        * listAvailableMoves(pawnPos) {
+            const board = this.gamedatas.board;
             const boardLineLength = Math.sqrt(board.length);
-            // find the element present on the table
-            const vElementDisc = board.find((vElement) =>
-                vElement.x === pawnPos.x && vElement.y === pawnPos.y);
-
-            const vStart = [
-                (pawnPos.x * boardLineLength) - (boardLineLength - pawnPos.y) - 2,
-                (pawnPos.x * boardLineLength) - (boardLineLength - pawnPos.y),
-                (pawnPos.x * boardLineLength) - (boardLineLength - pawnPos.y) - 1 - boardLineLength,
-                (pawnPos.x * boardLineLength) - (boardLineLength - pawnPos.y) - 1 + boardLineLength,
-            ];
-            const vEnd = [
-                ((pawnPos.x - 1) * boardLineLength) - 1,
-                pawnPos.x * boardLineLength,
-                0,
-                board.length,
-            ];
             /* eslint no-magic-numbers: "off" */
-            const vIncrement = [ -1, 1, -boardLineLength, boardLineLength ];
+            const boardIndexIncrementPerDir = {
+                LEFT: -1,
+                RIGHT: 1,
+                DOWN: boardLineLength,
+                UP: -boardLineLength,
+            };
 
-            for (let vDirection = 0; vDirection < vIncrement.length; ++vDirection) {
+            // find the element present on the table
+            const vElementDisc = this.getBoardElemAtPos(board, pawnPos);
+
+            const vStart = {
+                LEFT: (pawnPos.x * boardLineLength) - (boardLineLength - pawnPos.y) - 2,
+                RIGHT: (pawnPos.x * boardLineLength) - (boardLineLength - pawnPos.y),
+                DOWN: (pawnPos.x * boardLineLength) - (boardLineLength - pawnPos.y) - 1 + boardLineLength,
+                UP: (pawnPos.x * boardLineLength) - (boardLineLength - pawnPos.y) - 1 - boardLineLength,
+            };
+            const vEnd = {
+                LEFT: ((pawnPos.x - 1) * boardLineLength) - 1,
+                RIGHT: pawnPos.x * boardLineLength,
+                DOWN: board.length,
+                UP: 0,
+            };
+            for (const dir of DIRECTIONS) {
                 // initialize the default position
                 let vDiscOnWall = vElementDisc.wall;
 
                 // loop for each direction
-                for (let vIndex = vStart[vDirection], vCoeff = Math.sign(vIncrement[vDirection]);
-                    vIndex * vCoeff < vEnd[vDirection] * vCoeff;
-                    vIndex += vIncrement[vDirection]
+                for (let vIndex = vStart[dir], dirSign = Math.sign(boardIndexIncrementPerDir[dir]);
+                    vIndex * dirSign < vEnd[dir] * dirSign;
+                    vIndex += boardIndexIncrementPerDir[dir]
                 ) {
                     const vPosition = board[vIndex];
                     if (!vPosition) {
@@ -203,6 +231,66 @@ define([
             }
         },
 
+        relativeDirection(startPos, endPos) {
+            if (startPos.x === endPos.x) {
+                if (startPos.y < endPos.y) {
+                    return 'DOWN';
+                } else if (startPos.y > endPos.y) {
+                    return 'UP';
+                }
+                throw new Error(`Start & end positions are identical (${ startPos.x }, ${ startPos.y })`);
+            } else if (startPos.y === endPos.y) {
+                return startPos.x < endPos.x ? 'RIGHT' : 'LEFT';
+            } else {
+                throw new Error(`Start (${ startPos.x }, ${ startPos.y }) & end (${ endPos.x }, ${ endPos.y }) positions are not aligned`);
+            }
+        },
+
+        * pathRange(startPos, endPos) {
+            let curPos = { x: startPos.x, y: startPos.y };
+            yield curPos;
+            if (startPos.x === endPos.x && startPos.y === endPos.y) {
+                return;
+            }
+            const dir = this.relativeDirection(startPos, endPos);
+            for (let i = 0; i < 10; i++) {
+                curPos = { x: curPos.x + POS_DELTA_PER_DIR[dir].x, y: curPos.y + POS_DELTA_PER_DIR[dir].y };
+                yield curPos;
+                if (curPos.x === endPos.x && curPos.y === endPos.y) {
+                    return;
+                }
+            }
+            throw new Error(`Inifine loop - Last curPos: {x: ${ curPos.x }, y: ${ curPos.y }}`);
+        },
+
+        getRaichiOrTuichi(newPawnPos) {
+            const maxPos = Math.sqrt(this.gamedatas.board.length);
+            let horizPathEnd = null;
+            let vertiPathEnd = null;
+            for (const vPosition of this.listAvailableMoves(newPawnPos)) {
+                // str to int conversion:
+                vPosition.x = Number(vPosition.x);
+                vPosition.y = Number(vPosition.y);
+                if (vPosition.x === 1 || vPosition.x === maxPos) {
+                    if (horizPathEnd) {
+                        return [ 'TUICHI', [ ...this.pathRange(horizPathEnd, vPosition) ] ];
+                    }
+                    horizPathEnd = vPosition;
+                } else if (vPosition.y === 1 || vPosition.y === maxPos) {
+                    if (vertiPathEnd) {
+                        return [ 'TUICHI', [ ...this.pathRange(vertiPathEnd, vPosition) ] ];
+                    }
+                    vertiPathEnd = vPosition;
+                }
+            }
+            if (horizPathEnd) {
+                return [ 'RAICHI', [ ...this.pathRange(newPawnPos, horizPathEnd) ] ];
+            }
+            if (vertiPathEnd) {
+                return [ 'RAICHI', [ ...this.pathRange(newPawnPos, vertiPathEnd) ] ];
+            }
+            return null;
+        },
 
         // /////////////////////////////////////////////////
         // // Player's action
@@ -216,7 +304,7 @@ define([
             if (this.selectedDisc) {
                 this.selectedDisc.classList.remove('selected');
                 // remove all the availableMode
-                this.removeAllAvailableMoves();
+                this.clearAllAvailableMoves();
             }
             if (event.currentTarget === this.selectedDisc) {
                 // unselect:
@@ -227,7 +315,7 @@ define([
                 // Display possible all available move
                 const coords = this.selectedDisc.id.split('_');
                 const pawnPos = { x: coords[1], y: coords[2] };
-                for (const vPosition of this.listAvailableMoves({ board: this.gamedatas.board, pawnPos })) {
+                for (const vPosition of this.listAvailableMoves(pawnPos)) {
                     dojo.query(`#square_${ vPosition.x }_${ vPosition.y }`)[0].classList.add('availableMove');
                 }
             }
@@ -263,7 +351,7 @@ define([
                 );
                 this.selectedDisc.classList.remove('selected');
                 this.selectedDisc = null;
-                this.removeAllAvailableMoves();
+                this.clearAllAvailableMoves();
             }
         },
 
@@ -280,7 +368,21 @@ define([
 
         notifPawnMoved(notif) {
             this.gamedatas.board = notif.args.gamedatas.board;
+
             this.movePawn(notif.args.fromDiscId, notif.args.toSquareId);
+
+            const [ newPawnX, newPawnY ] = notif.args.toSquareId.split('_').slice(1);
+            const newPawnPos = { x: Number(newPawnX), y: Number(newPawnY) };
+
+            this.clearWinningPaths();
+            if (this.getBoardElemAtPos(this.gamedatas.board, newPawnPos).king) {
+                const raichiOrTuichi = this.getRaichiOrTuichi(newPawnPos);
+                if (raichiOrTuichi) {
+                    const [ name, winningPath ] = raichiOrTuichi;
+                    this.displayWinningPaths(winningPath);
+                    this.displayTitleBarMessage(`${ name } !`);
+                }
+            }
         },
 
         notifPawnEaten(notif) {
