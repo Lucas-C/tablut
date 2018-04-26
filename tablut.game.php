@@ -64,7 +64,7 @@ class Tablut extends Table
         $default_color = array(BLACK_PLAYER_COLOR, WHITE_PLAYER_COLOR); // black <=> Muscovites / white <=> Swedes
         $sql = 'INSERT INTO player (player_id, player_color, player_canal, player_name, player_avatar) VALUES';
         $values = array();
-        $activePlayerIsMuscovite = NULL;
+        $activePlayerIsMuscovite = null;
         foreach ($players as $player_id => $player) {
             $color = array_shift($default_color);
             if (self::getActivePlayerId() == $player_id) {
