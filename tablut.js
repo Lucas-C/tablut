@@ -190,26 +190,26 @@ define([
             const boardLineLength = Math.sqrt(board.length);
             /* eslint no-magic-numbers: "off" */
             const boardIndexIncrementPerDir = {
-                LEFT: -1,
-                RIGHT: 1,
-                DOWN: boardLineLength,
-                UP: -boardLineLength,
+                LEFT: -boardLineLength,
+                RIGHT: boardLineLength,
+                DOWN: 1,
+                UP: -1,
             };
 
             // find the element present on the table
             const vElementDisc = this.getBoardElemAtPos(board, pawnPos);
 
             const vStart = {
-                LEFT: (pawnPos.x * boardLineLength) - (boardLineLength - pawnPos.y) - 2,
-                RIGHT: (pawnPos.x * boardLineLength) - (boardLineLength - pawnPos.y),
-                DOWN: (pawnPos.x * boardLineLength) - (boardLineLength - pawnPos.y) - 1 + boardLineLength,
-                UP: (pawnPos.x * boardLineLength) - (boardLineLength - pawnPos.y) - 1 - boardLineLength,
+                LEFT: (pawnPos.x * boardLineLength) - (boardLineLength - pawnPos.y) - 1 - boardLineLength,
+                RIGHT: (pawnPos.x * boardLineLength) - (boardLineLength - pawnPos.y) - 1 + boardLineLength,
+                DOWN: (pawnPos.x * boardLineLength) - (boardLineLength - pawnPos.y),
+                UP: (pawnPos.x * boardLineLength) - (boardLineLength - pawnPos.y) - 2,
             };
             const vEnd = {
-                LEFT: ((pawnPos.x - 1) * boardLineLength) - 1,
-                RIGHT: pawnPos.x * boardLineLength,
-                DOWN: board.length,
-                UP: 0,
+                LEFT: -1,
+                RIGHT: board.length,
+                DOWN: pawnPos.x * boardLineLength,
+                UP: ((pawnPos.x - 1) * boardLineLength) - 1,
             };
             for (const dir of DIRECTIONS) {
                 // initialize the default position
