@@ -269,10 +269,12 @@ define([
         },
 
         getRaichiOrTuichi(kingPos) {
+            kingPos.x = Number(kingPos.x);
+            kingPos.y = Number(kingPos.y);
             const maxPos = Math.sqrt(this.gamedatas.board.length);
             const availableBorderPos = [];
             for (const vPosition of this.listAvailableMoves(kingPos)) {
-                // str to int conversion:
+                // string to integer conversion:
                 vPosition.x = Number(vPosition.x);
                 vPosition.y = Number(vPosition.y);
                 if (vPosition.x === 1 || vPosition.x === maxPos || vPosition.y === 1 || vPosition.y === maxPos) {
