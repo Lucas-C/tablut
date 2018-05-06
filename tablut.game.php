@@ -145,7 +145,8 @@ class Tablut extends Table
     protected function getAllDatas()
     {
         $result = array( 'players' => array() );
-        while ($player = self::DbQuery('SELECT player_id id FROM player')->fetch_assoc()) {
+        $dbRequest = self::DbQuery('SELECT player_id id FROM player');
+        while ($player = $dbRequest->fetch_assoc()) {
             $result['players'][ $player['id'] ] = $player;
         }
 
@@ -349,7 +350,6 @@ class Tablut extends Table
         }
 
         $this->incStat(1, 'turns_number'); // TABLE stat update
-        $this->incStat(1, 'turns_number', $pawnPlayerId); // PLAYER stat update
 
         $this->gamestate->nextState('move');
     }
