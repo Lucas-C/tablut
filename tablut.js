@@ -103,6 +103,7 @@ define([
                     _('You play the white pawns, the Swedes') :
                     _('You play the black pawns, the Muscovites'));
             }
+            this.displayRaichiTuichi();
         },
 
         displayTitleBarMessage(message) {
@@ -159,6 +160,16 @@ define([
             const newDiscId = `disc_${ x }_${ y }`;
             dojo.query(`#${ fromDiscId }`).attr('id', newDiscId);
             this.slideToObject(newDiscId, toSquareId).play();
+        },
+        
+        displayRaichiTuichi() {
+            this.clearWinningPaths();
+            const raichiOrTuichi = this.getRaichiOrTuichi(this.getKingPos(this.gamedatas.board));
+            if (raichiOrTuichi) {
+                const [ winningMoveName, winningPath ] = raichiOrTuichi;
+                this.displayWinningPaths(winningPath);
+                this.displayTitleBarMessage(`${ winningMoveName } !`);
+            }
         },
 
         displayWinningPaths(winningPathPositions) {
@@ -369,14 +380,7 @@ define([
             this.gamedatas.board = notif.args.gamedatas.board;
 
             this.movePawn(notif.args.fromDiscId, notif.args.toSquareId);
-
-            this.clearWinningPaths();
-            const raichiOrTuichi = this.getRaichiOrTuichi(this.getKingPos(this.gamedatas.board));
-            if (raichiOrTuichi) {
-                const [ winningMoveName, winningPath ] = raichiOrTuichi;
-                this.displayWinningPaths(winningPath);
-                this.displayTitleBarMessage(`${ winningMoveName } !`);
-            }
+            this.displayRaichiTuichi();
         },
 
         notifPawnEaten(notif) {
