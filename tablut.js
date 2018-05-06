@@ -173,12 +173,19 @@ define([
         },
 
         displayWinningPaths(winningPathPositions) {
+            const maxPos = Math.sqrt(this.gamedatas.board.length);
             for (const vPosition of winningPathPositions) {
-                dojo.query(`#square_${ vPosition.x }_${ vPosition.y }`)[0].classList.add('winningPath');
+                const domElem = dojo.query(`#square_${ vPosition.x }_${ vPosition.y }`)[0];
+                if (vPosition.x === 1 || vPosition.x === maxPos || vPosition.y === 1 || vPosition.y === maxPos) {
+                    domElem.classList.add('finalWinningPos');
+                } else {
+                    domElem.classList.add('winningPath');
+                }
             }
         },
 
         clearWinningPaths() {
+            dojo.query('.finalWinningPos').removeClass('finalWinningPos');
             dojo.query('.winningPath').removeClass('winningPath');
         },
 
@@ -378,7 +385,6 @@ define([
 
         notifPawnMoved(notif) {
             this.gamedatas.board = notif.args.gamedatas.board;
-
             this.movePawn(notif.args.fromDiscId, notif.args.toSquareId);
             this.displayRaichiTuichi();
         },
@@ -387,6 +393,7 @@ define([
             this.gamedatas.board = notif.args.gamedatas.board;
             const discId = `disc_${ notif.args.eatenPawnX }_${ notif.args.eatenPawnY }`;
             dojo.destroy(discId);
+            this.displayRaichiTuichi();
         },
     });
 });

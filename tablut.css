@@ -112,7 +112,7 @@
 }
 
 .selected {
-    background-color: darkred;
+    background-color: cadetblue;
 }
 
 .availableMove::before {
@@ -121,13 +121,24 @@
     height: 54px;
     margin: 3px;
     position: absolute;
-    background-color: darkred;
+    background-color: cadetblue;
     border-radius: 30px;
     cursor: pointer;
     opacity: 0.4;
 }
 
 .winningPath::before {
+    content: ' ';
+    width: 48px;
+    height: 48px;
+    position: absolute;
+    margin: 3px;
+    border-radius: 24px;
+    cursor: pointer;
+    opacity: 0.4;
+    border: 3px solid gold;
+}
+.finalWinningPos::before {
     content: ' ';
     width: 54px;
     height: 54px;
@@ -138,6 +149,7 @@
     cursor: pointer;
     opacity: 0.4;
 }
+.
 
 #maintitlebar_topMsg {
     display: inline-block;
