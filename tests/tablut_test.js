@@ -97,7 +97,9 @@ describe('getRaichiOrTuichi', () => {
             return builder.board
         })()
         tablut.gamedatas = {board: board}
-        assert.deepEqual(tablut.getRaichiOrTuichi({x: 2, y: 2}), ['TUICHI', [{x: 3, y: 2}, {x: 1, y: 2}]])
+        const raichiOrTuichi = tablut.getRaichiOrTuichi({x: 2, y: 2})
+        assert.equal(raichiOrTuichi[0], 'TUICHI')
+        assert.equal(raichiOrTuichi[1].length, 2)
     })
 
     it('should be able to detect a triple TUICHI', () => {
@@ -107,6 +109,8 @@ describe('getRaichiOrTuichi', () => {
             return builder.board
         })()
         tablut.gamedatas = {board: board}
-        assert.deepEqual(tablut.getRaichiOrTuichi({x: 2, y: 2}), ['TUICHI', [{x: 2, y: 3}, {x: 3, y: 2}, {x: 1, y: 2}]])
+        const raichiOrTuichi = tablut.getRaichiOrTuichi({x: 2, y: 2})
+        assert.equal(raichiOrTuichi[0], 'TUICHI')
+        assert.equal(raichiOrTuichi[1].length, 3)
     })
 })
