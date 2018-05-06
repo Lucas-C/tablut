@@ -61,16 +61,16 @@ describe('relativeDirection', () => {
 describe('pathRange', () => {
     const tablut = new Tablut()
 
-    it('should return a single element when source position equals destination', () => {
-        assert.deepEqual([...tablut.pathRange({x: 5, y: 5}, {x: 5, y: 5})], [{x: 5, y: 5}])
+    it('should return no element when source position equals destination', () => {
+        assert.deepEqual([...tablut.pathRange({x: 5, y: 5}, {x: 5, y: 5})], [])
     })
 
-    it('should be able to compute an horizontal path of size 2', () => {
-        assert.deepEqual([...tablut.pathRange({x: 1, y: 1}, {x: 2, y: 1})], [{x: 1, y: 1}, {x: 2, y: 1}])
+    it('should return a length-1 list when source is adjacent to position', () => {
+        assert.deepEqual([...tablut.pathRange({x: 1, y: 1}, {x: 2, y: 1})], [{x: 1, y: 1}])
     })
 
     it('should be able to compute a vertical path of size 9', () => {
-        assert.deepEqual([...tablut.pathRange({x: 9, y: 1}, {x: 9, y: 9})].length, 9)
+        assert.deepEqual([...tablut.pathRange({x: 9, y: 1}, {x: 9, y: 9})].length, 8)
     })
 })
 
@@ -86,7 +86,7 @@ describe('getRaichiOrTuichi', () => {
             return builder.board
         })()
         tablut.gamedatas = {board: board}
-        assert.deepEqual(tablut.getRaichiOrTuichi({x: 2, y: 2}), ['RAICHI', [{x: 2, y: 2}, {x: 2, y: 3}]])
+        assert.deepEqual(tablut.getRaichiOrTuichi({x: 2, y: 2}), ['RAICHI', [{x: 2, y: 3}]])
     })
 
     it('should be able to detect an horizontal TUICHI', () => {
@@ -97,6 +97,16 @@ describe('getRaichiOrTuichi', () => {
             return builder.board
         })()
         tablut.gamedatas = {board: board}
-        assert.deepEqual(tablut.getRaichiOrTuichi({x: 2, y: 2}), ['TUICHI', [{x: 3, y: 2}, {x: 2, y: 2}, {x: 1, y: 2}]])
+        assert.deepEqual(tablut.getRaichiOrTuichi({x: 2, y: 2}), ['TUICHI', [{x: 3, y: 2}, {x: 1, y: 2}]])
+    })
+
+    it('should be able to detect a triple TUICHI', () => {
+        const board = (() => {
+            const builder = boardBuilder({size: 3})
+            builder.at(2, 1).wall = '1'
+            return builder.board
+        })()
+        tablut.gamedatas = {board: board}
+        assert.deepEqual(tablut.getRaichiOrTuichi({x: 2, y: 2}), ['TUICHI', [{x: 2, y: 3}, {x: 3, y: 2}, {x: 1, y: 2}]])
     })
 })

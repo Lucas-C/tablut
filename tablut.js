@@ -106,6 +106,7 @@ define([
         },
 
         displayTitleBarMessage(message) {
+            dojo.destroy('maintitlebar_topMsg');
             dojo.place(this.format_block('jstpl_topMsg', {
                 message,
             }), 'maintitlebar_content', 'before');
@@ -178,6 +179,10 @@ define([
             return board.find((vElement) => Number(vElement.x) === Number(x) && Number(vElement.y) === Number(y));
         },
 
+        getKingPos(board) {
+            return board.find((vElement) => vElement.king);
+        },
+
         // /////////////////////////////////////////////////
         // generator function, not supported by IE <= 11
         * listAvailableMoves(pawnPos) {
@@ -248,46 +253,38 @@ define([
 
         * pathRange(startPos, endPos) {
             let curPos = { x: startPos.x, y: startPos.y };
-            yield curPos;
-            if (startPos.x === endPos.x && startPos.y === endPos.y) {
-                return;
-            }
-            const dir = this.relativeDirection(startPos, endPos);
+            // lazy init to allow to return an empty list and not raise an exception if startPos == endPos:
+            let dir = null;
             for (let i = 0; i < 10; i++) {
-                curPos = { x: curPos.x + POS_DELTA_PER_DIR[dir].x, y: curPos.y + POS_DELTA_PER_DIR[dir].y };
-                yield curPos;
                 if (curPos.x === endPos.x && curPos.y === endPos.y) {
                     return;
                 }
+                if (!dir) {
+                    dir = this.relativeDirection(startPos, endPos);
+                }
+                yield curPos;
+                curPos = { x: curPos.x + POS_DELTA_PER_DIR[dir].x, y: curPos.y + POS_DELTA_PER_DIR[dir].y };
             }
-            throw new Error(`Inifine loop - Last curPos: {x: ${ curPos.x }, y: ${ curPos.y }}`);
+            throw new Error(`Infinite loop - Last curPos: {x: ${ curPos.x }, y: ${ curPos.y }}`);
         },
 
-        getRaichiOrTuichi(newPawnPos) {
+        getRaichiOrTuichi(kingPos) {
             const maxPos = Math.sqrt(this.gamedatas.board.length);
-            let horizPathEnd = null;
-            let vertiPathEnd = null;
-            for (const vPosition of this.listAvailableMoves(newPawnPos)) {
+            const availableBorderPos = [];
+            for (const vPosition of this.listAvailableMoves(kingPos)) {
                 // str to int conversion:
                 vPosition.x = Number(vPosition.x);
                 vPosition.y = Number(vPosition.y);
-                if (vPosition.x === 1 || vPosition.x === maxPos) {
-                    if (horizPathEnd) {
-                        return [ 'TUICHI', [ ...this.pathRange(horizPathEnd, vPosition) ] ];
-                    }
-                    horizPathEnd = vPosition;
-                } else if (vPosition.y === 1 || vPosition.y === maxPos) {
-                    if (vertiPathEnd) {
-                        return [ 'TUICHI', [ ...this.pathRange(vertiPathEnd, vPosition) ] ];
-                    }
-                    vertiPathEnd = vPosition;
+                if (vPosition.x === 1 || vPosition.x === maxPos || vPosition.y === 1 || vPosition.y === maxPos) {
+                    availableBorderPos.push(vPosition);
                 }
             }
-            if (horizPathEnd) {
-                return [ 'RAICHI', [ ...this.pathRange(newPawnPos, horizPathEnd) ] ];
+            if (availableBorderPos.length === 1) {
+                return [ 'RAICHI', [ ...this.pathRange(availableBorderPos[0], kingPos) ] ];
             }
-            if (vertiPathEnd) {
-                return [ 'RAICHI', [ ...this.pathRange(newPawnPos, vertiPathEnd) ] ];
+            if (availableBorderPos.length > 1) {
+                const paths = availableBorderPos.map((pathEnd) => [ ...this.pathRange(pathEnd, kingPos) ]);
+                return [ 'TUICHI', Array.prototype.concat(...paths) ];
             }
             return null;
         },
@@ -371,17 +368,12 @@ define([
 
             this.movePawn(notif.args.fromDiscId, notif.args.toSquareId);
 
-            const [ newPawnX, newPawnY ] = notif.args.toSquareId.split('_').slice(1);
-            const newPawnPos = { x: Number(newPawnX), y: Number(newPawnY) };
-
             this.clearWinningPaths();
-            if (this.getBoardElemAtPos(this.gamedatas.board, newPawnPos).king) {
-                const raichiOrTuichi = this.getRaichiOrTuichi(newPawnPos);
-                if (raichiOrTuichi) {
-                    const [ name, winningPath ] = raichiOrTuichi;
-                    this.displayWinningPaths(winningPath);
-                    this.displayTitleBarMessage(`${ name } !`);
-                }
+            const raichiOrTuichi = this.getRaichiOrTuichi(this.getKingPos(this.gamedatas.board));
+            if (raichiOrTuichi) {
+                const [ winningMoveName, winningPath ] = raichiOrTuichi;
+                this.displayWinningPaths(winningPath);
+                this.displayTitleBarMessage(`${ winningMoveName } !`);
             }
         },
 
