@@ -443,6 +443,7 @@ class Tablut extends Table
             $this->setStat(1, 'swedes_won');
             $this->gamestate->nextState('endGame');
         } else {
+            self::giveExtraTime($nextPlayerId);
             $this->gamestate->nextState('nextTurn');
         }
     }
