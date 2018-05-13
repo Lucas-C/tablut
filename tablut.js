@@ -165,7 +165,7 @@ define([
         displayRaichiTuichi() {
             this.clearWinningPaths();
             const king = this.getKingPos(this.gamedatas.board);
-            if (Number(king.limitWin)) {
+            if (!king || Number(king.limitWin)) {
                 return;
             }
             const raichiOrTuichi = this.getRaichiOrTuichi(king);
