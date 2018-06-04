@@ -100,23 +100,43 @@ class Tablut extends Table
 
         $player0 = array_keys($players)[0];
         $player1 = array_keys($players)[1];
+        
+        if ($this->gamestate->table_globals[100] == 0) {
 
-        /* Initialize the player 0 pieces */
-        self::DbQuery("UPDATE board SET board_player='$player0', board_wall='1' WHERE ( board_x, board_y) IN (('4','1'), ('5','1'), ('6','1'), ('5','2') )");
-        self::DbQuery("UPDATE board SET board_player='$player0', board_wall='1' WHERE ( board_x, board_y) IN (('4','9'), ('5','9'), ('6','9'), ('5','8') )");
-        self::DbQuery("UPDATE board SET board_player='$player0', board_wall='1' WHERE ( board_x, board_y) IN (('1','4'), ('1','5'), ('1','6'), ('2','5') )");
-        self::DbQuery("UPDATE board SET board_player='$player0', board_wall='1' WHERE ( board_x, board_y) IN (('9','4'), ('9','5'), ('9','6'), ('8','5') )");
+            /* Initialize the player 0 pieces */
+            self::DbQuery("UPDATE board SET board_player='$player0', board_wall='1' WHERE ( board_x, board_y) IN (('4','1'), ('5','1'), ('6','1'), ('5','2') )");
+            self::DbQuery("UPDATE board SET board_player='$player0', board_wall='1' WHERE ( board_x, board_y) IN (('4','9'), ('5','9'), ('6','9'), ('5','8') )");
+            self::DbQuery("UPDATE board SET board_player='$player0', board_wall='1' WHERE ( board_x, board_y) IN (('1','4'), ('1','5'), ('1','6'), ('2','5') )");
+            self::DbQuery("UPDATE board SET board_player='$player0', board_wall='1' WHERE ( board_x, board_y) IN (('9','4'), ('9','5'), ('9','6'), ('8','5') )");
 
-        /* Initialize the player 1 pieces */
-        self::DbQuery("UPDATE board SET board_player='$player1', board_wall='1', board_king='1' WHERE ( board_x, board_y) IN (('5','5'))");
-        self::DbQuery("UPDATE board SET board_player='$player1' WHERE ( board_x, board_y) IN (('3','5'), ('4','5'), ('6','5'), ('7','5'))");
-        self::DbQuery("UPDATE board SET board_player='$player1' WHERE ( board_x, board_y) IN (('5','3'), ('5','4'), ('5','6'), ('5','7'))");
+            /* Initialize the player 1 pieces */
+            self::DbQuery("UPDATE board SET board_player='$player1', board_wall='1', board_king='1' WHERE ( board_x, board_y) IN (('5','5'))");
+            self::DbQuery("UPDATE board SET board_player='$player1' WHERE ( board_x, board_y) IN (('3','5'), ('4','5'), ('6','5'), ('7','5'))");
+            self::DbQuery("UPDATE board SET board_player='$player1' WHERE ( board_x, board_y) IN (('5','3'), ('5','4'), ('5','6'), ('5','7'))");
 
-        /* Initialize the limit winning game */
-        self::DbQuery("UPDATE board SET board_limitWin='1' WHERE ( board_x, board_y) IN (('1','1'), ('1','2'), ('1','3'), ('1','7'), ('1','8'), ('1','9'))");
-        self::DbQuery("UPDATE board SET board_limitWin='1' WHERE ( board_x, board_y) IN (('9','1'), ('9','2'), ('9','3'), ('9','7'), ('9','8'), ('9','9'))");
-        self::DbQuery("UPDATE board SET board_limitWin='1' WHERE ( board_x, board_y) IN (('2','1'), ('3','1'), ('7','1'), ('8','1'))");
-        self::DbQuery("UPDATE board SET board_limitWin='1' WHERE ( board_x, board_y) IN (('2','9'), ('3','9'), ('7','9'), ('8','9'))");
+            /* Initialize the limit winning game */
+            self::DbQuery("UPDATE board SET board_limitWin='1' WHERE ( board_x, board_y) IN (('1','1'), ('1','2'), ('1','3'), ('1','7'), ('1','8'), ('1','9'))");
+            self::DbQuery("UPDATE board SET board_limitWin='1' WHERE ( board_x, board_y) IN (('9','1'), ('9','2'), ('9','3'), ('9','7'), ('9','8'), ('9','9'))");
+            self::DbQuery("UPDATE board SET board_limitWin='1' WHERE ( board_x, board_y) IN (('2','1'), ('3','1'), ('7','1'), ('8','1'))");
+            self::DbQuery("UPDATE board SET board_limitWin='1' WHERE ( board_x, board_y) IN (('2','9'), ('3','9'), ('7','9'), ('8','9'))");
+        } else {
+
+            /* Initialize the player 0 pieces */
+            self::DbQuery("UPDATE board SET board_player='$player0' WHERE ( board_x, board_y) IN (('4','1'), ('5','1'), ('6','1'), ('5','2') )");
+            self::DbQuery("UPDATE board SET board_player='$player0' WHERE ( board_x, board_y) IN (('4','9'), ('5','9'), ('6','9'), ('5','8') )");
+            self::DbQuery("UPDATE board SET board_player='$player0' WHERE ( board_x, board_y) IN (('1','4'), ('1','5'), ('1','6'), ('2','5') )");
+            self::DbQuery("UPDATE board SET board_player='$player0' WHERE ( board_x, board_y) IN (('9','4'), ('9','5'), ('9','6'), ('8','5') )");
+
+            /* Initialize the player 1 pieces */
+            self::DbQuery("UPDATE board SET board_player='$player1', board_wall='1', board_king='1' WHERE ( board_x, board_y) IN (('5','5'))");
+            self::DbQuery("UPDATE board SET board_player='$player1' WHERE ( board_x, board_y) IN (('3','5'), ('4','5'), ('6','5'), ('7','5'))");
+            self::DbQuery("UPDATE board SET board_player='$player1' WHERE ( board_x, board_y) IN (('5','3'), ('5','4'), ('5','6'), ('5','7'))");
+
+            /* Initialize the limit winning game */
+            self::DbQuery("UPDATE board SET board_limitWin='1', board_wall='1' WHERE ( board_x, board_y) IN (('1','1'), ('1','9'))");
+            self::DbQuery("UPDATE board SET board_limitWin='1', board_wall='1' WHERE ( board_x, board_y) IN (('9','1'), ('9','9'))");
+            
+        }
     }
 
     private function setupStats($activePlayerIsMuscovite)

@@ -53,14 +53,22 @@ class view_tablut_tablut extends game_view  // @codingStandardsIgnoreLine
 
     public function isFortressSquare($x, $y)
     {
-        return ($x == 4 && $y == 4)
-        || ($x == 0 && $y >= 3 && $y <= 5)
-        || ($x == 1 && $y == 4)
-        || ($x == 8 && $y >= 3 && $y <= 5)
-        || ($x == 7 && $y == 4)
-        || ($x >= 3 && $x <= 5 && $y == 0)
-        || ($x == 4 && $y == 1)
-        || ($x >= 3 && $x <= 5 && $y == 8)
-        || ($x == 4 && $y == 7);
+        if ($this->game->gamestate->table_globals[100] == 0 ) {
+            return ($x == 4 && $y == 4)
+            || ($x == 0 && $y >= 3 && $y <= 5)
+            || ($x == 1 && $y == 4)
+            || ($x == 8 && $y >= 3 && $y <= 5)
+            || ($x == 7 && $y == 4)
+            || ($x >= 3 && $x <= 5 && $y == 0)
+            || ($x == 4 && $y == 1)
+            || ($x >= 3 && $x <= 5 && $y == 8)
+            || ($x == 4 && $y == 7);
+        } else {
+            return ($x == 4 && $y == 4)
+            || ($x == 0 && $y == 0)
+            || ($x == 0 && $y == 8)
+            || ($x == 8 && $y == 0)
+            || ($x == 8 && $y == 8);
+        }
     }
 }
