@@ -249,7 +249,10 @@ define([
                     if (vPosition.player !== null) {
                         break;
                     }
-                    if (vPosition.wall === '1' && vDiscOnWall !== '1') {
+                    if (
+                        (this.gamedatas.game_options[100] === "0" && vPosition.wall === '1' && vDiscOnWall !== '1') ||
+                        (this.gamedatas.game_options[100] === "1" && Number(vPosition.x) === 5 && Number(vPosition.y) === 5) 
+                       ) {
                         break;
                     }
                     yield vPosition;

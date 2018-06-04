@@ -268,7 +268,12 @@ class Tablut extends Table
                                 $pawnIsOnWall = false;
                             }
                         } else {
-                            if ($column['wall_present'] != null) {
+                            // For version King on the coners, only the king can move on the wall
+                            // for the other version no pawn can move on the wall
+                            if ( 
+                                ($this->gamestate->table_globals[100] == "0" and $column['wall_present'] != null ) ||
+                                ($this->gamestate->table_globals[100] == "1" and $column['posY'] == 5 and $toX == 5 ) 
+                               ) {
                                 throw new feException("Cannot move on ($toX,${column['posY']}) : a wall is blocking");
                             }
                         }
@@ -288,7 +293,10 @@ class Tablut extends Table
                                 $pawnIsOnWall = false;
                             }
                         } else {
-                            if ($column['wall_present'] != null) {
+                            if (
+                                ($this->gamestate->table_globals[100] == "0" and $column['wall_present'] != null ) ||
+                                ($this->gamestate->table_globals[100] == "1" and $column['posY'] == 5 and $toX == 5 ) 
+                                ) {
                                 throw new feException("Cannot move on ($toX,${column['posY']}) : a wall is blocking");
                             }
                         }
@@ -304,15 +312,18 @@ class Tablut extends Table
                 while ($row = $dbres_asc->fetch_assoc()) {
                     if ($fromX < $row['posX'] &&  $row['posX'] <= $toX) {
                         if ($row['player_present'] != null) {
-                            throw new feException("Cannot move on (${column['posX']},$toX) : a pawn is already present");
+                            throw new feException("Cannot move on (${row['posX']},$toX) : a pawn is already present");
                         }
                         if ($pawnIsOnWall) {
                             if ($row['wall_present'] == null) {
                                 $pawnIsOnWall = false;
                             }
                         } else {
-                            if ($row['wall_present'] != null) {
-                                throw new feException("Cannot move on (${column['posX']},$toX) : a wall is blocking");
+                            if (
+                                ($this->gamestate->table_globals[100] == "0" and $row['wall_present'] != null ) ||
+                                ($this->gamestate->table_globals[100] == "1" and $row['posX'] == 5 and $fromX == 5 ) 
+                                ) {
+                                throw new feException("Cannot move on (${row['posX']},$toX) : a wall is blocking");
                             }
                         }
                     }
@@ -324,15 +335,18 @@ class Tablut extends Table
                 while ($row = $dbres_desc->fetch_assoc()) {
                     if ($row['posX'] < $fromX &&  $row['posX'] >= $toX) {
                         if ($row['player_present'] != null) {
-                            throw new feException("Cannot move on (${column['posX']},$toX) : a pawn is already present");
+                            throw new feException("Cannot move on (${row['posX']},$toX) : a pawn is already present");
                         }
                         if ($pawnIsOnWall) {
                             if ($row['wall_present'] == null) {
                                 $pawnIsOnWall = false;
                             }
                         } else {
-                            if ($row['wall_present'] != null) {
-                                throw new feException("Cannot move on (${column['posX']},$toX) : a wall is blocking");
+                            if (
+                                ($this->gamestate->table_globals[100] == "0" and $row['wall_present'] != null ) ||
+                                ($this->gamestate->table_globals[100] == "1" and $row['posX'] == 5 and $fromX == 5 ) 
+                               ) {
+                                throw new feException("Cannot move on (${row['posX']},$toX) : a wall is blocking");
                             }
                         }
                     }
