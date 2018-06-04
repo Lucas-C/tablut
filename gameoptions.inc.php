@@ -25,8 +25,8 @@ $game_options = array(
     100 => array(
         'name' => totranslate('King in the corners'),
         'values' => array(
-            1 => array( 'name' => totranslate('Off')),
-            2 => array( 'name' => totranslate('On')),
+            0 => array( 'name' => totranslate('Off')),
+            1 => array( 'name' => totranslate('On')),
         )
     )
 );
