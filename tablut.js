@@ -220,6 +220,7 @@ define([
 
             // find the element present on the table
             const vElementDisc = this.getBoardElemAtPos(board, pawnPos);
+            let IsKing = vElementDisc.king;
 
             const vStart = {
                 LEFT: (pawnPos.x * boardLineLength) - (boardLineLength - pawnPos.y) - 1 - boardLineLength,
@@ -251,7 +252,7 @@ define([
                     }
                     if (
                         (this.gamedatas.game_options[100] === "0" && vPosition.wall === '1' && vDiscOnWall !== '1') ||
-                        (this.gamedatas.game_options[100] === "1" && Number(vPosition.x) === 5 && Number(vPosition.y) === 5) 
+                        (this.gamedatas.game_options[100] === "1" && ((Number(vPosition.x) === 5 && Number(vPosition.y) === 5) || ( !IsKing && vPosition.wall === '1')) ) 
                        ) {
                         break;
                     }
