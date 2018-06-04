@@ -161,7 +161,7 @@ define([
             dojo.query(`#${ fromDiscId }`).attr('id', newDiscId);
             this.slideToObject(newDiscId, toSquareId).play();
         },
-        
+
         displayRaichiTuichi() {
             this.clearWinningPaths();
             const king = this.getKingPos(this.gamedatas.board);
@@ -250,9 +250,9 @@ define([
                         break;
                     }
                     if (
-                        (this.gamedatas.game_options[100] === "0" && vPosition.wall === '1' && vDiscOnWall !== '1') ||
-                        (this.gamedatas.game_options[100] === "1" && Number(vPosition.x) === 5 && Number(vPosition.y) === 5) 
-                       ) {
+                        (this.gamedatas.game_options[100] === '0' && vPosition.wall === '1' && vDiscOnWall !== '1') ||
+                        (this.gamedatas.game_options[100] === '1' && Number(vPosition.x) === 5 && Number(vPosition.y) === 5)
+                    ) {
                         break;
                     }
                     yield vPosition;

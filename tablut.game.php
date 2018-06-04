@@ -98,7 +98,6 @@ class Tablut extends Table
         $player1 = array_keys($players)[1];
         
         if ($this->gamestate->table_globals[100] == 0) {
-
             /* Initialize the player 0 pieces */
             self::DbQuery("UPDATE board SET board_player='$player0', board_wall='1' WHERE ( board_x, board_y) IN (('4','1'), ('5','1'), ('6','1'), ('5','2') )");
             self::DbQuery("UPDATE board SET board_player='$player0', board_wall='1' WHERE ( board_x, board_y) IN (('4','9'), ('5','9'), ('6','9'), ('5','8') )");
@@ -116,7 +115,6 @@ class Tablut extends Table
             self::DbQuery("UPDATE board SET board_limitWin='1' WHERE ( board_x, board_y) IN (('2','1'), ('3','1'), ('7','1'), ('8','1'))");
             self::DbQuery("UPDATE board SET board_limitWin='1' WHERE ( board_x, board_y) IN (('2','9'), ('3','9'), ('7','9'), ('8','9'))");
         } else {
-
             /* Initialize the player 0 pieces */
             self::DbQuery("UPDATE board SET board_player='$player0' WHERE ( board_x, board_y) IN (('4','1'), ('5','1'), ('6','1'), ('5','2') )");
             self::DbQuery("UPDATE board SET board_player='$player0' WHERE ( board_x, board_y) IN (('4','9'), ('5','9'), ('6','9'), ('5','8') )");
@@ -131,7 +129,6 @@ class Tablut extends Table
             /* Initialize the limit winning game */
             self::DbQuery("UPDATE board SET board_limitWin='1', board_wall='1' WHERE ( board_x, board_y) IN (('1','1'), ('1','9'))");
             self::DbQuery("UPDATE board SET board_limitWin='1', board_wall='1' WHERE ( board_x, board_y) IN (('9','1'), ('9','9'))");
-            
         }
     }
 
@@ -266,9 +263,8 @@ class Tablut extends Table
                         } else {
                             // For version King on the coners, only the king can move on the wall
                             // for the other version no pawn can move on the wall
-                            if ( 
-                                ($this->gamestate->table_globals[100] == "0" and $column['wall_present'] != null ) ||
-                                ($this->gamestate->table_globals[100] == "1" and $column['posY'] == 5 and $toX == 5 ) 
+                            if (($this->gamestate->table_globals[100] == "0" and $column['wall_present'] != null ) ||
+                                ($this->gamestate->table_globals[100] == "1" and $column['posY'] == 5 and $toX == 5 )
                                ) {
                                 throw new feException("Cannot move on ($toX,${column['posY']}) : a wall is blocking");
                             }
@@ -289,9 +285,8 @@ class Tablut extends Table
                                 $pawnIsOnWall = false;
                             }
                         } else {
-                            if (
-                                ($this->gamestate->table_globals[100] == "0" and $column['wall_present'] != null ) ||
-                                ($this->gamestate->table_globals[100] == "1" and $column['posY'] == 5 and $toX == 5 ) 
+                            if (($this->gamestate->table_globals[100] == "0" and $column['wall_present'] != null ) ||
+                                ($this->gamestate->table_globals[100] == "1" and $column['posY'] == 5 and $toX == 5 )
                                 ) {
                                 throw new feException("Cannot move on ($toX,${column['posY']}) : a wall is blocking");
                             }
@@ -315,9 +310,8 @@ class Tablut extends Table
                                 $pawnIsOnWall = false;
                             }
                         } else {
-                            if (
-                                ($this->gamestate->table_globals[100] == "0" and $row['wall_present'] != null ) ||
-                                ($this->gamestate->table_globals[100] == "1" and $row['posX'] == 5 and $fromX == 5 ) 
+                            if (($this->gamestate->table_globals[100] == "0" and $row['wall_present'] != null ) ||
+                                ($this->gamestate->table_globals[100] == "1" and $row['posX'] == 5 and $fromX == 5 )
                                 ) {
                                 throw new feException("Cannot move on (${row['posX']},$toX) : a wall is blocking");
                             }
@@ -338,9 +332,8 @@ class Tablut extends Table
                                 $pawnIsOnWall = false;
                             }
                         } else {
-                            if (
-                                ($this->gamestate->table_globals[100] == "0" and $row['wall_present'] != null ) ||
-                                ($this->gamestate->table_globals[100] == "1" and $row['posX'] == 5 and $fromX == 5 ) 
+                            if (($this->gamestate->table_globals[100] == "0" and $row['wall_present'] != null ) ||
+                                ($this->gamestate->table_globals[100] == "1" and $row['posX'] == 5 and $fromX == 5 )
                                ) {
                                 throw new feException("Cannot move on (${row['posX']},$toX) : a wall is blocking");
                             }
