@@ -162,6 +162,7 @@ class Tablut extends Table
                                                       FROM board');
 
         $result['turns_number'] = $this->getStat('turns_number');
+        $result['game_options'] = $this->gamestate->table_globals; // To provide access to variants in JS
 
         return $result;
     }

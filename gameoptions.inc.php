@@ -21,14 +21,12 @@
  */
 
 $game_options = array(
-
     // note: game variant ID should start at 100 (ie: 100, 101, 102, ...). The maximum is 199.
     100 => array(
-            'name' => totranslate('King in the corners'),
-            'values' => array(
-                1 => array( 'name' => totranslate('On') )
-                2 => array( 'name' => totranslate('Off' ),
-            )
+        'name' => totranslate('King in the corners'),
+        'values' => array(
+            1 => array( 'name' => totranslate('Off')),
+            2 => array( 'name' => totranslate('On')),
         )
     )
 );
