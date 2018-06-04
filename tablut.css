@@ -73,6 +73,7 @@
             #465298 20px
         );
 }
+
 .corner.fortress::before {
     content: '☆';
     color: white;

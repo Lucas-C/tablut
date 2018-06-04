@@ -23,7 +23,7 @@ describe('listAvailableMoves', () => {
         builder.at(2, 2).player = 'P1'
         return builder.board
     })()
-    tablut.gamedatas = {board: board}
+    tablut.gamedatas = {board: board, game_options: {100: '0'}}
 
     it('should return 4 available moves for a single pawn in the middle of a 3x3 board', () => {
         assert.equal([...tablut.listAvailableMoves({x: 2, y: 2})].length, 4)
