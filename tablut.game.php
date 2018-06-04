@@ -14,10 +14,6 @@
 
 require_once(APP_GAMEMODULE_PATH . 'module/table/table.game.php');  // @codingStandardsIgnoreLine
 
-use Functional as F;
-use Tablut\Functional as HF;
-use Tablut\SQLHelper;
-
 define('BLACK_PLAYER_COLOR', '000000');
 define('WHITE_PLAYER_COLOR', 'ffffff');
 
@@ -28,7 +24,7 @@ class Tablut extends Table
         parent::__construct();
 
         $this->initGameStateLabels([
-            'King in the corners' => 100,
+            'King in the corners variant' => 100,
         ]);
     }
 
@@ -366,7 +362,7 @@ class Tablut extends Table
         ));
 
         // Check for eaten pawns (but not for the king in the variant rule)
-        if (!$this->gamestate->table_globals[100] || !$pawnIsKing) {
+        if (!$this->gamestate->table_globals[100] || $pawnIsKing == 'NULL') {
             // Send another notif if pawns were eaten
             $eatenPawns = $this->findEatenPawns($toX, $toY);
             foreach ($eatenPawns as $eatenPawn) {
@@ -419,10 +415,18 @@ class Tablut extends Table
             if ($victimPawn['board_king']) {
                 $thirdPawn = $this->dbPawnAtPos($pos['third']);
                 $fourthPawn = $this->dbPawnAtPos($pos['fourth']);
-                if (($dualPawn['board_player'] == $activePlayer || $dualPawn['board_wall'])
-                    && ($thirdPawn['board_player'] == $activePlayer || $thirdPawn['board_wall'])
-                    && ($fourthPawn['board_player'] == $activePlayer || $fourthPawn['board_wall'])) {
-                    array_push($eatenPawns, $pos['victim']);
+                if ($this->gamestate->table_globals[100]) { // Variant allow the capture of the king against a board edge
+                    if (($dualPawn['board_player'] == $activePlayer || $dualPawn['board_player'] == null)
+                        && ($thirdPawn['board_player'] == $activePlayer || $thirdPawn['board_player'] == null)
+                        && ($fourthPawn['board_player'] == $activePlayer || $fourthPawn['board_player'] == null)) {
+                        array_push($eatenPawns, $pos['victim']);
+                    }
+                } else {
+                    if (($dualPawn['board_player'] == $activePlayer || $dualPawn['board_wall'])
+                        && ($thirdPawn['board_player'] == $activePlayer || $thirdPawn['board_wall'])
+                        && ($fourthPawn['board_player'] == $activePlayer || $fourthPawn['board_wall'])) {
+                        array_push($eatenPawns, $pos['victim']);
+                    }
                 }
             } else {
                 if ($dualPawn['board_player'] == $activePlayer) {
@@ -442,7 +446,7 @@ class Tablut extends Table
     private function dbPawnAt($x, $y)
     {
         if ($x < 1 || $x > 9 || $y < 1 || $y > 9) {
-            return array('board_player' => null, 'board_king' => null);
+            return array('board_player' => null, 'board_king' => null, 'board_wall' => null);
         }
         return self::DbQuery("SELECT board_player, board_king, board_wall FROM board WHERE board_x = $x AND board_y = $y")->fetch_assoc();
     }
