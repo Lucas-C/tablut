@@ -45,7 +45,7 @@ class view_tablut_tablut extends game_view  // @codingStandardsIgnoreLine
                     'Y' => $y + 1,
                     'LEFT' => round($x * self::PX_SCALE),
                     'TOP' => round($y * self::PX_SCALE),
-                    'EXTRA_CLASS' => $this->isFortressSquare($x, $y) ? 'fortress' : ''
+                    'EXTRA_CLASS' => ($this->isFortressSquare($x, $y) ? 'fortress' : '') . ' ' . ($this->isCornerSquare($x, $y) ? 'corner' : '')
                 ));
             }
         }
@@ -64,11 +64,15 @@ class view_tablut_tablut extends game_view  // @codingStandardsIgnoreLine
             || ($x >= 3 && $x <= 5 && $y == 8)
             || ($x == 4 && $y == 7);
         } else {
-            return ($x == 4 && $y == 4)
-            || ($x == 0 && $y == 0)
+            return ($x == 4 && $y == 4) || $this->isCornerSquare($x, $y);
+        }
+    }
+    
+    public function isCornerSquare($x, $y)
+    {
+        return ($x == 0 && $y == 0)
             || ($x == 0 && $y == 8)
             || ($x == 8 && $y == 0)
             || ($x == 8 && $y == 8);
-        }
     }
 }
