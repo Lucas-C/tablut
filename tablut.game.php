@@ -27,7 +27,9 @@ class Tablut extends Table
     {
         parent::__construct();
 
-        $this->initGameStateLabels([]);
+        $this->initGameStateLabels([
+            'King in the corners' => 100,
+        ]);
     }
 
     /**
