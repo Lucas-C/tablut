@@ -161,7 +161,7 @@ define([
             dojo.query(`#${ fromDiscId }`).attr('id', newDiscId);
             this.slideToObject(newDiscId, toSquareId).play();
         },
-        
+
         displayRaichiTuichi() {
             this.clearWinningPaths();
             const king = this.getKingPos(this.gamedatas.board);

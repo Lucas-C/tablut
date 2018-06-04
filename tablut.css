@@ -73,6 +73,7 @@
             #465298 20px
         );
 }
+
 .corner.fortress::before {
     content: '☆';
     color: white;
@@ -80,7 +81,6 @@
     line-height: 54px;
     /* Horizontal centering: */
     display: block;
-    width: 100%;
     text-align: center;
 }
 

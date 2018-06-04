@@ -23,7 +23,7 @@ describe('listAvailableMoves', () => {
         builder.at(2, 2).player = 'P1'
         return builder.board
     })()
-    tablut.gamedatas = {board: board}
+    tablut.gamedatas = {board: board, game_options: {100: '0'}}
 
     it('should return 4 available moves for a single pawn in the middle of a 3x3 board', () => {
         assert.equal([...tablut.listAvailableMoves({x: 2, y: 2})].length, 4)
@@ -85,7 +85,7 @@ describe('getRaichiOrTuichi', () => {
             builder.at(3, 2).wall = '1'
             return builder.board
         })()
-        tablut.gamedatas = {board: board}
+        tablut.gamedatas = {board: board, game_options: {100: '0'}}
         assert.deepEqual(tablut.getRaichiOrTuichi({x: 2, y: 2}), ['RAICHI', [{x: 2, y: 3}]])
     })
 
@@ -96,7 +96,7 @@ describe('getRaichiOrTuichi', () => {
             builder.at(2, 3).wall = '1'
             return builder.board
         })()
-        tablut.gamedatas = {board: board}
+        tablut.gamedatas = {board: board, game_options: {100: '0'}}
         const raichiOrTuichi = tablut.getRaichiOrTuichi({x: 2, y: 2})
         assert.equal(raichiOrTuichi[0], 'TUICHI')
         assert.equal(raichiOrTuichi[1].length, 2)
@@ -108,7 +108,7 @@ describe('getRaichiOrTuichi', () => {
             builder.at(2, 1).wall = '1'
             return builder.board
         })()
-        tablut.gamedatas = {board: board}
+        tablut.gamedatas = {board: board, game_options: {100: '0'}}
         const raichiOrTuichi = tablut.getRaichiOrTuichi({x: 2, y: 2})
         assert.equal(raichiOrTuichi[0], 'TUICHI')
         assert.equal(raichiOrTuichi[1].length, 3)
