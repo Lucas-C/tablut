@@ -113,6 +113,11 @@ define([
             }), 'maintitlebar_content', 'before');
         },
 
+        isRuleVariant() {
+            return this.gamedatas.game_options && this.gamedatas.game_options[100] === '1';
+        },
+
+
         // /////////////////////////////////////////////////
         // // Game & client states
         onEnteringState(stateName) {
@@ -220,7 +225,7 @@ define([
 
             // find the element present on the table
             const vElementDisc = this.getBoardElemAtPos(board, pawnPos);
-            let IsKing = vElementDisc.king;
+            const isKing = vElementDisc.king;
 
             const vStart = {
                 LEFT: (pawnPos.x * boardLineLength) - (boardLineLength - pawnPos.y) - 1 - boardLineLength,
@@ -250,10 +255,11 @@ define([
                     if (vPosition.player !== null) {
                         break;
                     }
-                    if (
-                        (this.gamedatas.game_options[100] === "0" && vPosition.wall === '1' && vDiscOnWall !== '1') ||
-                        (this.gamedatas.game_options[100] === "1" && ((Number(vPosition.x) === 5 && Number(vPosition.y) === 5) || ( !IsKing && vPosition.wall === '1')) ) 
-                       ) {
+                    if (this.isRuleVariant()) {
+                        if ((Number(vPosition.x) === 5 && Number(vPosition.y) === 5) || (!isKing && vPosition.wall === '1')) {
+                            break;
+                        }
+                    } else if (vPosition.wall === '1' && vDiscOnWall !== '1') {
                         break;
                     }
                     yield vPosition;
@@ -294,16 +300,26 @@ define([
             throw new Error(`Infinite loop - Last curPos: {x: ${ curPos.x }, y: ${ curPos.y }}`);
         },
 
+        isSquareAWinningPos(pos) {
+            const maxPos = Math.sqrt(this.gamedatas.board.length);
+            if (this.isRuleVariant()) {
+                return (pos.x === 1 && pos.y === 1) ||
+                    (pos.x === 1 && pos.y === maxPos) ||
+                    (pos.x === maxPos && pos.y === maxPos) ||
+                    (pos.x === maxPos && pos.y === 1);
+            }
+            return pos.x === 1 || pos.x === maxPos || pos.y === 1 || pos.y === maxPos;
+        },
+
         getRaichiOrTuichi(kingPos) {
             kingPos.x = Number(kingPos.x);
             kingPos.y = Number(kingPos.y);
-            const maxPos = Math.sqrt(this.gamedatas.board.length);
             const availableBorderPos = [];
             for (const vPosition of this.listAvailableMoves(kingPos)) {
                 // string to integer conversion:
                 vPosition.x = Number(vPosition.x);
                 vPosition.y = Number(vPosition.y);
-                if (vPosition.x === 1 || vPosition.x === maxPos || vPosition.y === 1 || vPosition.y === maxPos) {
+                if (this.isSquareAWinningPos(vPosition)) {
                     availableBorderPos.push(vPosition);
                 }
             }
