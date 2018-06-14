@@ -30,7 +30,7 @@ class Tablut extends Table
 
     protected function isRuleVariant()
     {
-        return $this->gamestate && $this->gamestate->table_globals && $this->gamestate->table_globals[100] == '1';
+        return $this->gamestate->table_globals && $this->gamestate->table_globals[100] == '1';
     }
 
     /**
@@ -369,10 +369,10 @@ class Tablut extends Table
         $this->gamestate->nextState('move');
     }
 
-    protected function ensureNoWall(int $x, int $y, bool $isWall, bool $pawnIsKing)
+    protected function ensureNoWall(int $x, int $y, bool $pawnIsKing, bool $isWall)
     {
         if ($this->isRuleVariant()) {
-            if (($y != 5 || $x != 5) && !($pawnIsKing || !$isWall)) {
+            if (($y != 5 || $x != 5) && ($pawnIsKing || !$isWall)) {
                 return;
             }
         } else {
