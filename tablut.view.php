@@ -45,13 +45,13 @@ class view_tablut_tablut extends game_view  // @codingStandardsIgnoreLine
                     'Y' => $y + 1,
                     'LEFT' => round($x * self::PX_SCALE),
                     'TOP' => round($y * self::PX_SCALE),
-                    'EXTRA_CLASS' => ($this->isFortressSquare($x, $y) ? 'fortress' : '') . ' ' . ($this->isCornerSquare($x, $y) ? 'corner' : '')
+                    'EXTRA_CLASS' => ($this->isKonaki($x, $y) ? 'konaki' : '') . ' ' . ($this->isCornerSquare($x, $y) ? 'corner' : '')
                 ));
             }
         }
     }
 
-    public function isFortressSquare($x, $y)
+    public function isKonaki($x, $y)
     {
         if ($this->game->gamestate->table_globals[100]) { // Variant:
             return ($x == 4 && $y == 4) || $this->isCornerSquare($x, $y);

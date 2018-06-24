@@ -58,12 +58,7 @@
     box-sizing: border-box;
 }
 
-.square:hover {
-    background-color: white;
-    opacity: 0.2;
-}
-
-.fortress {
+.konaki {
     background:
         repeating-linear-gradient(
             45deg,
@@ -74,7 +69,7 @@
         );
 }
 
-.corner.fortress::before {
+.corner.konaki::before {
     content: '☆';
     color: white;
     font-size: 3em;
@@ -119,6 +114,15 @@
     position: absolute;
     background-color: #111;
     border-radius: 30px;
+}
+
+.selectable {
+    cursor: pointer;
+}
+
+.selectable:hover {
+    background-color: white;
+    opacity: 0.6;
 }
 
 .selected {

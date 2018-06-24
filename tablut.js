@@ -91,26 +91,14 @@ define([
             }
 
             if (myPlayerIndex === 1) {
-                dojo.query('.p1Swede').style('cursor', 'pointer').on('click', lang.hitch(this, this.onSelectPawn));
-                dojo.query('.p1King').style('cursor', 'pointer').on('click', lang.hitch(this, this.onSelectPawn));
+                dojo.query('.p1Swede').addClass('selectable').on('click', lang.hitch(this, this.onSelectPawn));
+                dojo.query('.p1King').addClass('selectable').on('click', lang.hitch(this, this.onSelectPawn));
             } else {
-                dojo.query('.p0Muscovite').style('cursor', 'pointer').on('click', lang.hitch(this, this.onSelectPawn));
+                dojo.query('.p0Muscovite').addClass('selectable').on('click', lang.hitch(this, this.onSelectPawn));
             }
             dojo.query('.square').on('click', lang.hitch(this, this.onMove));
-            this.addTooltipToClass('fortress', _('No one can enter fortress squares !'), '');
-            if (Number(this.gamedatas.turns_number) === 0) {
-                this.displayTitleBarMessage(myPlayerIndex === 1 ?
-                    _('You play the white pawns, the Swedes') :
-                    _('You play the black pawns, the Muscovites'));
-            }
+            this.addTooltipToClass('konaki', _('No one can enter the konakis !'), '');
             this.displayRaichiTuichi();
-        },
-
-        displayTitleBarMessage(message) {
-            dojo.destroy('maintitlebar_topMsg');
-            dojo.place(this.format_block('jstpl_topMsg', {
-                message,
-            }), 'maintitlebar_content', 'before');
         },
 
         isRuleVariant() {
@@ -177,7 +165,7 @@ define([
             if (raichiOrTuichi) {
                 const [ winningMoveName, winningPath ] = raichiOrTuichi;
                 this.displayWinningPaths(winningPath);
-                this.displayTitleBarMessage(`${ winningMoveName } !`);
+                this.showMessage(`${ winningMoveName } !`, 'info');
             }
         },
 
@@ -400,8 +388,8 @@ define([
         // /////////////////////////////////////////////////
         // // Reaction to cometD notifications
         setupNotifications() {
-            dojo.subscribe('pawnMoved', this, 'notifPawnMoved');
-            dojo.subscribe('pawnEaten', this, 'notifPawnEaten');
+            dojo.subscribe('playerIsBlack', this, 'notifPlayerIsBlack');
+            dojo.subscribe('playerIsWhite', this, 'notifPlayerIsWhite');
             // dojo.subscribe('endOfGame', this, 'notifEndOfGame');
             // Delay end of game for interface stock stability before switching to game result
             this.notifqueue.setSynchronous('endOfGame', END_OF_GAME_DELAY);

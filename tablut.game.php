@@ -57,6 +57,11 @@ class Tablut extends Table
         $this->setupBoard($players);
         $this->setupStats($activePlayerIsMuscovite);
         $this->activeNextPlayer();
+        if ($activePlayerIsMuscovite) {
+            self::notifyPlayer(self::getActivePlayerId(), 'playerIsBlack', clienttranslate('You play the black pawns, the Muscovites'), []);
+        } else {
+            self::notifyPlayer(self::getActivePlayerId(), 'playerIsWhite', clienttranslate('You play the white pawns, the Swedes'), []);
+        }
     }
 
     /**
@@ -64,9 +69,9 @@ class Tablut extends Table
      */
     private function setupPlayers(array $players)
     {
-        $default_color = array(BLACK_PLAYER_COLOR, WHITE_PLAYER_COLOR); // black <=> Muscovites / white <=> Swedes
+        $default_color = [BLACK_PLAYER_COLOR, WHITE_PLAYER_COLOR]; // black <=> Muscovites / white <=> Swedes
         $sql = 'INSERT INTO player (player_id, player_color, player_canal, player_name, player_avatar) VALUES';
-        $values = array();
+        $values = [];
         $activePlayerIsMuscovite = null;
         foreach ($players as $player_id => $player) {
             $color = array_shift($default_color);
@@ -86,7 +91,7 @@ class Tablut extends Table
     private function setupBoard(array $players)
     {
         /* Initialize all the board */
-        $sql_values = array();
+        $sql_values = [];
         $sql = 'INSERT INTO board (board_x, board_y, board_wall) VALUES ';
         for ($x=1; $x<=9; $x++) {
             for ($y=1; $y<=9; $y++) {
@@ -164,7 +169,7 @@ class Tablut extends Table
     */
     protected function getAllDatas()
     {
-        $result = array( 'players' => array() );
+        $result = ['players' => []];
         $dbRequest = self::DbQuery('SELECT player_id id FROM player');
         while ($player = $dbRequest->fetch_assoc()) {
             $result['players'][ $player['id'] ] = $player;
@@ -332,13 +337,13 @@ class Tablut extends Table
         self::DbQuery("UPDATE board SET board_player=NULL,            board_king=NULL           WHERE board_x = $fromX AND board_y = $fromY");
         self::DbQuery("UPDATE board SET board_player='$pawnPlayerId', board_king=$pawnIsKing WHERE board_x = $toX   AND board_y = $toY");
 
-        self::notifyAllPlayers('pawnMoved', clienttranslate('${player_name} moves a pawn'), array(
+        self::notifyAllPlayers('pawnMoved', clienttranslate('${player_name} moves a pawn'), [
             'player_id' => $pawnPlayerId,
             'player_name' => self::getActivePlayerName(),
             'fromDiscId' => $fromDiscId,
             'toSquareId' => $toSquareId,
             'gamedatas' => $this->getAllDatas()
-        ));
+        ]);
 
         // Check for eaten pawns (but not for the king in the variant rule)
         if (!$this->isRuleVariant() || $pawnIsKing == 'NULL') {
@@ -347,13 +352,13 @@ class Tablut extends Table
             foreach ($eatenPawns as $eatenPawn) {
                 list($eatenPawnX, $eatenPawnY) = $eatenPawn;
                 self::DbQuery("UPDATE board SET board_player=NULL, board_king=NULL WHERE board_x = $eatenPawnX AND board_y = $eatenPawnY");
-                self::notifyAllPlayers('pawnEaten', clienttranslate("Pawn at position x=$eatenPawnX,y=$eatenPawnY has been eaten by player by \${player_name} !"), array(
+                self::notifyAllPlayers('pawnEaten', clienttranslate("Pawn at position x=$eatenPawnX,y=$eatenPawnY has been eaten by player by \${player_name} !"), [
                     'player_id' => $pawnPlayerId,
                     'player_name' => self::getActivePlayerName(),
                     'eatenPawnX' => $eatenPawnX,
                     'eatenPawnY' => $eatenPawnY,
                     'gamedatas' => $this->getAllDatas()
-                ));
+                ]);
                 if ($this->dbPawnColor($eatenPawnX, $eatenPawnY) == BLACK_PLAYER_COLOR) {
                     $this->incStat(1, 'muscovites_captured'); // TABLE stat update
                     $this->incStat(1, 'muscovites_captured', $pawnPlayerId); // PLAYER stat update
@@ -391,14 +396,14 @@ class Tablut extends Table
     public function findEatenPawns(int $x, int $y)
     {
         $activePlayer = self::getActivePlayerId();
-        $positionsToTest = array(
-            array('victim' => array($x, $y + 1), 'dual' => array($x, $y + 2), 'third' => array($x - 1, $y + 1), 'fourth' => array($x + 1, $y + 1)),
-            array('victim' => array($x, $y - 1), 'dual' => array($x, $y - 2), 'third' => array($x - 1, $y - 1), 'fourth' => array($x + 1, $y - 1)),
-            array('victim' => array($x + 1, $y), 'dual' => array($x + 2, $y), 'third' => array($x + 1, $y - 1), 'fourth' => array($x + 1, $y + 1)),
-            array('victim' => array($x - 1, $y), 'dual' => array($x - 2, $y), 'third' => array($x - 1, $y - 1), 'fourth' => array($x - 1, $y + 1)),
-        );
+        $positionsToTest = [
+            ['victim' => [$x, $y + 1], 'dual' => [$x, $y + 2], 'third' => [$x - 1, $y + 1], 'fourth' => [$x + 1, $y + 1]],
+            ['victim' => [$x, $y - 1], 'dual' => [$x, $y - 2], 'third' => [$x - 1, $y - 1], 'fourth' => [$x + 1, $y - 1]],
+            ['victim' => [$x + 1, $y], 'dual' => [$x + 2, $y], 'third' => [$x + 1, $y - 1], 'fourth' => [$x + 1, $y + 1]],
+            ['victim' => [$x - 1, $y], 'dual' => [$x - 2, $y], 'third' => [$x - 1, $y - 1], 'fourth' => [$x - 1, $y + 1]],
+        ];
 
-        $eatenPawns = array();
+        $eatenPawns = [];
         foreach ($positionsToTest as $pos) {
             $victimPawn = $this->dbPawnAtPos($pos['victim']);
             if ($victimPawn['board_player'] == null || $victimPawn['board_player'] == $activePlayer) {
@@ -439,7 +444,7 @@ class Tablut extends Table
     private function dbPawnAt($x, $y)
     {
         if ($x < 1 || $x > 9 || $y < 1 || $y > 9) {
-            return array('board_player' => null, 'board_king' => null, 'board_wall' => null);
+            return ['board_player' => null, 'board_king' => null, 'board_wall' => null];
         }
         return self::DbQuery("SELECT board_player, board_king, board_wall FROM board WHERE board_x = $x AND board_y = $y")->fetch_assoc();
     }
@@ -455,8 +460,7 @@ class Tablut extends Table
 
     public function argPlayerTurn()
     {
-        return array(
-        );
+        return [];
     }
 
 
