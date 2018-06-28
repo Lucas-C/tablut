@@ -11,7 +11,7 @@ Rules:
 - [in English](http://en.doc.boardgamearena.com/Gamehelptablut)
 - [in French](http://fr.doc.boardgamearena.com/Gamehelptablut)
 
-Note: The player invited to join the game currently always plays the Swedes (player 1).
+Feel free to report bugs, send pull requests or even express feature requests through the _issues_ section of this GitHub project.
 
 ## Game state machine
 
