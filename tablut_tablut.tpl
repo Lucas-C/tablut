@@ -4,12 +4,12 @@
 --------
 -- BGA framework: © Gregory Isabelli <gisabelli@boardgamearena.com> & Emmanuel Colin <ecolin@boardgamearena.com>
 -------
-    tablut_tablut.tpl
+    tablut_tablut.tpl - phplib template
 -->
 
 <div id="board">
     <!-- BEGIN square -->
-        <div id="square_{X}_{Y}" class="square {EXTRA_CLASS}" style="left: {LEFT}px; top: {TOP}px;"></div>
+        <div id="square_{X}_{Y}" class="{CSS_CLASSES}" style="left: {LEFT}px; top: {TOP}px;">{TEXT}</div>
     <!-- END square -->
 
     <div id="discs"></div>
