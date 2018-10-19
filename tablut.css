@@ -43,7 +43,7 @@
 
 #board {
     position: relative;
-    margin: 0 auto;
+    margin: 30px auto;
     height: 540px;
     width: 540px;
     overflow: hidden;
@@ -56,6 +56,30 @@
     height: 60px;
     border: 1px solid black;
     box-sizing: border-box;
+}
+
+.border {
+    position: absolute;
+    width: 60px;
+    height: 60px;
+    box-sizing: border-box;
+}
+.border-left {
+    text-align: right;
+    padding-right: 10px;
+    line-height: 60px;
+}
+.border-right {
+    text-align: left;
+    padding-left: 10px;
+    line-height: 60px;
+}
+.border-top {
+    text-align: center;
+    line-height: 100px;
+}
+.border-bottom {
+    text-align: center;
 }
 
 .konaki {

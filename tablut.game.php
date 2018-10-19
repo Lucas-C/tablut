@@ -420,11 +420,15 @@ class Tablut extends Table
         self::DbQuery("UPDATE board SET board_player=NULL,            board_king=NULL           WHERE board_x = $fromX AND board_y = $fromY");
         self::DbQuery("UPDATE board SET board_player='$pawnPlayerId', board_king=$pawnIsKing WHERE board_x = $toX   AND board_y = $toY");
 
-        self::notifyAllPlayers('pawnMoved', clienttranslate('${player_name} moves a pawn'), [
+        $fromBoardPos = $this->posXYtoBoardPos($fromX, $fromY);
+        $toBoardPos = $this->posXYtoBoardPos($toX, $toY);
+        self::notifyAllPlayers('pawnMoved', clienttranslate('${player_name} moves a pawn from ${fromBoardPos} to ${toBoardPos}'), [
             'player_id' => $pawnPlayerId,
             'player_name' => self::getActivePlayerName(),
             'fromDiscId' => $fromDiscId,
             'toSquareId' => $toSquareId,
+            'fromBoardPos' => $fromBoardPos,
+            'toBoardPos' => $toBoardPos,
             'gamedatas' => $this->getAllDatas()
         ]);
         $this->RaichiOrTuichiLog();
@@ -435,12 +439,12 @@ class Tablut extends Table
             $eatenPawns = $this->findEatenPawns($toX, $toY);
             foreach ($eatenPawns as $eatenPawn) {
                 list($eatenPawnX, $eatenPawnY) = $eatenPawn;
+                $eatenPawnBoardPos = $this->posXYtoBoardPos($eatenPawnX, $eatenPawnY);
                 self::DbQuery("UPDATE board SET board_player=NULL, board_king=NULL WHERE board_x = $eatenPawnX AND board_y = $eatenPawnY");
-                self::notifyAllPlayers('pawnEaten', clienttranslate("Pawn at position x=$eatenPawnX,y=$eatenPawnY has been eaten by player by \${player_name} !"), [
+                self::notifyAllPlayers('pawnEaten', clienttranslate('Pawn at position ${eatenPawnBoardPos} has been eaten by player by ${player_name} !'), [
                     'player_id' => $pawnPlayerId,
                     'player_name' => self::getActivePlayerName(),
-                    'eatenPawnX' => $eatenPawnX,
-                    'eatenPawnY' => $eatenPawnY,
+                    'eatenPawnBoardPos' => $eatenPawnBoardPos,
                     'gamedatas' => $this->getAllDatas()
                 ]);
                 if ($this->dbPawnColor($eatenPawnX, $eatenPawnY) == BLACK_PLAYER_COLOR) {
@@ -536,6 +540,11 @@ class Tablut extends Table
     private function dbPawnColor($x, $y)
     {
         return self::DbQuery("SELECT player_color FROM board, player WHERE board_x = $x AND board_y = $y AND player_id = board_player")->fetch_assoc()['player_color'];
+    }
+
+    private function posXYtoBoardPos($x, $y)
+    {
+        return chr(64 + $x) . $y;
     }
 
 //////////////////////////////////////////////////////////////////////////////

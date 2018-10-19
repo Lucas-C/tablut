@@ -38,40 +38,80 @@ class view_tablut_tablut extends game_view  // @codingStandardsIgnoreLine
 
         $currentPlayerId = (int) $g_user->get_id();
 
-        for ($x=0; $x<=8; $x++) {
-            for ($y=0; $y<=8; $y++) {
+        for ($x=0; $x<=10; $x++) {
+            for ($y=0; $y<=10; $y++) {
                 $this->page->insert_block("square", array(
-                    'X' => $x + 1,
-                    'Y' => $y + 1,
-                    'LEFT' => round($x * self::PX_SCALE),
-                    'TOP' => round($y * self::PX_SCALE),
-                    'EXTRA_CLASS' => ($this->isKonaki($x, $y) ? 'konaki' : '') . ' ' . ($this->isCornerSquare($x, $y) ? 'corner' : '')
+                    'X' => $x,
+                    'Y' => $y,
+                    'LEFT' => round(($x - 1) * self::PX_SCALE),
+                    'TOP' => round(($y - 1) * self::PX_SCALE),
+                    'CSS_CLASSES' => $this->squareCssClasses($x, $y),
+                    'TEXT' => $this->squareText($x, $y)
                 ));
             }
         }
     }
 
+    public function squareText($x, $y)
+    {
+        if (($y == 0 || $y == 10) && $x > 0 && $x < 10) {
+            return chr(64 + $x);
+        }
+        if (($x == 0 || $x == 10) && $y > 0 && $y < 10) {
+            return $y;
+        }
+        return '';
+    }
+
+    public function squareCssClasses($x, $y)
+    {
+        $cssClasses = 'square';
+        if ($x != 0 && $x != 10 && $y != 0 && $y != 10) {
+            if ($this->isKonaki($x, $y)) {
+                $cssClasses .= ' konaki';
+            }
+            if ($this->isCornerSquare($x, $y)) {
+                $cssClasses .= ' corner';
+            }
+        } else {
+            $cssClasses = 'border';
+            if ($x == 0) {
+                $cssClasses .= ' border-left';
+            }
+            if ($x == 10) {
+                $cssClasses .= ' border-right';
+            }
+            if ($y == 0) {
+                $cssClasses .= ' border-top';
+            }
+            if ($y == 10) {
+                $cssClasses .= ' border-bottom';
+            }
+        }
+        return $cssClasses;
+    }
+
     public function isKonaki($x, $y)
     {
         if ($this->game->gamestate->table_globals[100]) { // Variant:
-            return ($x == 4 && $y == 4) || $this->isCornerSquare($x, $y);
+            return ($x == 5 && $y == 5) || $this->isCornerSquare($x, $y);
         }
-        return ($x == 4 && $y == 4)
-            || ($x == 0 && $y >= 3 && $y <= 5)
-            || ($x == 1 && $y == 4)
-            || ($x == 8 && $y >= 3 && $y <= 5)
-            || ($x == 7 && $y == 4)
-            || ($x >= 3 && $x <= 5 && $y == 0)
-            || ($x == 4 && $y == 1)
-            || ($x >= 3 && $x <= 5 && $y == 8)
-            || ($x == 4 && $y == 7);
+        return ($x == 5 && $y == 5)
+            || ($x == 1 && $y >= 4 && $y <= 6)
+            || ($x == 2 && $y == 5)
+            || ($x == 9 && $y >= 4 && $y <= 6)
+            || ($x == 8 && $y == 5)
+            || ($x >= 4 && $x <= 6 && $y == 1)
+            || ($x == 5 && $y == 2)
+            || ($x >= 4 && $x <= 6 && $y == 9)
+            || ($x == 5 && $y == 8);
     }
     
     public function isCornerSquare($x, $y)
     {
-        return ($x == 0 && $y == 0)
-            || ($x == 0 && $y == 8)
-            || ($x == 8 && $y == 0)
-            || ($x == 8 && $y == 8);
+        return ($x == 1 && $y == 1)
+            || ($x == 1 && $y == 9)
+            || ($x == 9 && $y == 1)
+            || ($x == 9 && $y == 9);
     }
 }
