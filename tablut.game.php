@@ -443,6 +443,8 @@ class Tablut extends Table
                 self::notifyAllPlayers('pawnEaten', clienttranslate('Pawn at position ${eatenPawnBoardPos} has been eaten by player by ${player_name} !'), [
                     'player_id' => $pawnPlayerId,
                     'player_name' => self::getActivePlayerName(),
+                    'eatenPawnX' => $eatenPawnX,
+                    'eatenPawnY' => $eatenPawnY,
                     'eatenPawnBoardPos' => $eatenPawnBoardPos,
                     'gamedatas' => $this->getAllDatas()
                 ]);

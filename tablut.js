@@ -155,7 +155,7 @@ define([
             this.slideToObject(newDiscId, toSquareId).play();
         },
 
-        displayRaichiTuichi() {
+        displayRaichiTuichi() { // Now that notifications are sent for RAICHI / TUICHI, we could replace this by a subscriber
             this.clearWinningPaths();
             const king = this.getKingPos(this.gamedatas.board);
             if (!king || Number(king.limitWin)) {
@@ -403,7 +403,8 @@ define([
         notifPawnEaten(notif) {
             this.gamedatas.board = notif.args.gamedatas.board;
             const discId = `disc_${ notif.args.eatenPawnX }_${ notif.args.eatenPawnY }`;
-            dojo.destroy(discId);
+            this.slideToObject(discId, 'player_boards', 2000).play();
+            dojo.fadeOut({ node: discId, delay:2000, onEnd: () => dojo.destroy(discId) }).play();
             this.displayRaichiTuichi();
         },
     });
