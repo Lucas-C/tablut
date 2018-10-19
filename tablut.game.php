@@ -283,9 +283,7 @@ class Tablut extends Table
                     'winnerPos' => $WinnerPos
                 ]);
             }
-        }
-
-        elseif ($WinnerPos > 1) {
+        } elseif ($WinnerPos > 1) {
             if ($this->isRuleVariant()) {
                 self::notifyAllPlayers('Tuichi', clienttranslate('Tuichi! (the King gained two clear paths to corners: the game ends)'), [
                     'winnerPos' => $WinnerPos

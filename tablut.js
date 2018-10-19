@@ -155,7 +155,8 @@ define([
             this.slideToObject(newDiscId, toSquareId).play();
         },
 
-        displayRaichiTuichi() { // Now that notifications are sent for RAICHI / TUICHI, we could replace this by a subscriber
+        // Now that notifications are sent for RAICHI / TUICHI, we could replace this by a subscriber
+        displayRaichiTuichi() {
             this.clearWinningPaths();
             const king = this.getKingPos(this.gamedatas.board);
             if (!king || Number(king.limitWin)) {
