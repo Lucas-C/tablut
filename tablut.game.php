@@ -215,6 +215,89 @@ class Tablut extends Table
 //////////////////////////////////////////////////////////////////////////////
 //////////// Player actions
 ////////////
+
+    public function RaichiOrTuichiLog()
+    {
+        // get the King Position
+        $kingPos2 = self::DbQuery("SELECT board_x x, board_y y FROM board WHERE board_king = '1'")->fetch_assoc();
+        $KingPosX = $kingPos2['x'];
+        $KingPosY = $kingPos2['y'];
+        
+        
+        $WinnerPos = 0;
+        //////////////////////
+        // find all the winnerPos of the King
+        //////////////////////
+
+        $columSearchUp = self::DbQuery("SELECT board_x x, board_y y, board_player player, board_wall wall FROM board WHERE board_x > $KingPosX and board_y = $KingPosY and (board_player != 'null' or board_wall != 'null')")->fetch_assoc();
+        if (!$this->isRuleVariant()) {
+            if ($columSearchUp['y'] == null) {
+                $WinnerPos += 1;
+            }
+        } else {
+            if ($columSearchUp['y'] == null and ($KingPosX == '1' || $KingPosX == '9')) {
+                $WinnerPos += 1;        
+            }
+        }       
+        
+        $columSearchUp = self::DbQuery("SELECT board_x x, board_y y, board_player player, board_wall wall FROM board WHERE board_x < $KingPosX and board_y = $KingPosY and (board_player != 'null' or board_wall != 'null')")->fetch_assoc();
+        if (!$this->isRuleVariant()) {
+            if ($columSearchUp['y'] == null) {
+                $WinnerPos += 1;
+            }
+        } else {
+            if ($columSearchUp['y'] == null and ($KingPosX == '1' || $KingPosX == '9')) {
+                $WinnerPos += 1;        
+            }
+        }
+        
+        $columSearchUp = self::DbQuery("SELECT board_x x, board_y y, board_player player, board_wall wall FROM board WHERE board_y > $KingPosY and board_x = $KingPosX and (board_player != 'null' or board_wall != 'null')")->fetch_assoc();
+        if (!$this->isRuleVariant()) {
+            if ($columSearchUp['y'] == null) {
+                $WinnerPos += 1;
+            }
+        } else {
+            if ($columSearchUp['y'] == null and ($KingPosY == '1' || $KingPosY == '9')) {
+                $WinnerPos += 1;        
+            }
+        }
+
+        $columSearchUp = self::DbQuery("SELECT board_x x, board_y y, board_player player, board_wall wall FROM board WHERE board_y < $KingPosY and board_x = $KingPosX and (board_player != 'null' or board_wall != 'null')")->fetch_assoc();
+        if (!$this->isRuleVariant()) {
+            if ($columSearchUp['y'] == null) {
+                $WinnerPos += 1;
+            }
+        } else {
+            if ($columSearchUp['y'] == null and ($KingPosY == '1' || $KingPosY == '9')) {
+                $WinnerPos += 1;        
+            }
+        }
+
+        if ($WinnerPos == 1 ) {
+            if ($this->isRuleVariant()) {
+                self::notifyAllPlayers('Raichi', clienttranslate('Raichi! (the King has a clear paths to corner)'), [
+                    'winnerPos' => $WinnerPos
+                ]);
+            } else {
+                self::notifyAllPlayers('Raichi', clienttranslate('Raichi! (the King has a clear paths to border)'), [
+                    'winnerPos' => $WinnerPos
+                ]);
+            }
+        }
+        else if ($WinnerPos > 1) {
+            if ($this->isRuleVariant()) {
+                self::notifyAllPlayers('Tuichi', clienttranslate('Tuichi! (the King gained two clear paths to corners: the game ends)'), [
+                    'winnerPos' => $WinnerPos
+                ]);
+            } else {
+                self::notifyAllPlayers('Tuichi', clienttranslate('Tuichi! (the King gained two clear paths to border: the game ends)'), [
+                    'winnerPos' => $WinnerPos
+                ]);
+            }
+        }
+        
+    }
+
     /**
      * @param int $fromDiscId
      * @param int $toSquareId
@@ -344,7 +427,8 @@ class Tablut extends Table
             'toSquareId' => $toSquareId,
             'gamedatas' => $this->getAllDatas()
         ]);
-
+        $this->RaichiOrTuichiLog();
+        
         // Check for eaten pawns (but not for the king in the variant rule)
         if (!$this->isRuleVariant() || $pawnIsKing == 'NULL') {
             // Send another notif if pawns were eaten
