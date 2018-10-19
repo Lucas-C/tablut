@@ -388,9 +388,8 @@ define([
         // /////////////////////////////////////////////////
         // // Reaction to cometD notifications
         setupNotifications() {
-            dojo.subscribe('playerIsBlack', this, 'notifPlayerIsBlack');
-            dojo.subscribe('playerIsWhite', this, 'notifPlayerIsWhite');
-            // dojo.subscribe('endOfGame', this, 'notifEndOfGame');
+            dojo.subscribe('pawnMoved', this, 'notifPawnMoved');
+            dojo.subscribe('pawnEaten', this, 'notifPawnEaten');
             // Delay end of game for interface stock stability before switching to game result
             this.notifqueue.setSynchronous('endOfGame', END_OF_GAME_DELAY);
         },
