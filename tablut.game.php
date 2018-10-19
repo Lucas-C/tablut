@@ -216,7 +216,7 @@ class Tablut extends Table
 //////////// Player actions
 ////////////
 
-    public function RaichiOrTuichiLog()
+    public function logRaichiOrTuichi()
     {
         // get the King Position
         $kingPos2 = self::DbQuery("SELECT board_x x, board_y y FROM board WHERE board_king = '1'")->fetch_assoc();
@@ -236,9 +236,9 @@ class Tablut extends Table
             }
         } else {
             if ($columSearchUp['y'] == null and ($KingPosX == '1' || $KingPosX == '9')) {
-                $WinnerPos += 1;        
+                $WinnerPos += 1;
             }
-        }       
+        }
         
         $columSearchUp = self::DbQuery("SELECT board_x x, board_y y, board_player player, board_wall wall FROM board WHERE board_x < $KingPosX and board_y = $KingPosY and (board_player != 'null' or board_wall != 'null')")->fetch_assoc();
         if (!$this->isRuleVariant()) {
@@ -247,7 +247,7 @@ class Tablut extends Table
             }
         } else {
             if ($columSearchUp['y'] == null and ($KingPosX == '1' || $KingPosX == '9')) {
-                $WinnerPos += 1;        
+                $WinnerPos += 1;
             }
         }
         
@@ -258,7 +258,7 @@ class Tablut extends Table
             }
         } else {
             if ($columSearchUp['y'] == null and ($KingPosY == '1' || $KingPosY == '9')) {
-                $WinnerPos += 1;        
+                $WinnerPos += 1;
             }
         }
 
@@ -269,11 +269,11 @@ class Tablut extends Table
             }
         } else {
             if ($columSearchUp['y'] == null and ($KingPosY == '1' || $KingPosY == '9')) {
-                $WinnerPos += 1;        
+                $WinnerPos += 1;
             }
         }
 
-        if ($WinnerPos == 1 ) {
+        if ($WinnerPos == 1) {
             if ($this->isRuleVariant()) {
                 self::notifyAllPlayers('Raichi', clienttranslate('Raichi! (the King has a clear paths to corner)'), [
                     'winnerPos' => $WinnerPos
@@ -295,7 +295,6 @@ class Tablut extends Table
                 ]);
             }
         }
-        
     }
 
     /**
@@ -431,7 +430,6 @@ class Tablut extends Table
             'toBoardPos' => $toBoardPos,
             'gamedatas' => $this->getAllDatas()
         ]);
-        $this->RaichiOrTuichiLog();
         
         // Check for eaten pawns (but not for the king in the variant rule)
         if (!$this->isRuleVariant() || $pawnIsKing == 'NULL') {
@@ -456,6 +454,8 @@ class Tablut extends Table
                 }
             }
         }
+
+        $this->logRaichiOrTuichi();
 
         $this->incStat(1, 'turns_number'); // TABLE stat update
 
