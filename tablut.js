@@ -254,7 +254,8 @@ define([
                             }
                         }
                     // Pawns can only pass on konakis if they started on one of them without ever stepping of
-                    } else if (vPosition.wall === '1' && vDiscOnWall !== '1') {
+                    // Also the king can go on the corner konakis
+                    } else if (vPosition.wall === '1' && vDiscOnWall !== '1' && (!isKing || vPosition.limitWin !== '1')) {
                         break;
                     }
                     yield vPosition;
