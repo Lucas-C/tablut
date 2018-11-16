@@ -493,7 +493,7 @@ class Tablut extends Table
 
         $eatenPawns = [];
         // if the active pawn is the king, ignore the capture
-        if (($this->dbPawnAt($x,$y))['board_king'] != null) {
+        if (($this->dbPawnAt($x, $y))['board_king'] != null) {
             return $eatenPawns;
         }
         foreach ($positionsToTest as $pos) {
