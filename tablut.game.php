@@ -432,7 +432,7 @@ class Tablut extends Table
                 list($eatenPawnX, $eatenPawnY) = $eatenPawn;
                 $eatenPawnBoardPos = $this->posXYtoBoardPos($eatenPawnX, $eatenPawnY);
                 $kingInfo = self::DbQuery("SELECT board_king FROM board WHERE board_x = $eatenPawnX AND board_y = $eatenPawnY")->fetch_assoc();
-                if ($kingInfo['board_king'] == '1' ){
+                if ($kingInfo['board_king'] == '1') {
                     self::DbQuery("UPDATE board SET board_king=2 WHERE board_x = $eatenPawnX AND board_y = $eatenPawnY");
                 } else {
                     self::DbQuery("UPDATE board SET board_player=NULL, board_king=NULL WHERE board_x = $eatenPawnX AND board_y = $eatenPawnY");
@@ -492,8 +492,13 @@ class Tablut extends Table
         ];
 
         $eatenPawns = [];
+        // if the active pawn is the king, ignore the capture
+        if (($this->dbPawnAt($x,$y))['board_king'] != null) {
+            return $eatenPawns;
+        }
         foreach ($positionsToTest as $pos) {
             $victimPawn = $this->dbPawnAtPos($pos['victim']);
+            // if the victim is a board or the active player go to the next direction
             if ($victimPawn['board_player'] == null || $victimPawn['board_player'] == $activePlayer) {
                 continue;
             }
@@ -515,7 +520,8 @@ class Tablut extends Table
                     }
                 }
             } else {
-                if ($dualPawn['board_player'] == $activePlayer) {
+                // capture the victime if the dual board player is the active player and if not the king
+                if ($dualPawn['board_player'] == $activePlayer && $dualPawn['board_king'] == null) {
                     array_push($eatenPawns, $pos['victim']);
                 }
             }
