@@ -213,9 +213,12 @@ class Tablut extends Table
     public function logRaichiOrTuichi()
     {
         // get the King Position
-        $kingPos2 = self::DbQuery("SELECT board_x x, board_y y FROM board WHERE board_king != 'NULL'")->fetch_assoc();
-        $KingPosX = $kingPos2['x'];
-        $KingPosY = $kingPos2['y'];
+        $kingPos = self::DbQuery("SELECT board_x x, board_y y, board_limitWin winning_pos FROM board WHERE board_king != 'NULL'")->fetch_assoc();
+        if ($kingPos['winning_pos'] == '1') {
+            return;
+        }
+        $KingPosX = $kingPos['x'];
+        $KingPosY = $kingPos['y'];
         
         
         $WinnerPos = 0;
