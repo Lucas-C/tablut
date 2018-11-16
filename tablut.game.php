@@ -219,7 +219,7 @@ class Tablut extends Table
     public function logRaichiOrTuichi()
     {
         // get the King Position
-        $kingPos2 = self::DbQuery("SELECT board_x x, board_y y FROM board WHERE board_king = '1'")->fetch_assoc();
+        $kingPos2 = self::DbQuery("SELECT board_x x, board_y y FROM board WHERE board_king != 'NULL'")->fetch_assoc();
         $KingPosX = $kingPos2['x'];
         $KingPosY = $kingPos2['y'];
         
@@ -437,15 +437,20 @@ class Tablut extends Table
             foreach ($eatenPawns as $eatenPawn) {
                 list($eatenPawnX, $eatenPawnY) = $eatenPawn;
                 $eatenPawnBoardPos = $this->posXYtoBoardPos($eatenPawnX, $eatenPawnY);
-                self::DbQuery("UPDATE board SET board_player=NULL, board_king=NULL WHERE board_x = $eatenPawnX AND board_y = $eatenPawnY");
-                self::notifyAllPlayers('pawnEaten', clienttranslate('Pawn at position ${eatenPawnBoardPos} has been eaten by player by ${player_name} !'), [
-                    'player_id' => $pawnPlayerId,
-                    'player_name' => self::getActivePlayerName(),
-                    'eatenPawnX' => $eatenPawnX,
-                    'eatenPawnY' => $eatenPawnY,
-                    'eatenPawnBoardPos' => $eatenPawnBoardPos,
-                    'gamedatas' => $this->getAllDatas()
-                ]);
+                $kingInfo = self::DbQuery("SELECT board_king FROM board WHERE board_x = $eatenPawnX AND board_y = $eatenPawnY")->fetch_assoc();
+                if ($kingInfo['board_king'] == '1' ){
+                    self::DbQuery("UPDATE board SET board_king=2 WHERE board_x = $eatenPawnX AND board_y = $eatenPawnY");
+                } else {
+                    self::DbQuery("UPDATE board SET board_player=NULL, board_king=NULL WHERE board_x = $eatenPawnX AND board_y = $eatenPawnY");
+                    self::notifyAllPlayers('pawnEaten', clienttranslate('Pawn at position ${eatenPawnBoardPos} has been eaten by player by ${player_name} !'), [
+                        'player_id' => $pawnPlayerId,
+                        'player_name' => self::getActivePlayerName(),
+                        'eatenPawnX' => $eatenPawnX,
+                        'eatenPawnY' => $eatenPawnY,
+                        'eatenPawnBoardPos' => $eatenPawnBoardPos,
+                        'gamedatas' => $this->getAllDatas()
+                    ]);
+                }
                 if ($this->dbPawnColor($eatenPawnX, $eatenPawnY) == BLACK_PLAYER_COLOR) {
                     $this->incStat(1, 'muscovites_captured'); // TABLE stat update
                     $this->incStat(1, 'muscovites_captured', $pawnPlayerId); // PLAYER stat update
