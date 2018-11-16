@@ -70,6 +70,9 @@ class view_tablut_tablut extends game_view  // @codingStandardsIgnoreLine
             if ($this->isKonaki($x, $y)) {
                 $cssClasses .= ' konaki';
             }
+            if ($this->isThrone($x, $y)) {
+                $cssClasses .= ' throne';
+            }
             if ($this->isCornerSquare($x, $y)) {
                 $cssClasses .= ' corner';
             }
@@ -91,13 +94,17 @@ class view_tablut_tablut extends game_view  // @codingStandardsIgnoreLine
         return $cssClasses;
     }
 
+    public function isThrone($x, $y)
+    {
+        return ($x == 5 && $y == 5);
+    }
+
     public function isKonaki($x, $y)
     {
         if ($this->game->gamestate->table_globals[100]) { // Variant:
-            return ($x == 5 && $y == 5) || $this->isCornerSquare($x, $y);
+            return $this->isCornerSquare($x, $y);
         }
-        return ($x == 5 && $y == 5)
-            || ($x == 1 && $y >= 4 && $y <= 6)
+        return ($x == 1 && $y >= 4 && $y <= 6)
             || ($x == 2 && $y == 5)
             || ($x == 9 && $y >= 4 && $y <= 6)
             || ($x == 8 && $y == 5)

@@ -97,7 +97,12 @@ define([
                 dojo.query('.p0Muscovite').addClass('selectable').on('click', lang.hitch(this, this.onSelectPawn));
             }
             dojo.query('.square').on('click', lang.hitch(this, this.onMove));
-            this.addTooltipToClass('konaki', _('No one can enter the konakis !'), '');
+            if (this.isRuleVariant()) {
+                this.addTooltipToClass('konaki', _('Only the king can enter the konakis !'), '');
+            } else {
+                this.addTooltipToClass('konaki', _('No one can enter the konakis !'), '');
+            }
+            this.addTooltipToClass('throne', _('Apart from the king, pawns cannot stop on the throne'), '');
             this.displayRaichiTuichi();
         },
 

@@ -85,6 +85,17 @@
     text-align: center;
 }
 
+.throne {
+    background:
+        repeating-linear-gradient(
+            45deg,
+            #60bcb0,
+            #60bcb0 10px,
+            #46988c 10px,
+            #46988c 20px
+        );
+}
+
 .konaki {
     background:
         repeating-linear-gradient(
