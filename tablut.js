@@ -102,7 +102,11 @@ define([
             } else {
                 this.addTooltipToClass('konaki', _('No one can enter the konakis !'), '');
             }
-            this.addTooltipToClass('throne', _('Apart from the king, pawns cannot stop on the throne'), '');
+            if (this.isRuleVariant()) {
+                this.addTooltipToClass('throne', _('Apart from the king, pawns cannot stop on the throne'), '');
+            } else {
+                this.addTooltipToClass('throne', _('Only the king can pass on the throne'), '');
+            }
             this.displayRaichiTuichi();
         },
 
