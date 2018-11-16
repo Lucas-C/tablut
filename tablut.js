@@ -238,16 +238,22 @@ define([
                     vIndex += boardIndexIncrementPerDir[dir]
                 ) {
                     const vPosition = board[vIndex];
-                    if (!vPosition) {
-                        break;
-                    }
+                    // Pawns cannot go through other pawns:
                     if (vPosition.player !== null) {
                         break;
                     }
-                    if (this.isRuleVariant()) {
-                        if ((Number(vPosition.x) === 5 && Number(vPosition.y) === 5) || (!isKing && vPosition.wall === '1')) {
-                            break;
+                    // Case of the central position
+                    if (vPosition.wall === '2') {
+                        // The king can always pass on this konaki
+                        if (!isKing) {
+                            // In the variant rule, the pawns can pass through it but not stop on it
+                            if (this.isRuleVariant()) {
+                                continue;
+                            } else {
+                                break;
+                            }
                         }
+                    // Pawns can only pass on konakis if they started on one of them without ever stepping of
                     } else if (vPosition.wall === '1' && vDiscOnWall !== '1') {
                         break;
                     }

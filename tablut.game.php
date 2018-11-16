@@ -95,10 +95,9 @@ class Tablut extends Table
         $sql = 'INSERT INTO board (board_x, board_y, board_wall) VALUES ';
         for ($x=1; $x<=9; $x++) {
             for ($y=1; $y<=9; $y++) {
-                if ($x==9 and $y==9) {
-                    $sql .= "('$x', '$y', NULL) ";
-                } else {
-                    $sql .= "('$x', '$y', NULL), ";
+                $sql .= "('$x', '$y', NULL) ";
+                if ($x!=9 or $y!=9) {
+                    $sql .= ",";
                 }
             }
         }
@@ -106,6 +105,11 @@ class Tablut extends Table
 
         $player0 = array_keys($players)[0];
         $player1 = array_keys($players)[1];
+
+        /* Initialize the player 1 pieces */
+        self::DbQuery("UPDATE board SET board_player='$player1', board_wall='2', board_king='1' WHERE ( board_x, board_y) IN (('5','5'))");
+        self::DbQuery("UPDATE board SET board_player='$player1' WHERE ( board_x, board_y) IN (('3','5'), ('4','5'), ('6','5'), ('7','5'))");
+        self::DbQuery("UPDATE board SET board_player='$player1' WHERE ( board_x, board_y) IN (('5','3'), ('5','4'), ('5','6'), ('5','7'))");
         
         if (!$this->isRuleVariant()) {
             /* Initialize the player 0 pieces */
@@ -113,11 +117,6 @@ class Tablut extends Table
             self::DbQuery("UPDATE board SET board_player='$player0', board_wall='1' WHERE ( board_x, board_y) IN (('4','9'), ('5','9'), ('6','9'), ('5','8') )");
             self::DbQuery("UPDATE board SET board_player='$player0', board_wall='1' WHERE ( board_x, board_y) IN (('1','4'), ('1','5'), ('1','6'), ('2','5') )");
             self::DbQuery("UPDATE board SET board_player='$player0', board_wall='1' WHERE ( board_x, board_y) IN (('9','4'), ('9','5'), ('9','6'), ('8','5') )");
-
-            /* Initialize the player 1 pieces */
-            self::DbQuery("UPDATE board SET board_player='$player1', board_wall='1', board_king='1' WHERE ( board_x, board_y) IN (('5','5'))");
-            self::DbQuery("UPDATE board SET board_player='$player1' WHERE ( board_x, board_y) IN (('3','5'), ('4','5'), ('6','5'), ('7','5'))");
-            self::DbQuery("UPDATE board SET board_player='$player1' WHERE ( board_x, board_y) IN (('5','3'), ('5','4'), ('5','6'), ('5','7'))");
 
             /* Initialize the limit winning game */
             self::DbQuery("UPDATE board SET board_limitWin='1' WHERE ( board_x, board_y) IN (('1','1'), ('1','2'), ('1','3'), ('1','7'), ('1','8'), ('1','9'))");
@@ -130,11 +129,6 @@ class Tablut extends Table
             self::DbQuery("UPDATE board SET board_player='$player0' WHERE ( board_x, board_y) IN (('4','9'), ('5','9'), ('6','9'), ('5','8') )");
             self::DbQuery("UPDATE board SET board_player='$player0' WHERE ( board_x, board_y) IN (('1','4'), ('1','5'), ('1','6'), ('2','5') )");
             self::DbQuery("UPDATE board SET board_player='$player0' WHERE ( board_x, board_y) IN (('9','4'), ('9','5'), ('9','6'), ('8','5') )");
-
-            /* Initialize the player 1 pieces */
-            self::DbQuery("UPDATE board SET board_player='$player1', board_wall='1', board_king='1' WHERE ( board_x, board_y) IN (('5','5'))");
-            self::DbQuery("UPDATE board SET board_player='$player1' WHERE ( board_x, board_y) IN (('3','5'), ('4','5'), ('6','5'), ('7','5'))");
-            self::DbQuery("UPDATE board SET board_player='$player1' WHERE ( board_x, board_y) IN (('5','3'), ('5','4'), ('5','6'), ('5','7'))");
 
             /* Initialize the limit winning game */
             self::DbQuery("UPDATE board SET board_limitWin='1', board_wall='1' WHERE ( board_x, board_y) IN (('1','1'), ('1','9'))");
@@ -508,9 +502,9 @@ class Tablut extends Table
                 $thirdPawn = $this->dbPawnAtPos($pos['third']);
                 $fourthPawn = $this->dbPawnAtPos($pos['fourth']);
                 if ($this->isRuleVariant()) { // Variant allow the capture of the king against a board edge
-                    if (($dualPawn['board_player'] == $activePlayer || $dualPawn['board_player'] == null)
-                        && ($thirdPawn['board_player'] == $activePlayer || $thirdPawn['board_player'] == null)
-                        && ($fourthPawn['board_player'] == $activePlayer || $fourthPawn['board_player'] == null)) {
+                    if (($dualPawn['board_player'] == $activePlayer || $this->isPosOutOfBoard($pos['dual']))
+                        && ($thirdPawn['board_player'] == $activePlayer || $this->isPosOutOfBoard($pos['third']))
+                        && ($fourthPawn['board_player'] == $activePlayer || $this->isPosOutOfBoard($pos['fourth']))) {
                         array_push($eatenPawns, $pos['victim']);
                     }
                 } else {
@@ -537,10 +531,16 @@ class Tablut extends Table
 
     private function dbPawnAt($x, $y)
     {
-        if ($x < 1 || $x > 9 || $y < 1 || $y > 9) {
+        if ($this->isPosOutOfBoard([$x, $y])) {
             return ['board_player' => null, 'board_king' => null, 'board_wall' => null];
         }
         return self::DbQuery("SELECT board_player, board_king, board_wall FROM board WHERE board_x = $x AND board_y = $y")->fetch_assoc();
+    }
+
+    private function isPosOutOfBoard($pos)
+    {
+        list($x, $y) = $pos;
+        return $x < 1 || $x > 9 || $y < 1 || $y > 9;
     }
 
     private function dbPawnColor($x, $y)
