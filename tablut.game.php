@@ -215,60 +215,32 @@ class Tablut extends Table
         // get the King Position
         $kingPos = self::DbQuery("SELECT board_x x, board_y y, board_limitWin winning_pos FROM board WHERE board_king != 'NULL'")->fetch_assoc();
         if ($kingPos['winning_pos'] == '1') {
-            return;
+            return 0;
         }
-        $kingPosX = $kingPos['x'];
-        $kingPosY = $kingPos['y'];
 
         //////////////////////
         // Find all the winning moves for the King
         //////////////////////
         $winningMovesCount = 0;
-
-        $columSearchUp = self::DbQuery("SELECT board_x x, board_y y, board_player player, board_wall wall FROM board WHERE board_x > $kingPosX and board_y = $kingPosY and (board_player != 'null' or board_wall != 'null')")->fetch_assoc();
-        if (!$this->isRuleVariant()) {
-            if ($columSearchUp['y'] == null) {
-                $winningMovesCount += 1;
-            }
-        } else {
-            if ($columSearchUp['y'] == null and ($kingPosX == '1' || $kingPosX == '9')) {
-                $winningMovesCount += 1;
-            }
-        }
-        
-        $columSearchUp = self::DbQuery("SELECT board_x x, board_y y, board_player player, board_wall wall FROM board WHERE board_x < $kingPosX and board_y = $kingPosY and (board_player != 'null' or board_wall != 'null')")->fetch_assoc();
-        if (!$this->isRuleVariant()) {
-            if ($columSearchUp['y'] == null) {
-                $WinnerPos += 1;
-            }
-        } else {
-            if ($columSearchUp['y'] == null and ($kingPosX == '1' || $kingPosX == '9')) {
-                $winningMovesCount += 1;
+        $axisToTest = [
+            ['queryCondition' => "board_x > ${kingPos['x']} and board_y = ${kingPos['y']}", 'isOnEdge' => ($kingPos['y'] == '1' || $kingPos['y'] == '9')],
+            ['queryCondition' => "board_x < ${kingPos['x']} and board_y = ${kingPos['y']}", 'isOnEdge' => ($kingPos['y'] == '1' || $kingPos['y'] == '9')],
+            ['queryCondition' => "board_x = ${kingPos['x']} and board_y > ${kingPos['y']}", 'isOnEdge' => ($kingPos['x'] == '1' || $kingPos['x'] == '9')],
+            ['queryCondition' => "board_x = ${kingPos['x']} and board_y < ${kingPos['y']}", 'isOnEdge' => ($kingPos['x'] == '1' || $kingPos['x'] == '9')],
+        ];
+        $extraQueryCondition = $this->isRuleVariant() ? "" : "or board_wall != 'null'";
+        foreach ($axisToTest as $axis) {
+            $searchResult = self::DbQuery("SELECT board_x x, board_y y FROM board WHERE ${axis['queryCondition']} and (board_player != 'null' $extraQueryCondition)")->fetch_assoc();
+            if ($this->isRuleVariant()) {
+                if ($searchResult == null and $axis['isOnEdge']) {
+                    $winningMovesCount += 1;
+                }
+            } else {
+                if ($searchResult == null) {
+                    $winningMovesCount += 1;
+                }
             }
         }
-        
-        $columSearchUp = self::DbQuery("SELECT board_x x, board_y y, board_player player, board_wall wall FROM board WHERE board_y > $kingPosY and board_x = $kingPosX and (board_player != 'null' or board_wall != 'null')")->fetch_assoc();
-        if (!$this->isRuleVariant()) {
-            if ($columSearchUp['y'] == null) {
-                $winningMovesCount += 1;
-            }
-        } else {
-            if ($columSearchUp['y'] == null and ($kingPosY == '1' || $kingPosY == '9')) {
-                $winningMovesCount += 1;
-            }
-        }
-
-        $columSearchUp = self::DbQuery("SELECT board_x x, board_y y, board_player player, board_wall wall FROM board WHERE board_y < $kingPosY and board_x = $kingPosX and (board_player != 'null' or board_wall != 'null')")->fetch_assoc();
-        if (!$this->isRuleVariant()) {
-            if ($columSearchUp['y'] == null) {
-                $winningMovesCount += 1;
-            }
-        } else {
-            if ($columSearchUp['y'] == null and ($kingPosY == '1' || $kingPosY == '9')) {
-                $winningMovesCount += 1;
-            }
-        }
-
         return $winningMovesCount;
     }
 
