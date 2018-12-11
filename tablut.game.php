@@ -273,7 +273,8 @@ class Tablut extends Table
     }
 
     public function logRaichiOrTuichi($winningMovesCount)
-        $goalName = $this->isRuleVariant() ? 'a corner' : 'an edge';
+    {
+        $goalName = ($this->isRuleVariant() ? 'a corner' : 'an edge');
         if ($winningMovesCount == 1) {
             self::notifyAllPlayers('Raichi', clienttranslate("Raichi! (the King has a clear paths to $goalName)"), []);
         } elseif ($winningMovesCount > 1) {
