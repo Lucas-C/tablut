@@ -74,7 +74,7 @@ describe('pathRange', () => {
     })
 })
 
-describe('getRaichiOrTuichi', () => {
+describe('getRaichiOrTuichi with variant rule', () => {
     const tablut = new Tablut()
 
     it('should be able to detect a RAICHI to the bottom of the board', () => {
@@ -85,7 +85,7 @@ describe('getRaichiOrTuichi', () => {
             builder.at(3, 2).wall = '1'
             return builder.board
         })()
-        tablut.gamedatas = {board: board}
+        tablut.gamedatas = {board: board, game_options: {100: '1'}}
         assert.deepEqual(tablut.getRaichiOrTuichi({x: 2, y: 2}), ['RAICHI', [{x: 2, y: 3}]])
     })
 
@@ -96,7 +96,7 @@ describe('getRaichiOrTuichi', () => {
             builder.at(2, 3).wall = '1'
             return builder.board
         })()
-        tablut.gamedatas = {board: board}
+        tablut.gamedatas = {board: board, game_options: {100: '1'}}
         const raichiOrTuichi = tablut.getRaichiOrTuichi({x: 2, y: 2})
         assert.equal(raichiOrTuichi[0], 'TUICHI')
         assert.equal(raichiOrTuichi[1].length, 2)
@@ -108,19 +108,19 @@ describe('getRaichiOrTuichi', () => {
             builder.at(2, 1).wall = '1'
             return builder.board
         })()
-        tablut.gamedatas = {board: board}
+        tablut.gamedatas = {board: board, game_options: {100: '1'}}
         const raichiOrTuichi = tablut.getRaichiOrTuichi({x: 2, y: 2})
         assert.equal(raichiOrTuichi[0], 'TUICHI')
         assert.equal(raichiOrTuichi[1].length, 3)
     })
 })
 
-describe('getRaichiOrTuichi with variant rule', () => {
+describe('getRaichiOrTuichi with base rule', () => {
     const tablut = new Tablut()
 
     it('should be able to detect a TUICHI at the top', () => {
         const board = boardBuilder({size: 3}).board
-        tablut.gamedatas = {board: board, game_options: {100: '1'}}
+        tablut.gamedatas = {board: board, game_options: {100: '0'}}
         const raichiOrTuichi = tablut.getRaichiOrTuichi({x: 2, y: 1})
         assert.equal(raichiOrTuichi[0], 'TUICHI')
         assert.equal(raichiOrTuichi[1].length, 2)
@@ -132,7 +132,7 @@ describe('getRaichiOrTuichi with variant rule', () => {
             builder.at(1, 2).wall = '1'
             return builder.board
         })()
-        tablut.gamedatas = {board: board, game_options: {100: '1'}}
+        tablut.gamedatas = {board: board, game_options: {100: '0'}}
         assert.deepEqual(tablut.getRaichiOrTuichi({x: 1, y: 3}), ['RAICHI', [{x: 1, y: 4}]])
     })
 })
