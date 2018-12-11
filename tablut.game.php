@@ -24,13 +24,13 @@ class Tablut extends Table
         parent::__construct();
 
         $this->initGameStateLabels([
-            'King in the corners variant' => 100,
+            'King wins on the edges variant' => 100,
         ]);
     }
 
     protected function isRuleVariant()
     {
-        return $this->gamestate->table_globals && $this->gamestate->table_globals[100] == '1';
+        return $this->gamestate->table_globals && $this->gamestate->table_globals[100] == '0';
     }
 
     /**
@@ -111,7 +111,7 @@ class Tablut extends Table
         self::DbQuery("UPDATE board SET board_player='$player1' WHERE ( board_x, board_y) IN (('3','5'), ('4','5'), ('6','5'), ('7','5'))");
         self::DbQuery("UPDATE board SET board_player='$player1' WHERE ( board_x, board_y) IN (('5','3'), ('5','4'), ('5','6'), ('5','7'))");
         
-        if (!$this->isRuleVariant()) {
+        if ($this->isRuleVariant()) {
             /* Initialize the player 0 pieces */
             self::DbQuery("UPDATE board SET board_player='$player0', board_wall='1' WHERE ( board_x, board_y) IN (('4','1'), ('5','1'), ('6','1'), ('5','2') )");
             self::DbQuery("UPDATE board SET board_player='$player0', board_wall='1' WHERE ( board_x, board_y) IN (('4','9'), ('5','9'), ('6','9'), ('5','8') )");
@@ -223,15 +223,15 @@ class Tablut extends Table
             ['queryCondition' => "board_x = ${kingPos['x']} and board_y > ${kingPos['y']}", 'isOnEdge' => ($kingPos['x'] == '1' || $kingPos['x'] == '9')],
             ['queryCondition' => "board_x = ${kingPos['x']} and board_y < ${kingPos['y']}", 'isOnEdge' => ($kingPos['x'] == '1' || $kingPos['x'] == '9')],
         ];
-        $extraQueryCondition = $this->isRuleVariant() ? "" : "or board_wall != 'null'";
+        $extraQueryCondition = $this->isRuleVariant() ? "or board_wall != 'null'" : '';
         foreach ($axisToTest as $axis) {
             $searchResult = self::DbQuery("SELECT board_x x, board_y y FROM board WHERE ${axis['queryCondition']} and (board_player != 'null' $extraQueryCondition)")->fetch_assoc();
             if ($this->isRuleVariant()) {
-                if ($searchResult == null and $axis['isOnEdge']) {
+                if ($searchResult == null) {
                     $winningMovesCount += 1;
                 }
             } else {
-                if ($searchResult == null) {
+                if ($searchResult == null and $axis['isOnEdge']) {
                     $winningMovesCount += 1;
                 }
             }
@@ -241,7 +241,7 @@ class Tablut extends Table
 
     public function logRaichiOrTuichi($winningMovesCount)
     {
-        $goalName = ($this->isRuleVariant() ? 'a corner' : 'an edge');
+        $goalName = ($this->isRuleVariant() ? 'an edge' : 'a corner');
         if ($winningMovesCount == 1) {
             self::notifyAllPlayers('Raichi', clienttranslate("Raichi! (the King has a clear paths to $goalName)"), []);
         } elseif ($winningMovesCount > 1) {
@@ -359,8 +359,8 @@ class Tablut extends Table
             'gamedatas' => $this->getAllDatas()
         ]);
         
-        // Check for eaten pawns (but not for the king in the variant rule)
-        if (!$this->isRuleVariant() || $pawnIsKing == 'NULL') {
+        // Check for eaten pawns (but not for the king in the base rule)
+        if ($this->isRuleVariant() || $pawnIsKing == 'NULL') {
             // Send another notif if pawns were eaten
             $eatenPawns = $this->findEatenPawns($toX, $toY);
             foreach ($eatenPawns as $eatenPawn) {
@@ -405,8 +405,8 @@ class Tablut extends Table
         }
         if ($wallType == '2') {
             // The throne can always been passed by the king,
-            // and also by the pawns in the variant
-            if (!$pawnIsKing && (!$this->isRuleVariant() || $isMoveFinalDest)) {
+            // but not by the pawns in the variant
+            if (!$pawnIsKing && ($this->isRuleVariant() || $isMoveFinalDest)) {
                 throw new feException("Cannot move on ($x, $y) : a fortress is blocking");
             }
         } elseif ($wallType == '1') {
@@ -454,7 +454,7 @@ class Tablut extends Table
                 }
             } else {
                 // capture the victime if the dual board player is the active player and if not the king
-                if ($dualPawn['board_king'] == null and ($dualPawn['board_player'] == $activePlayer || ($this->isRuleVariant() && $this->isCorner($pos['dual'])))) {
+                if ($dualPawn['board_king'] == null and ($dualPawn['board_player'] == $activePlayer || (!$this->isRuleVariant() && $this->isCorner($pos['dual'])))) {
                     array_push($eatenPawns, $pos['victim']);
                 }
             }

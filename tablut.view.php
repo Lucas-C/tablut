@@ -101,9 +101,10 @@ class view_tablut_tablut extends game_view  // @codingStandardsIgnoreLine
 
     public function isFortress($x, $y)
     {
-        if ($this->game->gamestate->table_globals[100]) { // Variant:
+        if ($this->game->gamestate->table_globals[100] == '1') {
             return $this->isCornerSquare($x, $y);
         }
+        // Variant:
         return ($x == 1 && $y >= 4 && $y <= 6)
             || ($x == 2 && $y == 5)
             || ($x == 9 && $y >= 4 && $y <= 6)

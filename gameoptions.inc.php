@@ -25,8 +25,8 @@ $game_options = array(
     100 => array(
         'name' => totranslate('Variant'),
         'values' => array(
-            0 => array( 'name' => totranslate('King escapes on the borders')),
-            1 => array( 'name' => totranslate('King escapes on the corners')),
+            0 => array( 'name' => totranslate('King escapes on the corners')),
+            1 => array( 'name' => totranslate('King escapes on the borders')),
         )
     )
 );

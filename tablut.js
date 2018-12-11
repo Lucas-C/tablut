@@ -98,14 +98,14 @@ define([
             }
             dojo.query('.square').on('click', lang.hitch(this, this.onMove));
             if (this.isRuleVariant()) {
-                this.addTooltipToClass('fortress', _('Only the king can enter the fortressses !'), '');
-            } else {
                 this.addTooltipToClass('fortress', _('No one can enter the fortresses !'), '');
+            } else {
+                this.addTooltipToClass('fortress', _('Only the king can enter the fortresss squares !'), '');
             }
             if (this.isRuleVariant()) {
-                this.addTooltipToClass('throne', _('Apart from the king, pawns cannot stop on the throne'), '');
-            } else {
                 this.addTooltipToClass('throne', _('Only the king can pass on the throne'), '');
+            } else {
+                this.addTooltipToClass('throne', _('Apart from the king, pawns cannot stop on the throne'), '');
             }
             this.displayRaichiTuichi();
         },
@@ -255,8 +255,8 @@ define([
                     if (vPosition.wall === '2') {
                         // The king can always pass on the throne
                         if (!isKing) {
-                            // In the variant rule, the pawns can pass through it but not stop on it
-                            if (this.isRuleVariant()) {
+                            // In the base rule, the pawns can pass through it but not stop on it
+                            if (!this.isRuleVariant()) {
                                 continue;
                             } else {
                                 break;
@@ -307,7 +307,7 @@ define([
 
         isSquareAWinningPos(pos) {
             const maxPos = Math.sqrt(this.gamedatas.board.length);
-            if (this.isRuleVariant()) {
+            if (!this.isRuleVariant()) {
                 return (pos.x === 1 && pos.y === 1) ||
                     (pos.x === 1 && pos.y === maxPos) ||
                     (pos.x === maxPos && pos.y === maxPos) ||
