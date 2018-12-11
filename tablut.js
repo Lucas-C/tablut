@@ -256,10 +256,10 @@ define([
                         // The king can always pass on the throne
                         if (!isKing) {
                             // In the base rule, the pawns can pass through it but not stop on it
-                            if (!this.isRuleVariant()) {
-                                continue;
-                            } else {
+                            if (this.isRuleVariant()) {
                                 break;
+                            } else {
+                                continue;
                             }
                         }
                     // Pawns can only pass on fortresses if they started on one of them without ever stepping of
