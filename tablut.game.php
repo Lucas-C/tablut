@@ -212,15 +212,10 @@ class Tablut extends Table
 
     public function countWinningMoves()
     {
-        // get the King Position
         $kingPos = self::DbQuery("SELECT board_x x, board_y y, board_limitWin winning_pos FROM board WHERE board_king != 'NULL'")->fetch_assoc();
         if ($kingPos['winning_pos'] == '1') {
             return 0;
         }
-
-        //////////////////////
-        // Find all the winning moves for the King
-        //////////////////////
         $winningMovesCount = 0;
         $axisToTest = [
             ['queryCondition' => "board_x > ${kingPos['x']} and board_y = ${kingPos['y']}", 'isOnEdge' => ($kingPos['y'] == '1' || $kingPos['y'] == '9')],
@@ -278,10 +273,6 @@ class Tablut extends Table
             throw new feException("This pawn belongs to your opponent: pawnPlayerId=$pawnPlayerId | pawnIsKing=$pawnIsKing");
         }
         $pawnIsOnWall = $srcPawnFromDb['board_wall'] ? true : false ;
-        
-        // ------------------
-        // reject play
-        // ------------------
         
         // reject if a pawn is present
         $dstSquareFromDb = self::DbQuery("SELECT board_player FROM board WHERE board_x = $toX AND board_y = $toY")->fetch_assoc();
@@ -456,27 +447,28 @@ class Tablut extends Table
             if ($victimPawn['board_king']) {
                 $thirdPawn = $this->dbPawnAtPos($pos['third']);
                 $fourthPawn = $this->dbPawnAtPos($pos['fourth']);
-                if ($this->isRuleVariant()) { // Variant allow the capture of the king against a board edge
-                    if (($dualPawn['board_player'] == $activePlayer || $this->isPosOutOfBoard($pos['dual']))
-                        && ($thirdPawn['board_player'] == $activePlayer || $this->isPosOutOfBoard($pos['third']))
-                        && ($fourthPawn['board_player'] == $activePlayer || $this->isPosOutOfBoard($pos['fourth']))) {
-                        array_push($eatenPawns, $pos['victim']);
-                    }
-                } else {
-                    if (($dualPawn['board_player'] == $activePlayer || $dualPawn['board_wall'])
-                        && ($thirdPawn['board_player'] == $activePlayer || $thirdPawn['board_wall'])
-                        && ($fourthPawn['board_player'] == $activePlayer || $fourthPawn['board_wall'])) {
-                        array_push($eatenPawns, $pos['victim']);
-                    }
+                if (($dualPawn['board_player'] == $activePlayer || $dualPawn['board_wall'] || $this->isPosOutOfBoard($pos['dual']))
+                    && ($thirdPawn['board_player'] == $activePlayer || $thirdPawn['board_wall'] || $this->isPosOutOfBoard($pos['third']))
+                    && ($fourthPawn['board_player'] == $activePlayer || $fourthPawn['board_wall'] || $this->isPosOutOfBoard($pos['fourth']))) {
+                    array_push($eatenPawns, $pos['victim']);
                 }
             } else {
                 // capture the victime if the dual board player is the active player and if not the king
-                if ($dualPawn['board_player'] == $activePlayer && $dualPawn['board_king'] == null) {
+                if ($dualPawn['board_king'] == null and ($dualPawn['board_player'] == $activePlayer || ($this->isRuleVariant() && $this->isCorner($pos['dual'])))) {
                     array_push($eatenPawns, $pos['victim']);
                 }
             }
         }
         return $eatenPawns;
+    }
+
+    private function isCorner($pos)
+    {
+        list($x, $y) = $pos;
+        return ($x == 1 && $y == 1)
+            || ($x == 1 && $y == 9)
+            || ($x == 9 && $y == 1)
+            || ($x == 9 && $y == 9);
     }
 
     private function dbPawnAtPos($pos)
