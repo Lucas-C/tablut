@@ -98,9 +98,9 @@ define([
             }
             dojo.query('.square').on('click', lang.hitch(this, this.onMove));
             if (this.isRuleVariant()) {
-                this.addTooltipToClass('konaki', _('Only the king can enter the konakis !'), '');
+                this.addTooltipToClass('fortress', _('Only the king can enter the fortressses !'), '');
             } else {
-                this.addTooltipToClass('konaki', _('No one can enter the konakis !'), '');
+                this.addTooltipToClass('fortress', _('No one can enter the fortresses !'), '');
             }
             if (this.isRuleVariant()) {
                 this.addTooltipToClass('throne', _('Apart from the king, pawns cannot stop on the throne'), '');
@@ -253,7 +253,7 @@ define([
                     }
                     // Case of the central position
                     if (vPosition.wall === '2') {
-                        // The king can always pass on this konaki
+                        // The king can always pass on the throne
                         if (!isKing) {
                             // In the variant rule, the pawns can pass through it but not stop on it
                             if (this.isRuleVariant()) {
@@ -262,8 +262,8 @@ define([
                                 break;
                             }
                         }
-                    // Pawns can only pass on konakis if they started on one of them without ever stepping of
-                    // Also the king can go on the corner konakis
+                    // Pawns can only pass on fortresses if they started on one of them without ever stepping of
+                    // Also the king can go on the corner fortresses
                     } else if (vPosition.wall === '1' && vDiscOnWall !== '1' && (!isKing || vPosition.limitWin !== '1')) {
                         break;
                     }

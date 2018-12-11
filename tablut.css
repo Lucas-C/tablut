@@ -96,7 +96,7 @@
         );
 }
 
-.konaki {
+.fortress {
     background:
         repeating-linear-gradient(
             45deg,
@@ -107,7 +107,7 @@
         );
 }
 
-.corner.konaki::before {
+.corner.fortress::before {
     content: '☆';
     color: white;
     font-size: 3em;

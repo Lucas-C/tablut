@@ -67,8 +67,8 @@ class view_tablut_tablut extends game_view  // @codingStandardsIgnoreLine
     {
         $cssClasses = 'square';
         if ($x != 0 && $x != 10 && $y != 0 && $y != 10) {
-            if ($this->isKonaki($x, $y)) {
-                $cssClasses .= ' konaki';
+            if ($this->isFortress($x, $y)) {
+                $cssClasses .= ' fortress';
             }
             if ($this->isThrone($x, $y)) {
                 $cssClasses .= ' throne';
@@ -99,7 +99,7 @@ class view_tablut_tablut extends game_view  // @codingStandardsIgnoreLine
         return ($x == 5 && $y == 5);
     }
 
-    public function isKonaki($x, $y)
+    public function isFortress($x, $y)
     {
         if ($this->game->gamestate->table_globals[100]) { // Variant:
             return $this->isCornerSquare($x, $y);

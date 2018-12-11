@@ -413,15 +413,15 @@ class Tablut extends Table
             throw new feException("Cannot move on ($x, $y) : a pawn is already present");
         }
         if ($wallType == '2') {
-            // The central konaki can always been passed by the king,
+            // The throne can always been passed by the king,
             // and also by the pawns in the variant
             if (!$pawnIsKing && (!$this->isRuleVariant() || $isMoveFinalDest)) {
-                throw new feException("Cannot move on ($x, $y) : a konaki is blocking");
+                throw new feException("Cannot move on ($x, $y) : a fortress is blocking");
             }
         } elseif ($wallType == '1') {
-            // Only case this is allowed is when the king goes on the corner konakis
+            // Only case this is allowed is when the king goes on the corner fortresses
             if (!($pawnIsKing && $isKingWinningPos)) {
-                throw new feException("Cannot move on ($x, $y) : a konaki is blocking");
+                throw new feException("Cannot move on ($x, $y) : a fortress is blocking");
             }
         }
     }
