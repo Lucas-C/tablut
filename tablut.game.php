@@ -210,86 +210,74 @@ class Tablut extends Table
 //////////// Player actions
 ////////////
 
-    public function logRaichiOrTuichi()
+    public function countWinningMoves()
     {
         // get the King Position
         $kingPos = self::DbQuery("SELECT board_x x, board_y y, board_limitWin winning_pos FROM board WHERE board_king != 'NULL'")->fetch_assoc();
         if ($kingPos['winning_pos'] == '1') {
             return;
         }
-        $KingPosX = $kingPos['x'];
-        $KingPosY = $kingPos['y'];
-        
-        
-        $WinnerPos = 0;
+        $kingPosX = $kingPos['x'];
+        $kingPosY = $kingPos['y'];
+
         //////////////////////
-        // find all the winnerPos of the King
+        // Find all the winning moves for the King
         //////////////////////
+        $winningMovesCount = 0;
 
-        $columSearchUp = self::DbQuery("SELECT board_x x, board_y y, board_player player, board_wall wall FROM board WHERE board_x > $KingPosX and board_y = $KingPosY and (board_player != 'null' or board_wall != 'null')")->fetch_assoc();
+        $columSearchUp = self::DbQuery("SELECT board_x x, board_y y, board_player player, board_wall wall FROM board WHERE board_x > $kingPosX and board_y = $kingPosY and (board_player != 'null' or board_wall != 'null')")->fetch_assoc();
         if (!$this->isRuleVariant()) {
             if ($columSearchUp['y'] == null) {
-                $WinnerPos += 1;
+                $winningMovesCount += 1;
             }
         } else {
-            if ($columSearchUp['y'] == null and ($KingPosX == '1' || $KingPosX == '9')) {
-                $WinnerPos += 1;
+            if ($columSearchUp['y'] == null and ($kingPosX == '1' || $kingPosX == '9')) {
+                $winningMovesCount += 1;
             }
         }
         
-        $columSearchUp = self::DbQuery("SELECT board_x x, board_y y, board_player player, board_wall wall FROM board WHERE board_x < $KingPosX and board_y = $KingPosY and (board_player != 'null' or board_wall != 'null')")->fetch_assoc();
+        $columSearchUp = self::DbQuery("SELECT board_x x, board_y y, board_player player, board_wall wall FROM board WHERE board_x < $kingPosX and board_y = $kingPosY and (board_player != 'null' or board_wall != 'null')")->fetch_assoc();
         if (!$this->isRuleVariant()) {
             if ($columSearchUp['y'] == null) {
                 $WinnerPos += 1;
             }
         } else {
-            if ($columSearchUp['y'] == null and ($KingPosX == '1' || $KingPosX == '9')) {
-                $WinnerPos += 1;
+            if ($columSearchUp['y'] == null and ($kingPosX == '1' || $kingPosX == '9')) {
+                $winningMovesCount += 1;
             }
         }
         
-        $columSearchUp = self::DbQuery("SELECT board_x x, board_y y, board_player player, board_wall wall FROM board WHERE board_y > $KingPosY and board_x = $KingPosX and (board_player != 'null' or board_wall != 'null')")->fetch_assoc();
+        $columSearchUp = self::DbQuery("SELECT board_x x, board_y y, board_player player, board_wall wall FROM board WHERE board_y > $kingPosY and board_x = $kingPosX and (board_player != 'null' or board_wall != 'null')")->fetch_assoc();
         if (!$this->isRuleVariant()) {
             if ($columSearchUp['y'] == null) {
-                $WinnerPos += 1;
+                $winningMovesCount += 1;
             }
         } else {
-            if ($columSearchUp['y'] == null and ($KingPosY == '1' || $KingPosY == '9')) {
-                $WinnerPos += 1;
+            if ($columSearchUp['y'] == null and ($kingPosY == '1' || $kingPosY == '9')) {
+                $winningMovesCount += 1;
             }
         }
 
-        $columSearchUp = self::DbQuery("SELECT board_x x, board_y y, board_player player, board_wall wall FROM board WHERE board_y < $KingPosY and board_x = $KingPosX and (board_player != 'null' or board_wall != 'null')")->fetch_assoc();
+        $columSearchUp = self::DbQuery("SELECT board_x x, board_y y, board_player player, board_wall wall FROM board WHERE board_y < $kingPosY and board_x = $kingPosX and (board_player != 'null' or board_wall != 'null')")->fetch_assoc();
         if (!$this->isRuleVariant()) {
             if ($columSearchUp['y'] == null) {
-                $WinnerPos += 1;
+                $winningMovesCount += 1;
             }
         } else {
-            if ($columSearchUp['y'] == null and ($KingPosY == '1' || $KingPosY == '9')) {
-                $WinnerPos += 1;
+            if ($columSearchUp['y'] == null and ($kingPosY == '1' || $kingPosY == '9')) {
+                $winningMovesCount += 1;
             }
         }
 
-        if ($WinnerPos == 1) {
-            if ($this->isRuleVariant()) {
-                self::notifyAllPlayers('Raichi', clienttranslate('Raichi! (the King has a clear paths to corner)'), [
-                    'winnerPos' => $WinnerPos
-                ]);
-            } else {
-                self::notifyAllPlayers('Raichi', clienttranslate('Raichi! (the King has a clear paths to border)'), [
-                    'winnerPos' => $WinnerPos
-                ]);
-            }
-        } elseif ($WinnerPos > 1) {
-            if ($this->isRuleVariant()) {
-                self::notifyAllPlayers('Tuichi', clienttranslate('Tuichi! (the King gained two clear paths to corners: the game ends)'), [
-                    'winnerPos' => $WinnerPos
-                ]);
-            } else {
-                self::notifyAllPlayers('Tuichi', clienttranslate('Tuichi! (the King gained two clear paths to border: the game ends)'), [
-                    'winnerPos' => $WinnerPos
-                ]);
-            }
+        return $winningMovesCount;
+    }
+
+    public function logRaichiOrTuichi($winningMovesCount)
+        $goalName = $this->isRuleVariant() ? 'a corner' : 'an edge';
+        if ($winningMovesCount == 1) {
+            self::notifyAllPlayers('Raichi', clienttranslate("Raichi! (the King has a clear paths to $goalName)"), []);
+        } elseif ($winningMovesCount > 1) {
+            self::notifyAllPlayers('Tuichi', clienttranslate("Tuichi! (the King gained two clear paths to $goalName: the game ends)"), []);
         }
     }
 
@@ -438,7 +426,8 @@ class Tablut extends Table
             }
         }
 
-        $this->logRaichiOrTuichi();
+        $winningMovesCount = $this->countWinningMoves();
+        $this->logRaichiOrTuichi($winningMovesCount);
 
         $this->incStat(1, 'turns_number'); // TABLE stat update
 
@@ -566,13 +555,14 @@ class Tablut extends Table
         $activePLayer = self::getActivePlayerId();
         $nextPlayerId = self::activeNextPlayer();
 
-        $kingWins = self::DbQuery("SELECT board_limitWin FROM board WHERE board_king='1' ")->fetch_assoc()['board_limitWin'];
-        $moscovitWin = self::DbQuery("SELECT board_x FROM board WHERE board_king='1' ")->fetch_assoc()['board_x'];
-        if ($moscovitWin == null) {
+        $kingWins = self::DbQuery("SELECT board_limitWin FROM board WHERE board_king='1' ")->fetch_assoc()['board_limitWin'] == '1';
+        $kingWins |= $this->countWinningMoves() > 1;
+        $moscovitWin = self::DbQuery("SELECT board_x FROM board WHERE board_king='1' ")->fetch_assoc()['board_x'] == null;
+        if ($moscovitWin) {
             self::DbQuery("UPDATE player SET player_score='2' WHERE player_id='$activePLayer'");
             $this->setStat(0, 'swedes_won');
             $this->gamestate->nextState('endGame');
-        } elseif ($kingWins == '1') {
+        } elseif ($kingWins) {
             self::DbQuery("UPDATE player SET player_score='1' WHERE player_id='$activePLayer'");
             $this->setStat(1, 'swedes_won');
             $this->gamestate->nextState('endGame');

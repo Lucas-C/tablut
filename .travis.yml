@@ -26,3 +26,7 @@ script:
   - composer bgaw-validate
   - composer bgaw-clean
   - composer bgaw-build
+
+notifications:
+  email:
+    on_success: never
